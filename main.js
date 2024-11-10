@@ -1,3 +1,4 @@
+
 function init_tabs() {
     Array.from(document.getElementsByClassName("tabs")).map((div)=>{
         var blocks = (
@@ -398,8 +399,6 @@ function loan_graph(loan_type, loan_term, interest, deduction, loan) {
         }
     };
 
-    
-
     Plotly.newPlot("graph_target", data, layout);
 }
 
@@ -413,7 +412,7 @@ function loan_stats(loan_type, loan_term, interest, deduction, loan) {
     }
 }
 
-window.addEventListener("load", (event) => {
+document.addEventListener('DOMContentLoaded', function() {
     init_tabs();
     init_fields();
     recalculate_fields();
