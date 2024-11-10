@@ -8,6 +8,7 @@
     <script src='https://cdn.plot.ly/plotly-2.35.2.min.js'></script>
 
     <script type="text/javascript" src="main.js"></script>
+    <script type="text/javascript" src="deploy_info.js"></script>
 
     <link rel="icon" href="https://r0d1on.github.io/mortgage-tool/favicon.ico">
 
@@ -32,6 +33,7 @@
                 <div class="header">
                     <h1>Mortgage modelling tool</h1>
                     <h2>Mortgage calculator and analysis tool (Netherlands)</h2>
+                    <h2 id="version"></h2>
                 </div>
             </section>
         </section>
@@ -386,6 +388,9 @@
                 
                 f(a, -150)();
             };
+
+            let version = document.getElementById("version");
+            version.innerHTML = `<small style="color:gray">${deploy_info.version} @ ${deploy_info.time}</small>`;
         });
     </script>
 
