@@ -14,6 +14,7 @@
 
  * https://r0d1on.github.io/mortgage-tool/
 
---
+---
+# credits:
 uses https://github.com/plotly/plotly.js for visualisation
 inspired by https://github.com/santiago-pan/mortgage-calculator
