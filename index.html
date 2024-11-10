@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <script src='https://cdn.plot.ly/plotly-2.35.2.min.js'></script>
+
+    <script type="text/javascript" src="main.js"></script>
+
+    <link rel="icon" href="https://r0d1on.github.io/mortgage-tool/favicon.ico">
+
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#000000">
+    <meta name="description" content="Annuity and linear flexible mortgage calculator for Netherlands">
+    <meta name="keywords"
+        content="Mortgage calculator netherlands, mortgage payment calculator netherlands, dutch mortgage calculator, annuity mortgage calculator, linear mortgage calculator, calculate monthly mortgage payment netherlands, mortgage interest calculator netherlands, mortgage planning tool, mortgage rates, mortgage modelling tool, mortgage simulation, mortgage repayment, monthly mortgage cost breakdown, Annuity vs Lineal mortgage">
+    <link rel="apple-touch-icon" href="https://r0d1on.github.io/mortgage-tool/icon.png">
+    <link rel="manifest" href="https://r0d1on.github.io/mortgage-tool/manifest.json">
+
+    <title>Mortgage calculator and analysis tool (Netherlands)</title>
+
+    <link href="main.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+
+        <section class="section">
+            <section class="title">
+                <div class="header">
+                    <h1>Mortgage modelling tool</h1>
+                    <h2>Mortgage calculator and analysis tool (Netherlands)</h2>
+                </div>
+            </section>
+        </section>
+
+        <section class="section">
+            <h1>Mortgage parameters</h1>
+            <div class="tabs is-primary">
+                <ul>
+                    <li class="is-active" data-block="mortgage"><a>Mortgage</a></li>
+                    <li class="" data-block="costs"><a>Purchase Costs</a></li>
+                </ul>
+            </div>
+
+            <div data-block="mortgage" class="block">
+                <div class="columns">
+
+                    <div class="column">
+                        <div class="field" id="house_price" data-default="450000">
+                            <label>House price</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" id="savings" data-default="100000">
+                            <label>Own savings</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+
+                        <div class="field" id="cost" data-formula="purchase_cost">
+                            <label>Purchase cost (without NHG fee)</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" id="downpayment" data-formula="savings - cost">
+                            <label>Downpayment</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+
+                        <div class="field" id="loan" data-formula="house_price - downpayment">
+                            <label>Required loan amount</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" id="loan_rate" data-formula="Math.round(10000 * loan / house_price)/100">
+                            <label>Loan amount / House price</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>%</i></span></div>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="field" id="loan_term" data-default="30*12">
+                            <label>Loan term (months)</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>m</i></span></div>
+                        </div>
+                        <div class="field" id="interest" data-default="3.8">
+                            <label>Loand Interest</label>
+                            <div class="control"><input class="input" type="text" value="3.8">
+                            <span class="icon"><i>%</i></span></div>
+                        </div>
+                        <div class="field" id="deduction" data-default="36.93">
+                            <label>Loan interest tax deductible</label>
+                            <div class="control"><input class="input" type="text" value="36.93">
+                            <span class="icon"><i>%</i></span></div>
+                        </div>                        
+                        <div class="field" id="loan_type" data-default="1">
+                            <label>Loan type: 1 - Annuity, 2 - Linear</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>&gt;</i></span></div>
+                        </div>                        
+                    </div>
+
+                    <div class="column">
+                        <div class="field" id="rent" data-default="1500">
+                            <label>Current monthly rent</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+
+                        <div class="field" id="total_rent" data-formula="rent * loan_term">
+                            <label>Total rent paid (would be)</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" id="total_rent_delta_gross" data-formula="total_rent - loan_total_invested_gross">
+                            <label>Total rent paid - Total loan invested (gross)</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" id="total_rent_delta_net" data-formula="total_rent - loan_total_invested_net">
+                            <label>Total rent paid - Total loan invested (net)</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" id="total_tax_deducted" data-formula="total_rent_delta_net - total_rent_delta_gross">
+                            <label>Total tax deducted:</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" id="loan_interest_rate" data-formula="Math.round(10000 * total_paid_interest_net / loan)/100">
+                            <label>Total interest paid (net) / Loan amount</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>%</i></span></div>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="field" id="loan_total_invested_gross" data-formula="total_paid_gross + savings">
+                            <label>Total loan invested (gross)</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" id="loan_total_invested_net" data-formula="total_paid_net + savings">
+                            <label>Total loan invested (net)</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+
+
+                        <div class="field" id="total_paid_gross" data-formula="calculate_loan(loan_type, loan_term, interest, deduction, loan).total.paid_gross">
+                            <label>Total repaid (gross)</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" id="total_paid_net" data-formula="calculate_loan(loan_type, loan_term, interest, deduction, loan).total.paid_net">
+                            <label>Total repaid (net)</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" id="total_paid_interest_gross" data-formula="total_paid_gross - loan">
+                            <label>Total interest paid (gross)</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" id="total_paid_interest_net" data-formula="total_paid_net - loan">
+                            <label>Total interest paid (net)</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div data-block="costs" class="block">
+                <div class="columns">
+                    <div class="column">
+                        <div class="field" id="cost_advisor" data-default="2500">
+                            <label>Financial advisor</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" id="cost_makelaar" data-default="3950">
+                            <label>Real estate agent</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" id="cost_valuation" data-default="800">
+                            <label>Valuation</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" id="cost_notary" data-default="1200">
+                            <label>Notary</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" id="cost_survey" data-default="800">
+                            <label>Structural survey</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="field" id="cost_transfer_tax" data-formula="0.02 * house_price">
+                            <label>Transfer tax</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" id="cost_bank" data-formula="0.001 * house_price">
+                            <label>Bank guarantee</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" id="purchase_cost" data-formula="cost_advisor + cost_bank + cost_makelaar + cost_notary + cost_survey + cost_transfer_tax + cost_valuation">
+                            <label>Purchase costs:</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" id="cost_nhg" data-formula="house_price > 435000 ? 0 : 0.006 * (house_price - (savings - purchase_cost))">
+                            <label>NHG fee</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" id="total_purchase_cost" data-formula="purchase_cost + cost_nhg">
+                            <label>Purchase costs + NHG fee:</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h1 class="subtitle">Modelling results: payment schedule, balance graph</h1>
+            <div class="tabs is-primary">
+                <ul>
+                    <li class="is-active" data-block="stats"><a>Stats</a></li>
+                    <li class="" data-block="schedule"><a>Schedule</a></li>
+                    <li class="" data-block="graph"><a>Graph</a></li>
+                </ul>
+            </div>
+
+            <div data-block="schedule-hidden" class="block">
+                <div class="columns">
+                    <div class="column">
+                        <div class="field" id="schedule" data-formula="loan_schedule(loan_type, loan_term, interest, deduction, loan)">
+                            <label>Hidden cell to update loan payments schedule</label>
+                            <div class="control"><input class="input" type="text" value=""></div>
+                        </div>
+                        <div class="field" id="graph" data-formula="loan_graph(loan_type, loan_term, interest, deduction, loan)">
+                            <label>Hidden cell to update loan payments graph</label>
+                            <div class="control"><input class="input" type="text" value=""></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div data-block="stats" class="block">
+                <div class="columns">
+                    <div class="column">
+                        <div class="field" id="payment_first_gross" data-formula="loan_stats(loan_type, loan_term, interest, deduction, loan).payment_first_gross">
+                            <label>First montly payment (gross)</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" id="payment_last_gross" data-formula="loan_stats(loan_type, loan_term, interest, deduction, loan).payment_last_gross">
+                            <label>Last montly payment (gross)</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="field" id="payment_first_net" data-formula="loan_stats(loan_type, loan_term, interest, deduction, loan).payment_first_net">
+                            <label>First montly payment (net)</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" id="payment_last_net" data-formula="loan_stats(loan_type, loan_term, interest, deduction, loan).payment_last_net">
+                            <label>Last montly payment (net)</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                    </div>
+
+                    <div class="column vertical_separator">
+                    </div>
+
+                    <div class="column">
+                        <div class="field" id="payment_first_extra_gross" data-formula="payment_first_gross - rent">
+                            <label>First montly payment - monthly rent (gross)</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" id="payment_last_extra_gross" data-formula="payment_last_gross - rent">
+                            <label>Last montly payment - monthly rent (gross)</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="field" id="payment_first_extra_net" data-formula="payment_first_net - rent">
+                            <label>First montly payment - monthly rent (net)</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" id="payment_last_extra_net" data-formula="payment_last_net - rent">
+                            <label>Last montly payment - monthly rent (net)</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div data-block="schedule" class="block">
+                <div class="columns">
+                    <div class="column">
+                    </div>  
+                </div>
+            </div>
+
+            <div data-block="graph" class="block">
+                <div class="columns">
+                    <div class="column">
+                        <div id="graph_target"></div>
+                    </div>  
+                </div>
+            </div>
+
+        </section>
+
+        <section class="section disclaimer">
+            <h3>Disclaimer:</h3>
+            <p>The tool intended only for research purposes - use it at your own risk.</p>
+            <p>There is no guarantee for the quality and accuracy of the data provided.</p>
+            <p><b>Involve a qualified professional before making any decisions.</b></p>
+        </section>
+
+        <section class="section"><a href="https://github.com/r0d1on/mortgage-tool" class="github-link"
+                target="_blank" rel="noopener noreferrer"><img
+                    src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cGF0aCBkPSJNOS45OTkgMGMtNS41MjEgMC05Ljk5OSA0LjU5LTkuOTk5IDEwLjI1MyAwIDQuNTMgMi44NjUgOC4zNzMgNi44MzkgOS43MjguNS4wOTQuNjgzLS4yMjIuNjgzLS40OTRsLS4wMTQtMS43NDRjLTIuNzgyLjYxOS0zLjM2OC0xLjM3NS0zLjM2OC0xLjM3NS0uNDU1LTEuMTg1LTEuMTExLTEuNS0xLjExMS0xLjUtLjkwOC0uNjM2LjA2OS0uNjIzLjA2OS0uNjIzIDEuMDA0LjA3MiAxLjUzMiAxLjA1NyAxLjUzMiAxLjA1Ny44OTIgMS41NjcgMi4zNDEgMS4xMTQgMi45MS44NTIuMDkxLS42NjIuMzQ5LTEuMTE0LjYzNS0xLjM3LTIuMjItLjI1OS00LjU1NS0xLjEzOS00LjU1NS01LjA2OCAwLTEuMTE5LjM5LTIuMDM1IDEuMDI5LTIuNzUxLS4xMDMtLjI1OS0uNDQ2LTEuMzAyLjA5OC0yLjcxMyAwIDAgLjgzOS0uMjc2IDIuNzUgMS4wNTEuNzk3LS4yMjggMS42NTMtLjM0MSAyLjUwMy0uMzQ2Ljg1LjAwNCAxLjcwNS4xMTggMi41MDMuMzQ2IDEuOTA5LTEuMzI3IDIuNzQ3LTEuMDUxIDIuNzQ3LTEuMDUxLjU0NiAxLjQxMS4yMDMgMi40NTQuMSAyLjcxMy42NDEuNzE2IDEuMDI4IDEuNjMyIDEuMDI4IDIuNzUxIDAgMy45MzktMi4zMzggNC44MDYtNC41NjYgNS4wNTkuMzU5LjMxNy42NzguOTQyLjY3OCAxLjg5OCAwIDEuMzcxLS4wMTIgMi40NzctLjAxMiAyLjgxMyAwIC4yNzQuMTguNTk0LjY4OC40OTMgMy45NzEtMS4zNTkgNi44MzMtNS4xOTkgNi44MzMtOS43MjggMC01LjY2My00LjQ3OC0xMC4yNTMtMTAuMDAxLTEwLjI1MyIgZmlsbD0iIzAwMCIvPgo8L3N2Zz4K"
+                    alt="" class="github-inner">Github</a></section>
+    </div>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function(event){
+            const gh_pages_host = "r0d1on.github.io"; //"127.0.0.1:5000";
+            let show_ribbon = (window.location.href).split(/\/\//)[1].split(/\//)[0]==gh_pages_host;
+            //document.body.style['overflow'] = 'hidden';
+            if (show_ribbon) {
+                let c = document.createElement("div");
+                c.style["position"] = "absolute";
+                c.style["right"] = "0px";
+                c.style["top"] = "0px";
+                c.style['overflow'] = 'hidden';
+                document.body.appendChild(c);
+
+                let a = document.createElement("a");
+                a.innerHTML = '<img loading="lazy" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_green_007200.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1">';
+                a.href = "https://github.com/r0d1on/mortgage-tool";
+                a.style["position"] = "relative";
+                a.style["right"] = "0px";
+                a.style["top"] = "0px";
+                c.appendChild(a);
+                
+                let f = (a, c)=>{
+                    return ()=>{
+                        if (c>=0) {
+                            a.style["right"] = (-c)+"px";
+                            a.style["top"] = (-c)+"px";
+                        };
+                        if (c < 150)
+                            setTimeout(f(a, c+1), 10);
+                    };
+                };
+                
+                f(a, -150)();
+            };
+        });
+    </script>
+
+
+
+</body>
+
+</html>
