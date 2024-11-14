@@ -17,7 +17,8 @@ function PPMT(rate, per, nper, pv) {
     return pmt - ipmt;
 }
 
-function calculate_loan_linear(loan_term, interest, deduction, loan, monthly_ownership_tax, purchase_cost, tax_scheme, extra_payment_monthly) {
+
+function calculate_loan_linear({loan_term, interest, deduction, loan, monthly_ownership_tax, purchase_cost, tax_scheme, extra_payment_monthly, extra_payment_yearly, extra_payment_yearly_start}) {
     const rate = interest / (12 * 100);
 
     let total_paid_gross = 0;
@@ -40,6 +41,12 @@ function calculate_loan_linear(loan_term, interest, deduction, loan, monthly_own
       } else if (tax_scheme==2) {
         extra_payment += (interest_amt) * (deduction  / 100.0);
       };
+      extra_payment_yearly_start -= 1;
+      if (extra_payment_yearly_start==0) {
+        extra_payment_yearly_start = 12;
+        extra_payment += extra_payment_yearly;
+      };
+
       capital_payment += extra_payment;
 
       const net_payment = base_payment - tax_return;
@@ -75,7 +82,7 @@ function calculate_loan_linear(loan_term, interest, deduction, loan, monthly_own
     };
 }
 
-function calculate_loan_annuity(loan_term, interest, deduction, loan, monthly_ownership_tax, purchase_cost, tax_scheme, extra_payment_monthly) {
+function calculate_loan_annuity({loan_term, interest, deduction, loan, monthly_ownership_tax, purchase_cost, tax_scheme, extra_payment_monthly, extra_payment_yearly, extra_payment_yearly_start}) {
     const rate = interest / (12 * 100);
   
     let total_paid_gross = 0;
@@ -97,6 +104,12 @@ function calculate_loan_annuity(loan_term, interest, deduction, loan, monthly_ow
       } else if (tax_scheme==2) {
         extra_payment += (interest_amt) * (deduction  / 100.0);
       };
+      extra_payment_yearly_start -= 1;
+      if (extra_payment_yearly_start==0) {
+        extra_payment_yearly_start = 12;
+        extra_payment += extra_payment_yearly;
+      };
+
       capital_payment += extra_payment;
 
       const net_payment = base_payment - tax_return;
@@ -131,11 +144,11 @@ function calculate_loan_annuity(loan_term, interest, deduction, loan, monthly_ow
     };
 }
 
-function calculate_loan(loan_type, loan_term, interest, deduction, loan, monthly_ownership_tax, purchase_cost, tax_scheme, extra_payment_monthly) {
-    if (loan_type==1) {
-        return calculate_loan_annuity(loan_term, interest, deduction, loan, monthly_ownership_tax, purchase_cost, tax_scheme, extra_payment_monthly);
-    } else if (loan_type==2) {
-        return calculate_loan_linear(loan_term, interest, deduction, loan, monthly_ownership_tax, purchase_cost, tax_scheme, extra_payment_monthly);
+function calculate_loan(loan_params) {
+    if (loan_params.loan_type==1) {
+        return calculate_loan_annuity(loan_params);
+    } else if (loan_params.loan_type==2) {
+        return calculate_loan_linear(loan_params);
     } else {
         throw "unknown loan_type value, it must be '1' or '2'";
     };
