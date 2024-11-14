@@ -12,7 +12,7 @@ function init_tabs() {
         var tabs = (
             Array.from(div.getElementsByTagName("li"))
             .reduce((a, v)=>{
-                a[v.dataset['block']]=v;
+                a[v.dataset["block"]]=v;
                 return a
             }, {})
         );
@@ -56,7 +56,7 @@ function get_parameters(formula) {
     };
 
     formula
-    .split(/[:> \?\d\*\.\+\-\/,\(\)]/g)
+    .split(/[:> \?\d\*\.\+\-\/,\(\)\[\]']/g)
     .reduce((a, v)=>{if (v) a.push(v); return a}, [])
     .map((p)=>{
         params.push(p);
@@ -72,10 +72,12 @@ function saveState() {
 
     Object.keys(FIELDS).map((id)=>{
         let fdesc = FIELDS[id];
-        if ( (!fdesc.input.disabled) && (fdesc.input.value != fdesc.dom.dataset['default']) ) {
-            str_state += (str_state=="") ? "?" : "&";
-            str_state += `${id}=${fdesc.input.value}`;
-        };
+        if (fdesc.input!==undefined) {
+            if ( (!fdesc.input.disabled) && (fdesc.input.value != fdesc.dom.dataset['default']) ) {
+                str_state += (str_state=="") ? "?" : "&";
+                str_state += `${id}=${fdesc.input.value}`;
+            };
+        }
     });    
 
     if (str_state!="") {
@@ -168,20 +170,25 @@ function gather_param_values(params, path) {
 
 function get_field_value(id, path) {
     const fdesc = FIELDS[id];
-    let value = fdesc.input.value;
+    if (fdesc===undefined) throw `undefined parameter ${id} requested from path ${path}`;
 
-    if (!fdesc.input.disabled) { // user input field
-        if (value=="") {
-            console.log(`field ${id} value must be specified`);
-            return undefined;
-        } else if (/[\+-\/\*\(\)]/g.test(value)) {
-            return 1.0 * evalInScope(value, {});
-        };
-        return 1.0*value;
+    let value = (fdesc.input===undefined) ? fdesc.value : fdesc.value||fdesc.input.value;
+
+    if (fdesc.input!==undefined) { // user input field
+        if (!fdesc.input.disabled) {
+            if (value=="") {
+                console.log(`field ${id} value must be specified`);
+                return undefined;
+            } else if (/[\+-\/\*\(\)]/g.test(value)) { // ad-hoc formula
+                return 1.0*evalInScope(value, {});
+            };
+            return 1.0*value;
+        }
     };
     
-    if (fdesc.input.value!="")
-        return 1.0*value;
+    // calculatable field
+    if ((value!==undefined)&&(value!=""))
+        return value;
 
     let {calculation_context, error} = gather_param_values(fdesc.params, path);
 
@@ -191,25 +198,34 @@ function get_field_value(id, path) {
     } else {
         try {
             value = evalInScope(fdesc.formula, calculation_context);
-            fdesc.input.value = Math.round(100.0 * value)/100.0;
+            if (fdesc.input===undefined) {
+                fdesc.value = value;
+            } else {
+                fdesc.input.value = Math.round(100.0 * value)/100.0;
+                fdesc.value = value;
+            };
         } catch (ex) {
-            fdesc.input.value = `Error in formula: ${ex.message}`;
+            if (fdesc.input!==undefined)
+                fdesc.input.value = `Error in formula: ${ex.message}`;
             throw ex;
         }
     }
 
-    console.log(id, fdesc.input.value);
-
-    return 1.0 * fdesc.input.value;
+    console.log(id, value);
+    return value;
 }
 
 function recalculate_fields() {
     // cleanup
     Object.keys(FIELDS).map((id)=>{
         let fdesc = FIELDS[id];
-        if (fdesc.input!==undefined) {
-            if (fdesc.input.disabled) 
+        if (fdesc.input===undefined) {
+            fdesc.value = undefined;
+        } else {
+            if (fdesc.input.disabled) {
                 fdesc.input.value = "";
+                fdesc.value = undefined;
+            }
         };
     });
 
@@ -223,115 +239,8 @@ function recalculate_fields() {
     });
 }
 
-
-function PMT(rate, nperiod, amount) {
-    if (rate === 0) return -amount / nperiod;
-    var pvif = Math.pow(1 + rate, nperiod);
-    var pmt = (rate / (pvif - 1)) * -(amount * pvif);
-    return pmt;
-}
-
-function IPMT(pv, pmt, rate, per) {
-    var tmp = Math.pow(1 + rate, per - 1);
-    return 0 - (pv * tmp * rate + pmt * (tmp - 1));
-}
-
-function PPMT(rate, per, nper, pv) {
-    var pmt = PMT(rate, nper, pv);
-    var ipmt = IPMT(pv, pmt, rate, per);
-    return pmt - ipmt;
-}
-
-function calculate_loan_linear(loan_term, interest, deduction, loan) {
-    const capital_payment = loan / loan_term;
-
-    let paid_gross = 0;
-    let paid_net = 0;
-    const monthly = Array(loan_term)
-      .fill(0)
-      .map((v, i) => {
-        const balance = loan - capital_payment * i;
-        const interest_amt = balance * (interest / (12 * 100));
-        const gross_payment = capital_payment + interest_amt;
-        const tax_deduction = (interest_amt * deduction) / 100;
-        const net_payment = gross_payment - tax_deduction;
-        paid_net += net_payment;
-        paid_gross += gross_payment;
-        return {
-          month: i + 1,
-          balance,
-          gross_payment,
-          capital_payment,
-          interest_amt,
-          tax_deduction,
-          net_payment,
-        };
-      });
-
-    return {
-        monthly,
-        total: {
-                paid_gross,
-                paid_net,
-            },
-    };
-}
-
-function calculate_loan_annuity(loan_term, interest, deduction, loan) {
-    const rate = interest / (12 * 100);
-  
-    let paid_gross = 0;
-    let paid_net = 0;
-    let capital_paid = 0;
-
-    const monthly = Array(loan_term)
-      .fill(0)
-      .map((v, i) => {
-        let balance = loan - capital_paid;
-        balance = Math.max(balance, 0);
-        const pmt = PMT(rate, loan_term - i, balance);
-        const interest_amt = -IPMT(balance, pmt, rate, 1);
-        const capital_payment = -PPMT(rate, 1, loan_term - i, balance);
-        const gross_payment = capital_payment + interest_amt;
-        paid_gross += gross_payment;
-        const tax_deduction = (interest_amt * deduction) / 100.0;
-        const net_payment = gross_payment - tax_deduction;
-        paid_net += net_payment;
-        capital_paid += capital_payment;
-
-        return {
-          month: i + 1,
-          balance,
-          gross_payment,
-          capital_payment,
-          interest_amt,
-          tax_deduction,
-          net_payment, 
-        };
-      });
-  
-    return {
-        monthly,
-        total: {
-                paid_gross,
-                paid_net,
-            },
-    };    
-}
-
-function calculate_loan(loan_type, loan_term, interest, deduction, loan) {
-    if (loan_type==1) {
-        return calculate_loan_annuity(loan_term, interest, deduction, loan);
-    } else if (loan_type==2) {
-        return calculate_loan_linear(loan_term, interest, deduction, loan);
-    } else {
-        throw "unknown loan_type value, it must be '1' or '2'";
-    };
-}
-
-
-function loan_schedule(loan_type, loan_term, interest, deduction, loan) {
-    let result = calculate_loan(loan_type, loan_term, interest, deduction, loan);
+function loan_schedule({loan_type, loan_term, interest, deduction, loan, monthly_ownership_tax, purchase_cost, tax_scheme, extra_payment_monthly}) {
+    let result = calculate_loan(loan_type, loan_term, interest, deduction, loan, monthly_ownership_tax, purchase_cost, tax_scheme, extra_payment_monthly);
     let schedule_dom = document.querySelectorAll("div[data-block='schedule']")[0];
     schedule_dom = schedule_dom.getElementsByClassName("column")[0];
     schedule_dom.innerHTML="";
@@ -366,9 +275,8 @@ function loan_schedule(loan_type, loan_term, interest, deduction, loan) {
     console.log(result);
 }
 
-
-function loan_graph(loan_type, loan_term, interest, deduction, loan) {
-    let result = calculate_loan(loan_type, loan_term, interest, deduction, loan);
+function loan_graph({loan_type, loan_term, interest, deduction, loan, monthly_ownership_tax, purchase_cost, tax_scheme, extra_payment_monthly}) {
+    let result = calculate_loan(loan_type, loan_term, interest, deduction, loan, monthly_ownership_tax, purchase_cost, tax_scheme, extra_payment_monthly);
 
     let months = result.monthly.map((record)=>{
         return Math.round(100*record["month"])/100
@@ -402,13 +310,16 @@ function loan_graph(loan_type, loan_term, interest, deduction, loan) {
     Plotly.newPlot("graph_target", data, layout);
 }
 
-function loan_stats(loan_type, loan_term, interest, deduction, loan) {
-    let result = calculate_loan(loan_type, loan_term, interest, deduction, loan);
+function loan_stats({loan_type, loan_term, interest, deduction, loan, monthly_ownership_tax, purchase_cost, tax_scheme, extra_payment_monthly}) {
+    let result = calculate_loan(loan_type, loan_term, interest, deduction, loan, monthly_ownership_tax, purchase_cost, tax_scheme, extra_payment_monthly);
     return {
-        "payment_first_gross" : result.monthly[0].gross_payment,
-        "payment_first_net" : result.monthly[0].net_payment,
-        "payment_last_gross" : result.monthly[loan_term-1].gross_payment,
-        "payment_last_net" : result.monthly[loan_term-1].net_payment,
+        "payment_first" : result.monthly[0].total_payment,
+        "payment_last" : result.monthly[result.monthly.length-1].total_payment,
+        "total_paid_gross" : result.total_paid_gross,
+        "total_paid_net" : result.total_paid_gross - result.total_tax_returned,
+        "total_tax_returned" : result.total_tax_returned,
+        "total_paid_extra" : result.total_paid_extra,
+        "actual_term" : result.monthly.length,
     }
 }
 
