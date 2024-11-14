@@ -239,8 +239,8 @@ function recalculate_fields() {
     });
 }
 
-function loan_schedule({loan_type, loan_term, interest, deduction, loan, monthly_ownership_tax, purchase_cost, tax_scheme, extra_payment_monthly}) {
-    let result = calculate_loan(loan_type, loan_term, interest, deduction, loan, monthly_ownership_tax, purchase_cost, tax_scheme, extra_payment_monthly);
+function loan_schedule(loan_params) {
+    let result = calculate_loan(loan_params);
     let schedule_dom = document.querySelectorAll("div[data-block='schedule']")[0];
     schedule_dom = schedule_dom.getElementsByClassName("column")[0];
     schedule_dom.innerHTML="";
@@ -275,8 +275,8 @@ function loan_schedule({loan_type, loan_term, interest, deduction, loan, monthly
     console.log(result);
 }
 
-function loan_graph({loan_type, loan_term, interest, deduction, loan, monthly_ownership_tax, purchase_cost, tax_scheme, extra_payment_monthly}) {
-    let result = calculate_loan(loan_type, loan_term, interest, deduction, loan, monthly_ownership_tax, purchase_cost, tax_scheme, extra_payment_monthly);
+function loan_graph(loan_params) {
+    let result = calculate_loan(loan_params);
 
     let months = result.monthly.map((record)=>{
         return Math.round(100*record["month"])/100
@@ -310,8 +310,8 @@ function loan_graph({loan_type, loan_term, interest, deduction, loan, monthly_ow
     Plotly.newPlot("graph_target", data, layout);
 }
 
-function loan_stats({loan_type, loan_term, interest, deduction, loan, monthly_ownership_tax, purchase_cost, tax_scheme, extra_payment_monthly}) {
-    let result = calculate_loan(loan_type, loan_term, interest, deduction, loan, monthly_ownership_tax, purchase_cost, tax_scheme, extra_payment_monthly);
+function loan_stats(loan_params) {
+    let result = calculate_loan(loan_params);
     return {
         "payment_first" : result.monthly[0].total_payment,
         "payment_last" : result.monthly[result.monthly.length-1].total_payment,

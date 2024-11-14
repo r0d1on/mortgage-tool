@@ -176,6 +176,16 @@
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
                         </div>
+                        <div class="field" id="extra_payment_yearly_start" data-default="1">
+                            <label>Extra yearly payment first month</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>&lt;</i></span></div>
+                        </div>
+                        <div class="field" id="extra_payment_yearly" data-default="0">
+                            <label>Extra yearly payment value</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
 
                     </div>
 
@@ -350,7 +360,7 @@
             <div data-block="schedule-hidden" class="block">
                 <div class="columns">
                     <div class="column">
-                        <div class="field" id="loan_params" data-formula="gather_param_values(['loan_type', 'loan_term', 'interest', 'deduction', 'loan', 'monthly_ownership_tax', 'purchase_deductible_cost', 'tax_scheme', 'extra_payment_monthly'],'').calculation_context">
+                        <div class="field" id="loan_params" data-formula="gather_param_values(['loan_type', 'loan_term', 'interest', 'deduction', 'loan','monthly_ownership_tax', 'purchase_deductible_cost', 'tax_scheme','extra_payment_monthly', 'extra_payment_yearly','extra_payment_yearly_start'],'').calculation_context">
                             <label>Hidden cell to collect loan parameters structure</label>
                             <div class="control"></div>
                         </div>
