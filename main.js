@@ -119,6 +119,22 @@ function init_fields() {
                 } else if (field.dataset['default']!==undefined) {
                     input.value = field.dataset['default'];
                 };
+                input.addEventListener("wheel", (e)=>{
+                    let tune = e.target.parentNode.parentNode.dataset['tune'];
+                    if ((tune)&&(e.shiftKey)) {
+                        let value = get_field_value(e.target.parentNode.parentNode.id, "");
+                        if (e.deltaY>0) {
+                            e.target.value = value - 1.0*tune;
+                        } else {
+                            e.target.value = value + 1.0*tune;
+                        };
+                        e.preventDefault();
+                        saveState();
+                        recalculate_fields();
+                        return true;
+                    };
+                });
+
                 input.addEventListener("change", ()=>{
                     saveState();
                     recalculate_fields();
@@ -293,7 +309,7 @@ function loan_graph(loan_params) {
             }),
             type: 'scatter',
             name: key,
-            visible: key=="balance" ? 'legendonly' : undefined
+            visible: key=="debt" ? 'legendonly' : undefined
         }
     });
 
@@ -313,14 +329,52 @@ function loan_graph(loan_params) {
 function loan_stats(loan_params) {
     let result = calculate_loan(loan_params);
     return {
-        "payment_first" : result.monthly[0].total_payment,
-        "payment_last" : result.monthly[result.monthly.length-1].total_payment,
+        "payment_first" : result.monthly[0].total_payment - result.monthly[0].extra_payment,
+        "payment_last" : result.monthly[result.monthly.length-1].total_payment- result.monthly[result.monthly.length-1].extra_payment,
         "total_paid_gross" : result.total_paid_gross,
         "total_paid_net" : result.total_paid_gross - result.total_tax_returned,
         "total_tax_returned" : result.total_tax_returned,
         "total_paid_extra" : result.total_paid_extra,
+        "total_paid_penalty" : result.total_penalty,
         "actual_term" : result.monthly.length,
     }
+}
+
+function calc_renting_assets(deposit_rate, monthly_salary, loan_result, savings,  rent) {
+    let rate = deposit_rate/(100*12);
+    let loan_term_actual = loan_result.monthly.length;
+    let savings_interest = 0;
+    let increment = 0;
+
+    for(let i=0; i<loan_term_actual; i++) {
+        let payment = loan_result.monthly[i];
+        savings += (savings + savings_interest)*rate;
+        increment = monthly_salary - rent + payment.extra_payment;
+        if (increment<0) console.warn(`Renting: Monthly asset increment is negative, month:${i+1}, increment ${increment}`);
+        savings += Math.max(0,increment);
+    };
+    return savings + savings_interest;
+}
+
+function calc_housing_assets(deposit_rate, monthly_salary, loan_result, monthly_ownership_tax, loan, house_price, loan_result, house_market_rate) {
+    let loan_term_actual = loan_result.monthly.length;
+    let house_interest = 0;
+    let savings = 0;
+    let savings_interest = 0;
+
+    let rate = deposit_rate/(100*12);
+    let house_rate = house_market_rate/(100*12);
+
+    for(let i=0; i<loan_term_actual; i++) {
+        let payment = loan_result.monthly[i];
+        savings_interest += (savings + savings_interest)*rate;
+        increment = monthly_salary - monthly_ownership_tax - payment.total_payment;
+        if (increment<0) console.warn(`Housing: monthly asset increment is negative, month:${i+1}, increment ${increment}`);
+        savings += Math.max(0,increment);
+        house_interest += (house_price + house_interest)*house_rate;
+    };
+    
+    return savings + house_price + house_interest + savings_interest;
 }
 
 document.addEventListener('DOMContentLoaded', function() {
