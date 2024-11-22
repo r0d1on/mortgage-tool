@@ -17,7 +17,7 @@
     <meta name="theme-color" content="#000000">
     <meta name="description" content="Annuity and linear flexible mortgage calculator for Netherlands">
     <meta name="keywords"
-        content="Mortgage calculator netherlands, mortgage payment calculator netherlands, dutch mortgage calculator, annuity mortgage calculator, linear mortgage calculator, calculate monthly mortgage payment netherlands, mortgage interest calculator netherlands, mortgage planning tool, mortgage rates, mortgage modelling tool, mortgage simulation, mortgage repayment, monthly mortgage cost breakdown, Annuity vs Lineal mortgage">
+        content="Mortgage calculator netherlands, hypotheek berekenen, mortgage payment calculator netherlands, dutch mortgage calculator, annuity mortgage calculator, linear mortgage calculator, interest only mortgage calculator, calculate monthly mortgage payment netherlands, mortgage interest calculator netherlands, mortgage planning tool, mortgage rates, mortgage modelling tool, mortgage simulation, mortgage repayment, monthly mortgage cost breakdown, Annuity vs Lineal mortgage">
     <link rel="apple-touch-icon" href="https://r0d1on.github.io/mortgage-tool/icon.png">
     <link rel="manifest" href="https://r0d1on.github.io/mortgage-tool/manifest.json">
 
@@ -46,6 +46,7 @@
                     <li class="is-active" data-block="mortgage"><a>Mortgage</a></li>
                     <li class="" data-block="costs"><a>Purchase Costs</a></li>
                     <li class="" data-block="assets"><a>Assets Dynamics</a></li>
+                    <li class="" data-block="repayments"><a>Extra repayments</a></li>
                     <li class="" data-block="help"><a>Help / Instructions</a></li>
                 </ul>
             </div>
@@ -107,7 +108,7 @@
                             <span class="icon"><i>m</i></span></div>
                         </div>
                         <div class="field" id="interest" data-default="3.8" data-tune="0.01">
-                            <label>Loand Interest</label>
+                            <label>Loan Interest</label>
                             <div class="control"><input class="input" type="text" value="3.8">
                             <span class="icon"><i>%</i></span></div>
                         </div>
@@ -117,7 +118,7 @@
                             <span class="icon"><i>%</i></span></div>
                         </div>
                         <div class="field" id="loan_type" data-default="1" data-tune="1">
-                            <label>Loan type: 1 - Annuity, 2 - Linear</label>
+                            <label>Loan type: 1 - Annuity, 2 - Linear, 3 - Interest only</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>&gt;</i></span></div>
                         </div>                        
@@ -151,12 +152,12 @@
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>&gt;</i></span></div>
                         </div>
-                        <div class="field" id="extra_payment_period_start" data-default="1" data-tune="1">
+                        <div class="field" id="extra_payment_start" data-default="1" data-tune="1">
                             <label>Extra periodic payment, first month:</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>&gt;</i></span></div>
                         </div>
-                        <div class="field" id="extra_payment_period_value" data-default="0" data-tune="500">
+                        <div class="field" id="extra_payment_value" data-default="0" data-tune="500">
                             <label>Extra periodic payment</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
@@ -171,10 +172,11 @@
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>%</i></span></div>
                         </div>
+
                     </div>
 
                     <div class="column">
-                        <div class="field" id="loan_total_invested" data-formula="total_paid_net + savings">
+                        <div class="field" id="total_loan_invested" data-formula="total_paid_net + savings">
                             <label>Total loan invested</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
@@ -208,6 +210,13 @@
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
                         </div>
+
+                        <div class="field" id="total_paid_net_montlhy" data-formula="total_paid_net / loan_term_actual">
+                            <label>Total loan invested, monthly</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>                        
+
                     </div>
                 </div>
             </div>
@@ -317,13 +326,18 @@
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
                         </div>
-                        <div class="field" id="total_rent" data-formula="rent * loan_term_actual">
-                            <label>Total rent paid (would be)</label>
+                        <div class="field" id="total_rent_actual" data-formula="rent * loan_term_actual">
+                            <label>Total rent paid (would be, during actual term)</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" id="total_rent" data-formula="rent * loan_term">
+                            <label>Total rent paid (would be, during total term)</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
                         </div>
 
-                        <div class="field" id="assets_renting" data-formula="calc_renting_assets(deposit_rate, monthly_salary, loan_result, savings,  rent)">
+                        <div class="field" id="assets_renting" data-formula="calc_renting_assets(deposit_rate, monthly_salary, loan_result, loan_term, savings,  rent)">
                             <label>Final assets: renting</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
@@ -342,7 +356,7 @@
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
                         </div>
-                        <div class="field" id="assets_housing" data-formula="calc_housing_assets(deposit_rate, monthly_salary, loan_result, monthly_ownership_tax, loan, house_price, loan_result, house_market_rate)">
+                        <div class="field" id="assets_housing" data-formula="calc_housing_assets(deposit_rate, monthly_salary, loan_result, loan_term, monthly_ownership_tax, loan, house_price, house_market_rate)">
                             <label>Final assets: housing</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
@@ -356,6 +370,48 @@
 
                     </div>
 
+                </div>
+            </div>
+
+            <div data-block="repayments" class="block">
+                <div class="columns">
+
+                    <div class="column">
+                        <div class="field" id="extra_payment_period1" data-default="0" data-tune="1">
+                            <label>Extra periodic payment#1, period</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>&gt;</i></span></div>
+                        </div>
+                        <div class="field" id="extra_payment_start1" data-default="1" data-tune="1">
+                            <label>Extra periodic payment1, first month:</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>&gt;</i></span></div>
+                        </div>
+                        <div class="field" id="extra_payment_value1" data-default="0" data-tune="500">
+                            <label>Extra periodic payment1</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="field" id="extra_payment_period2" data-default="0" data-tune="1">
+                            <label>Extra periodic payment2, period</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>&gt;</i></span></div>
+                        </div>
+                        <div class="field" id="extra_payment_start2" data-default="1" data-tune="1">
+                            <label>Extra periodic payment2, first month:</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>&gt;</i></span></div>
+                        </div>
+                        <div class="field" id="extra_payment_value2" data-default="0" data-tune="500">
+                            <label>Extra periodic payment2</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                    </div>
+                    
                 </div>
             </div>
 
@@ -423,7 +479,7 @@
             <div data-block="schedule-hidden" class="block">
                 <div class="columns">
                     <div class="column">
-                        <div class="field" id="loan_params" data-formula="gather_param_values(['loan_type', 'loan_term', 'interest', 'deduction', 'loan','monthly_ownership_tax', 'purchase_deductible_cost', 'tax_scheme','extra_payment_monthly', 'extra_payment_period', 'extra_payment_period_start','extra_payment_period_value', 'max_extra_payments_per_year_pct', 'overpayment_penalty'],'').calculation_context">
+                        <div class="field" id="loan_params" data-formula="gather_param_values(['loan_type', 'loan_term', 'interest', 'deduction', 'loan','monthly_ownership_tax', 'purchase_deductible_cost', 'tax_scheme','extra_payment_monthly', 'extra_payment_period', 'extra_payment_start','extra_payment_value', 'extra_payment_period1', 'extra_payment_start1','extra_payment_value1', 'extra_payment_period2', 'extra_payment_start2', 'extra_payment_value2', 'max_extra_payments_per_year_pct', 'overpayment_penalty'],'').calculation_context">
                             <label>Hidden cell to collect loan parameters structure</label>
                             <div class="control"></div>
                         </div>

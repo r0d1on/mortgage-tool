@@ -340,41 +340,40 @@ function loan_stats(loan_params) {
     }
 }
 
-function calc_renting_assets(deposit_rate, monthly_salary, loan_result, savings,  rent) {
+function calc_renting_assets(deposit_rate, monthly_salary, loan_result, loan_term, savings,  rent) {
     let rate = deposit_rate/(100*12);
     let loan_term_actual = loan_result.monthly.length;
-    let savings_interest = 0;
     let increment = 0;
 
-    for(let i=0; i<loan_term_actual; i++) {
-        let payment = loan_result.monthly[i];
-        savings += (savings + savings_interest)*rate;
+    for(let i=0; i<loan_term; i++) {
+        let payment = (i < loan_term_actual)? loan_result.monthly[i] : {extra_payment:0};
+        savings += savings * rate;
         increment = monthly_salary - rent + payment.extra_payment;
         if (increment<0) console.warn(`Renting: Monthly asset increment is negative, month:${i+1}, increment ${increment}`);
-        savings += Math.max(0,increment);
+        savings += Math.max(0, increment);
     };
-    return savings + savings_interest;
+    return savings;
 }
 
-function calc_housing_assets(deposit_rate, monthly_salary, loan_result, monthly_ownership_tax, loan, house_price, loan_result, house_market_rate) {
-    let loan_term_actual = loan_result.monthly.length;
-    let house_interest = 0;
-    let savings = 0;
-    let savings_interest = 0;
-
+function calc_housing_assets(deposit_rate, monthly_salary, loan_result, loan_term, monthly_ownership_tax, loan, house_price, house_market_rate) {
     let rate = deposit_rate/(100*12);
+    let loan_term_actual = loan_result.monthly.length;
+    let increment = 0;
+
+    let savings = 0;
+
     let house_rate = house_market_rate/(100*12);
 
-    for(let i=0; i<loan_term_actual; i++) {
-        let payment = loan_result.monthly[i];
-        savings_interest += (savings + savings_interest)*rate;
+    for(let i=0; i<loan_term; i++) {
+        let payment = (i < loan_term_actual)? loan_result.monthly[i] : {total_payment:0};
+        savings += savings * rate;
         increment = monthly_salary - monthly_ownership_tax - payment.total_payment;
         if (increment<0) console.warn(`Housing: monthly asset increment is negative, month:${i+1}, increment ${increment}`);
-        savings += Math.max(0,increment);
-        house_interest += (house_price + house_interest)*house_rate;
+        savings += Math.max(0, increment);
+        house_price += house_price * house_rate;
     };
     
-    return savings + house_price + house_interest + savings_interest;
+    return savings + house_price;
 }
 
 document.addEventListener('DOMContentLoaded', function() {
