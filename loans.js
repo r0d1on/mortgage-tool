@@ -11,90 +11,68 @@ function IPMT(pv, pmt, rate, per) {
     return 0 - (pv * tmp * rate + pmt * (tmp - 1));
 }
 
-function PPMT(rate, per, nper, pv) {
-    var pmt = PMT(rate, nper, pv);
-    var ipmt = IPMT(pv, pmt, rate, per);
-    return pmt - ipmt;
-}
-
-
-function calculate_loan_interest_only({loan_term, interest, deduction, loan, tax_scheme, extra_payment_monthly, extra_payment_period, extra_payment_start, extra_payment_value, extra_payment_period1, extra_payment_start1, extra_payment_value1, extra_payment_period2, extra_payment_start2, extra_payment_value2, max_extra_payments_per_year_pct, overpayment_penalty}) {
-  const rate = interest / (12 * 100);
-
-  let total_paid_gross = 0;
-  let total_paid_extra = 0;
-  let total_tax_returned = 0;
-  let total_penalty = 0;
-  let debt = loan;
-  let max_extra_payments_per_year = (max_extra_payments_per_year_pct/100) * loan;
-  let actual_extra_payments_per_year = 0;
+function calculate_loan_payments(loan_params, ICB) {
+  let debt = loan_params.loan;
+  let actual_extra_payments = 0;
   let penalty = 0;
 
-  let capital_payment_m = 0;
+  let lp = structuredClone(loan_params);
 
   let monthly = [];
-  for(let i=0; i<loan_term; i++) {
+  
+  for(let i=0; i<lp.loan_term; i++) {
     if (i%12==0)
-      actual_extra_payments_per_year = 0;
+      actual_extra_payments = 0;
 
-    let capital_payment = capital_payment_m;
-    const interest_amt = debt * rate;
-    let base_payment = capital_payment + interest_amt;
-    if (capital_payment > debt) {
-      capital_payment = debt;
-      base_payment = interest_amt + debt;
-    };
+    let {base_payment, capital_payment, interest_amt} = ICB(lp, debt, i);
 
+    let extra_payment = lp.extra_payment_monthly;
+    let extra_payment2 = 0;
+    
     let tax_return = 0;
-    let extra_payment = extra_payment_monthly;
-    if (tax_scheme==1) {
-      tax_return = 0;
-    } else if (tax_scheme==2) {
-      extra_payment += 0;
-    };
-    extra_payment_start -= 1;
-    if (extra_payment_start==0) {
-      extra_payment_start = extra_payment_period;
-      extra_payment += extra_payment_value;
-    };
-    extra_payment_start1 -= 1;
-    if (extra_payment_start1==0) {
-      extra_payment_start1 = extra_payment_period1;
-      extra_payment += extra_payment_value1;
-    };
-    extra_payment_start2 -= 1;
-    if (extra_payment_start2==0) {
-      extra_payment_start2 = extra_payment_period2;
-      extra_payment += extra_payment_value2;
+    if (lp.tax_scheme > 0) {
+      tax_return = (interest_amt) * (lp.deduction  / 100.0);
+      if (lp.tax_scheme==2) {
+        extra_payment += tax_return;
+        tax_return = 0;
+      };
+  
+      if (i==0) {
+        tax_return += (lp.purchase_deductible_cost) * (lp.deduction  / 100.0);
+        if (lp.tax_scheme==2) {
+          extra_payment2 += tax_return;
+          tax_return = 0;
+        };
+      };
     };
 
-    if (base_payment*2 > debt) {
-      extra_payment = 0;
-    };      
-    if (capital_payment + extra_payment > debt) {
-      extra_payment = debt - capital_payment;
+    ["", "1", "2"].map((ix)=>{
+      lp['extra_payment_start'+ix] -= 1;
+      if (lp['extra_payment_start'+ix]==0) {
+        lp['extra_payment_start'+ix] = lp['extra_payment_period'+ix];
+        extra_payment2 += lp['extra_payment_value'+ix];
+      };
+    });
+
+    if (capital_payment + extra_payment + extra_payment2 > debt) {
+      extra_payment = Math.min(extra_payment, Math.max(0, debt - capital_payment));
+      extra_payment2 = Math.max(0, debt - capital_payment - extra_payment);
+      capital_payment = debt - extra_payment - extra_payment2;
     };
-    actual_extra_payments_per_year += extra_payment;
-    if (actual_extra_payments_per_year > max_extra_payments_per_year) {
-      penalty = extra_payment * (overpayment_penalty / 100);
-      extra_payment -= penalty;
+
+    actual_extra_payments += extra_payment + extra_payment2;
+    if (actual_extra_payments > lp.max_extra_payment_per_year) {
+      penalty = (actual_extra_payments - lp.max_extra_payment_per_year) * (lp.overpayment_penalty / 100);
+      extra_payment  -= penalty * extra_payment/(extra_payment + extra_payment2);
+      extra_payment2 -= penalty * extra_payment2/(extra_payment + extra_payment2);
     } else {
       penalty = 0;
     };
 
-    capital_payment += extra_payment;
+    capital_payment += extra_payment + extra_payment2;
 
-
-    let total_payment = base_payment + extra_payment + penalty;
+    let total_payment = base_payment + extra_payment + extra_payment2 + penalty;
     const net_payment = total_payment - tax_return;
-
-    total_paid_gross += total_payment;
-    total_tax_returned += tax_return;
-    total_paid_extra += extra_payment;
-    total_penalty += penalty;
-
-    if (i==loan_term-1)
-      capital_payment = debt;
 
     monthly.push({
       month: i + 1,
@@ -103,238 +81,66 @@ function calculate_loan_interest_only({loan_term, interest, deduction, loan, tax
       capital_payment,
       interest_amt,
       extra_payment,
+      extra_payment2,
       tax_return,
-      net_payment, 
+      net_payment,
       penalty,
       total_payment,
     });
 
     debt -= capital_payment;
-    if (debt <=0)
+    if (debt <= 0)
       break;
-
   };
 
-  return {
-      monthly,
-      total_paid_gross,
-      total_paid_extra,
-      total_tax_returned,
-      total_penalty,
-  };
-}
-
-function calculate_loan_linear({loan_term, interest, deduction, loan, tax_scheme, extra_payment_monthly, extra_payment_period, extra_payment_start, extra_payment_value, extra_payment_period1, extra_payment_start1, extra_payment_value1, extra_payment_period2, extra_payment_start2, extra_payment_value2, max_extra_payments_per_year_pct, overpayment_penalty}) {
-    const rate = interest / (12 * 100);
-
-    let total_paid_gross = 0;
-    let total_paid_extra = 0;
-    let total_tax_returned = 0;
-    let total_penalty = 0;
-    let debt = loan;
-    let max_extra_payments_per_year = (max_extra_payments_per_year_pct/100) * loan;
-    let actual_extra_payments_per_year = 0;
-    let penalty = 0;
-
-    let capital_payment_m = debt / loan_term;
-
-    let monthly = [];
-    for(let i=0; i<loan_term; i++) {
-      if (i%12==0)
-        actual_extra_payments_per_year = 0;
-
-      let capital_payment = capital_payment_m; // debt / (loan_term - i);
-      const interest_amt = debt * rate;
-      let base_payment = capital_payment + interest_amt;
-      if (capital_payment > debt) {
-        capital_payment = debt;
-        base_payment = interest_amt + debt;
-      };
-
-      let tax_return = 0;
-      let extra_payment = extra_payment_monthly;
-      if (tax_scheme==1) {
-        tax_return = (interest_amt) * (deduction  / 100.0);
-      } else if (tax_scheme==2) {
-        extra_payment += (interest_amt) * (deduction  / 100.0);
-      };
-      extra_payment_start -= 1;
-      if (extra_payment_start==0) {
-        extra_payment_start = extra_payment_period;
-        extra_payment += extra_payment_value;
-      };
-      extra_payment_start1 -= 1;
-      if (extra_payment_start1==0) {
-        extra_payment_start1 = extra_payment_period1;
-        extra_payment += extra_payment_value1;
-      };
-      extra_payment_start2 -= 1;
-      if (extra_payment_start2==0) {
-        extra_payment_start2 = extra_payment_period2;
-        extra_payment += extra_payment_value2;
-      };
-
-      if (base_payment*2 > debt) {
-        extra_payment = 0;
-      };      
-      if (capital_payment + extra_payment > debt) {
-        extra_payment = debt - capital_payment;
-      };
-      actual_extra_payments_per_year += extra_payment;
-      if (actual_extra_payments_per_year > max_extra_payments_per_year) {
-        penalty = extra_payment * (overpayment_penalty / 100);
-        extra_payment -= penalty;
-      } else {
-        penalty = 0;
-      };
-
-      capital_payment += extra_payment;
-
-
-      let total_payment = base_payment + extra_payment + penalty;
-      const net_payment = total_payment - tax_return;
-
-      total_paid_gross += total_payment;
-      total_tax_returned += tax_return;
-      total_paid_extra += extra_payment;
-      total_penalty += penalty;
-
-      monthly.push({
-        month: i + 1,
-        debt,
-        base_payment,
-        capital_payment,
-        interest_amt,
-        extra_payment,
-        tax_return,
-        net_payment, 
-        penalty,
-        total_payment,
-      });
-
-      debt -= capital_payment;
-      if (debt <=0)
-        break;
-
-    };
-
-    return {
-        monthly,
-        total_paid_gross,
-        total_paid_extra,
-        total_tax_returned,
-        total_penalty,
-    };
-}
-
-function calculate_loan_annuity({loan_term, interest, deduction, loan, tax_scheme, extra_payment_monthly, extra_payment_period, extra_payment_start, extra_payment_value, extra_payment_period1, extra_payment_start1, extra_payment_value1, extra_payment_period2, extra_payment_start2, extra_payment_value2, max_extra_payments_per_year_pct, overpayment_penalty}) {
-    const rate = interest / (12 * 100);
-  
-    let total_paid_gross = 0;
-    let total_paid_extra = 0;
-    let total_tax_returned = 0;
-    let total_penalty = 0;
-    let debt = loan;
-    let max_extra_payments_per_year = (max_extra_payments_per_year_pct/100) * loan;
-    let actual_extra_payments_per_year = 0;
-    let penalty = 0;
-    
-    let base_payment = -PMT(rate, loan_term, debt);
-
-    let monthly = [];
-    for(let i=0; i<loan_term; i++) {
-      if (i%12==0)
-        actual_extra_payments_per_year = 0;
-
-      const interest_amt = -IPMT(debt, base_payment, rate, 1);
-      let  capital_payment = base_payment - interest_amt;
-      if (capital_payment > debt) {
-        capital_payment = debt;
-        base_payment = interest_amt + debt;
-      };
-
-      let tax_return = 0;
-      let extra_payment = extra_payment_monthly;
-      if (tax_scheme==1) {
-        tax_return = (interest_amt) * (deduction  / 100.0);
-      } else if (tax_scheme==2) {
-        extra_payment += (interest_amt) * (deduction  / 100.0);
-      };
-      extra_payment_start -= 1;
-      if (extra_payment_start==0) {
-        extra_payment_start = extra_payment_period;
-        extra_payment += extra_payment_value;
-      };
-      extra_payment_start1 -= 1;
-      if (extra_payment_start1==0) {
-        extra_payment_start1 = extra_payment_period1;
-        extra_payment += extra_payment_value1;
-      };
-      extra_payment_start2 -= 1;
-      if (extra_payment_start2==0) {
-        extra_payment_start2 = extra_payment_period2;
-        extra_payment += extra_payment_value2;
-      };
-
-      if (base_payment*2 > debt) {
-        extra_payment = 0;
-      };
-      if (capital_payment + extra_payment > debt) {
-        extra_payment = debt - capital_payment;
-      };
-      actual_extra_payments_per_year += extra_payment;
-      if (actual_extra_payments_per_year > max_extra_payments_per_year) {
-        penalty = extra_payment * (overpayment_penalty / 100);
-        extra_payment -= penalty;
-      } else {
-        penalty = 0;
-      };
-
-      capital_payment += extra_payment;
-
-      let total_payment = base_payment + extra_payment + penalty;
-      const net_payment = total_payment - tax_return;
-
-      total_paid_gross += total_payment;
-      total_paid_extra += extra_payment;
-      total_tax_returned += tax_return;
-      total_penalty += penalty;
-
-      monthly.push({
-        month: i + 1,
-        debt,
-        base_payment,
-        capital_payment,
-        interest_amt,
-        extra_payment,
-        tax_return,
-        net_payment,
-        penalty,
-        total_payment,
-      });
-
-      debt -= capital_payment;
-      if (debt <= 0)
-        break;
-    };
-  
-    return {
-        monthly,
-        total_paid_gross,
-        total_paid_extra,
-        total_tax_returned,
-        total_penalty,
-    };
+  return monthly
 }
 
 function calculate_loan(loan_params) {
-    if (loan_params.loan_type==1) {
-        return calculate_loan_annuity(loan_params);
-    } else if (loan_params.loan_type==2) {
-        return calculate_loan_linear(loan_params);
-    } else if (loan_params.loan_type==3) {
-        return calculate_loan_interest_only(loan_params);
+    let monthly = [];
+    if (loan_params.loan_type==1) { // annuity
+        monthly = calculate_loan_payments(loan_params, (lp, debt)=>{
+          let base_payment = -PMT(lp.interest / (12 * 100), lp.loan_term, lp.loan);
+          let interest_amt = -IPMT(debt, base_payment, lp.interest / (12 * 100), 1);
+          let capital_payment = base_payment - interest_amt;
+          return {base_payment, capital_payment, interest_amt} 
+        });
+
+    } else if (loan_params.loan_type==2) { // linear
+        monthly = calculate_loan_payments(loan_params, (lp, debt)=>{
+        let capital_payment = lp.loan / lp.loan_term;
+        let interest_amt = debt * lp.interest / (12 * 100);
+        let base_payment = capital_payment + interest_amt;
+        if (capital_payment > debt) {
+          capital_payment = debt;
+          base_payment = interest_amt + debt;
+        };
+        return {base_payment, capital_payment, interest_amt} 
+      });
+
+    } else if (loan_params.loan_type==3) { // interest-only
+        loan_params.tax_scheme = 0; // interest-only loans do not grant tax returns
+        monthly = calculate_loan_payments(loan_params, (lp, debt, i)=>{
+          let capital_payment = (i==lp.loan_term-1) ? lp.loan : 0;
+          let interest_amt = debt * lp.interest / (12 * 100);
+          let base_payment = capital_payment + interest_amt;
+          if (capital_payment > debt) {
+            capital_payment = debt;
+            base_payment = interest_amt + debt;
+          };
+          return {base_payment, capital_payment, interest_amt} 
+        });
+  
     } else {
         throw "unknown loan_type value, it must be '1' or '2'";
     };
+
+    return {
+      monthly: monthly,
+      total_paid_gross: monthly.reduce((s, r)=>{return s + r.total_payment}, 0),
+      total_paid_extra: monthly.reduce((s, r)=>{return s + r.extra_payment + r.extra_payment2}, 0),
+      total_tax_returned: monthly.reduce((s, r)=>{return s + r.tax_return}, 0),
+      total_penalty: monthly.reduce((s, r)=>{return s + r.penalty}, 0),
+    };
+
 }

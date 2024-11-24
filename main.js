@@ -253,6 +253,11 @@ function recalculate_fields() {
                 get_field_value(id, "");
             };
     });
+
+    document.title = `${get_field_value("loan")}  [${get_field_value("loan_type")}:${get_field_value("tax_scheme")}]`;
+    document.title += ` ${get_field_value("loan_term_actual")} * ${Math.round(get_field_value("payment_first"))}`;
+    document.title += ` / ${Math.round(get_field_value("total_paid_net_monthly"))}`;
+    document.title += ` / ${Math.round(100 * get_field_value("assets_delta")) / 100}`;
 }
 
 function loan_schedule(loan_params) {
@@ -329,8 +334,8 @@ function loan_graph(loan_params) {
 function loan_stats(loan_params) {
     let result = calculate_loan(loan_params);
     return {
-        "payment_first" : result.monthly[0].total_payment - result.monthly[0].extra_payment,
-        "payment_last" : result.monthly[result.monthly.length-1].total_payment- result.monthly[result.monthly.length-1].extra_payment,
+        "payment_first" : result.monthly[0].total_payment - result.monthly[0].extra_payment2,
+        "payment_last" : result.monthly[result.monthly.length-1].total_payment- result.monthly[result.monthly.length-1].extra_payment2,
         "total_paid_gross" : result.total_paid_gross,
         "total_paid_net" : result.total_paid_gross - result.total_tax_returned,
         "total_tax_returned" : result.total_tax_returned,
@@ -340,40 +345,43 @@ function loan_stats(loan_params) {
     }
 }
 
-function calc_renting_assets(deposit_rate, monthly_salary, loan_result, loan_term, savings,  rent) {
-    let rate = deposit_rate/(100*12);
+function calc_renting_assets({current_assets, deposit_rate, monthly_salary, loan_result, loan_term, savings},  rent) {
+    let deposit_rate_m = deposit_rate/(100*12);
     let loan_term_actual = loan_result.monthly.length;
     let increment = 0;
+
+    let assets = current_assets;
 
     for(let i=0; i<loan_term; i++) {
-        let payment = (i < loan_term_actual)? loan_result.monthly[i] : {extra_payment:0};
-        savings += savings * rate;
-        increment = monthly_salary - rent + payment.extra_payment;
+        assets += assets * deposit_rate_m;
+        increment = monthly_salary - rent; // + payment.extra_payment;
         if (increment<0) console.warn(`Renting: Monthly asset increment is negative, month:${i+1}, increment ${increment}`);
-        savings += Math.max(0, increment);
+        assets += increment;
+        if (assets<0) console.warn(`Renting: Asset balance is negative, month:${i+1}`);
     };
-    return savings;
+    return assets;
 }
 
-function calc_housing_assets(deposit_rate, monthly_salary, loan_result, loan_term, monthly_ownership_tax, loan, house_price, house_market_rate) {
-    let rate = deposit_rate/(100*12);
+function calc_housing_assets({current_assets, deposit_rate, monthly_salary, loan_result, loan_term, savings}, monthly_ownership_tax, loan, house_price, house_market_rate) {
+    let deposit_rate_m = deposit_rate/(100*12);
     let loan_term_actual = loan_result.monthly.length;
     let increment = 0;
 
-    let savings = 0;
+    let assets = current_assets - savings;
 
     let house_rate = house_market_rate/(100*12);
 
     for(let i=0; i<loan_term; i++) {
-        let payment = (i < loan_term_actual)? loan_result.monthly[i] : {total_payment:0};
-        savings += savings * rate;
-        increment = monthly_salary - monthly_ownership_tax - payment.total_payment;
+        let payment = (i < loan_term_actual) ? loan_result.monthly[i] : {total_payment:0, tax_return:0};
+        assets += assets * deposit_rate_m;
+        increment = monthly_salary - monthly_ownership_tax + payment.tax_return - payment.total_payment;
         if (increment<0) console.warn(`Housing: monthly asset increment is negative, month:${i+1}, increment ${increment}`);
-        savings += Math.max(0, increment);
+        assets += increment;
         house_price += house_price * house_rate;
+        if (assets<0) console.warn(`Housing: Asset balance is negative, month:${i+1}`);
     };
     
-    return savings + house_price;
+    return assets + house_price;
 }
 
 document.addEventListener('DOMContentLoaded', function() {
