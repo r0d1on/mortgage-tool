@@ -345,12 +345,6 @@
             <div data-block="assets" class="block">
                 <div class="columns">
                     <div class="column">
-                        <div class="field" id="inflation_rate" data-default="2.4" data-tune="0.01">
-                            <label>Inflation rate</label>
-                            <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>%</i></span></div>
-                        </div>
-
                         <div class="field" id="deposit_rate" data-default="5.0" data-tune="0.2">
                             <label>Deposit rate</label>
                             <div class="control"><input class="input" type="text" value="">
@@ -369,7 +363,18 @@
                             <span class="icon"><i>€</i></span></div>
                         </div>
 
-                        <div class="field" id="current_assets" data-default="10000" data-tune="1000">
+                        <div class="field" id="bonus_month" data-default="2" data-tune="1">
+                            <label>Yearly bonus month</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>&gt;</i></span></div>
+                        </div>
+                        <div class="field" id="bonus" data-default="1000" data-tune="1000">
+                            <label>Yearly bonus</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+
+                        <div class="field" id="current_assets" data-default="100000" data-tune="1000">
                             <label>Current total assets</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
@@ -400,7 +405,7 @@
                             <span class="icon"><i>€</i></span></div>
                         </div>
 
-                        <div class="field" id="assets_renting" data-formula="calc_renting_assets(asset_params,  rent)">
+                        <div class="field" id="assets_renting" data-formula="calc_assets_renting(asset_params,  rent).outcome">
                             <label>Final assets: renting</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
@@ -419,7 +424,7 @@
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
                         </div>
-                        <div class="field" id="assets_housing" data-formula="calc_housing_assets(asset_params, monthly_ownership_tax, loan, house_price, house_market_rate)">
+                        <div class="field" id="assets_housing" data-formula="calc_assets_housing(asset_params, monthly_ownership_tax, loan, house_price, house_market_rate).outcome">
                             <label>Final assets: housing</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
@@ -492,8 +497,9 @@
             <div class="tabs is-primary">
                 <ul>
                     <li class="is-active" data-block="stats"><a>Stats</a></li>
-                    <li class="" data-block="schedule"><a>Schedule</a></li>
-                    <li class="" data-block="graph"><a>Graph</a></li>
+                    <li class="" data-block="schedule"><a>Payments Schedule</a></li>
+                    <li class="" data-block="graph_payments"><a>Payments Graph</a></li>
+                    <li class="" data-block="graph_assets"><a>Assets Graph</a></li>
                 </ul>
             </div>
 
@@ -505,7 +511,7 @@
                             <div class="control"></div>
                         </div>
 
-                        <div class="field" id="asset_params" data-formula="gather_param_values(['current_assets', 'deposit_rate', 'monthly_salary', 'loan_result', 'loan_term', 'savings'],'').calculation_context">
+                        <div class="field" id="asset_params" data-formula="gather_param_values(['current_assets', 'deposit_rate', 'monthly_salary', 'loan_result', 'loan_term', 'savings', 'bonus_month', 'bonus'],'').calculation_context">
                             <label>Hidden cell to collect loan parameters structure</label>
                             <div class="control"></div>
                         </div>
@@ -519,17 +525,22 @@
                             <label>Hidden cell to update loan payments schedule</label>
                             <div class="control"><input class="input" type="text" value=""></div>
                         </div>
-                        <div class="field" id="graph" data-formula="loan_graph(loan_params)">
+
+                        <div class="field" id="graph_p" data-formula="graph_payments(loan_params)">
                             <label>Hidden cell to update loan payments graph</label>
                             <div class="control"><input class="input" type="text" value=""></div>
                         </div>
+
+                        <div class="field" id="graph_a" data-formula="graph_assets(asset_params, rent, monthly_ownership_tax, loan, house_price, house_market_rate)">
+                            <label>Hidden cell to update loan payments graph</label>
+                            <div class="control"><input class="input" type="text" value=""></div>
+                        </div>
+
                     </div>
                 </div>
             </div>
 
 
-
-            
             <div data-block="stats" class="block">
                 <div class="columns">
                     <div class="column">
@@ -571,10 +582,18 @@
                 </div>
             </div>
 
-            <div data-block="graph" class="block">
+            <div data-block="graph_payments" class="block">
                 <div class="columns">
                     <div class="column">
-                        <div id="graph_target"></div>
+                        <div id="graph_payments_target"></div>
+                    </div>  
+                </div>
+            </div>
+
+            <div data-block="graph_assets" class="block">
+                <div class="columns">
+                    <div class="column">
+                        <div id="graph_assets_target"></div>
                     </div>  
                 </div>
             </div>
