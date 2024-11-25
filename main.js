@@ -296,7 +296,7 @@ function loan_schedule(loan_params) {
     console.log(result);
 }
 
-function loan_graph(loan_params) {
+function graph_payments(loan_params) {
     let result = calculate_loan(loan_params);
 
     let months = result.monthly.map((record)=>{
@@ -328,8 +328,61 @@ function loan_graph(loan_params) {
         }
     };
 
-    Plotly.newPlot("graph_target", data, layout);
+    Plotly.newPlot("graph_payments_target", data, layout);
 }
+
+
+function graph_assets(asset_params, rent, monthly_ownership_tax, loan, house_price, house_market_rate) {
+    let result_renting = calc_assets_renting(asset_params, rent);
+    let result_housing = calc_assets_housing(asset_params, monthly_ownership_tax, loan, house_price, house_market_rate);
+
+    let months = result_renting.monthly.map((record)=>{
+        return Math.round(100*record["month"])/100
+    });
+
+    let data =  Object
+    .keys(result_renting.monthly[0])
+    .filter((v)=>{return v!='month'})    
+    .map((key)=>{
+        return {
+            x : months,
+            y : result_renting.monthly.map((record)=>{
+                return Math.round(100*record[key])/100
+            }),
+            type: 'scatter',
+            name: key+"_renting",
+            visible: key=="debt" ? 'legendonly' : undefined
+        }
+    });
+
+    Object
+    .keys(result_housing.monthly[0])
+    .filter((v)=>{return v!='month'})    
+    .map((key)=>{
+        data.push({
+            x : months,
+            y : result_housing.monthly.map((record)=>{
+                return Math.round(100*record[key])/100
+            }),
+            type: 'scatter',
+            name: key+"_housing",
+            visible: key=="debt" ? 'legendonly' : undefined
+        })
+    });
+
+    let layout = {
+        title:'Assets dynamics',
+        xaxis: {
+            title: 'month'
+        },
+        yaxis: {
+            title: '€'
+        }
+    };
+
+    Plotly.newPlot("graph_assets_target", data, layout);
+}
+
 
 function loan_stats(loan_params) {
     let result = calculate_loan(loan_params);
@@ -345,43 +398,66 @@ function loan_stats(loan_params) {
     }
 }
 
-function calc_renting_assets({current_assets, deposit_rate, monthly_salary, loan_result, loan_term, savings},  rent) {
+function calc_assets_renting({current_assets, deposit_rate, monthly_salary, loan_result, loan_term, savings, bonus_month, bonus},  rent) {
     let deposit_rate_m = deposit_rate/(100*12);
     let loan_term_actual = loan_result.monthly.length;
     let increment = 0;
+    let monthly = [];
 
     let assets = current_assets;
 
     for(let i=0; i<loan_term; i++) {
         assets += assets * deposit_rate_m;
-        increment = monthly_salary - rent; // + payment.extra_payment;
+        increment = monthly_salary - rent + ((((i%12)+1)==bonus_month)?bonus:0);
         if (increment<0) console.warn(`Renting: Monthly asset increment is negative, month:${i+1}, increment ${increment}`);
         assets += increment;
         if (assets<0) console.warn(`Renting: Asset balance is negative, month:${i+1}`);
+        monthly.push({
+            month : i+1,
+            increment, assets
+        });
     };
-    return assets;
+
+    return {
+        monthly : monthly,
+        outcome : assets
+    };
 }
 
-function calc_housing_assets({current_assets, deposit_rate, monthly_salary, loan_result, loan_term, savings}, monthly_ownership_tax, loan, house_price, house_market_rate) {
+function calc_assets_housing({current_assets, deposit_rate, monthly_salary, loan_result, loan_term, savings, bonus_month, bonus}, monthly_ownership_tax, loan, house_price, house_market_rate) {
     let deposit_rate_m = deposit_rate/(100*12);
     let loan_term_actual = loan_result.monthly.length;
     let increment = 0;
+    let monthly = [];
 
     let assets = current_assets - savings;
 
     let house_rate = house_market_rate/(100*12);
+    let estate_owned = house_price - loan;
 
     for(let i=0; i<loan_term; i++) {
-        let payment = (i < loan_term_actual) ? loan_result.monthly[i] : {total_payment:0, tax_return:0};
+        let payment = (i < loan_term_actual) ? loan_result.monthly[i] : {total_payment:0, tax_return:0, capital_payment:0};
         assets += assets * deposit_rate_m;
-        increment = monthly_salary - monthly_ownership_tax + payment.tax_return - payment.total_payment;
+        increment = monthly_salary - monthly_ownership_tax + payment.tax_return - payment.total_payment + ((((i%12)+1)==bonus_month)?bonus:0);
         if (increment<0) console.warn(`Housing: monthly asset increment is negative, month:${i+1}, increment ${increment}`);
         assets += increment;
+
+        estate_owned += payment.capital_payment;
+
         house_price += house_price * house_rate;
         if (assets<0) console.warn(`Housing: Asset balance is negative, month:${i+1}`);
+        monthly.push({
+            month : i+1,
+            increment, assets,
+            estate_owned : estate_owned*Math.pow(1.0+house_rate, i+1),
+            total_assets : estate_owned*Math.pow(1.0+house_rate, i+1) + assets
+        });
     };
-    
-    return assets + house_price;
+
+    return {
+        monthly : monthly,
+        outcome : assets + house_price
+    };
 }
 
 document.addEventListener('DOMContentLoaded', function() {
