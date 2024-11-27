@@ -54,6 +54,10 @@ function calculate_loan_payments(loan_params, ICB) {
       };
     });
 
+    if (base_payment + extra_payment + extra_payment2 + penalty < lp.extra_payment_topup) {
+      extra_payment += lp.extra_payment_topup - (base_payment + extra_payment + extra_payment2 + penalty)
+    };
+
     if (capital_payment + extra_payment + extra_payment2 > debt) {
       extra_payment = Math.min(extra_payment, Math.max(0, debt - capital_payment));
       extra_payment2 = Math.max(0, debt - capital_payment - extra_payment);
@@ -99,15 +103,16 @@ function calculate_loan_payments(loan_params, ICB) {
 function calculate_loan(loan_params) {
     let monthly = [];
     if (loan_params.loan_type==1) { // annuity
-        monthly = calculate_loan_payments(loan_params, (lp, debt)=>{
-          let base_payment = -PMT(lp.interest / (12 * 100), lp.loan_term, lp.loan);
+        monthly = calculate_loan_payments(loan_params, (lp, debt, i)=>{
+          // let base_payment = -PMT(lp.interest / (12 * 100), lp.loan_term, lp.loan);
+          let base_payment = -PMT(lp.interest / (12 * 100), lp.loan_term - i, debt);
           let interest_amt = -IPMT(debt, base_payment, lp.interest / (12 * 100), 1);
           let capital_payment = base_payment - interest_amt;
           return {base_payment, capital_payment, interest_amt} 
         });
 
     } else if (loan_params.loan_type==2) { // linear
-        monthly = calculate_loan_payments(loan_params, (lp, debt)=>{
+        monthly = calculate_loan_payments(loan_params, (lp, debt, i)=>{
         let capital_payment = lp.loan / lp.loan_term;
         let interest_amt = debt * lp.interest / (12 * 100);
         let base_payment = capital_payment + interest_amt;
