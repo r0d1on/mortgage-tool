@@ -47,10 +47,10 @@
                     <li class="" data-block="costs"><a>Purchase Costs</a></li>
                     <li class="" data-block="repayments"><a>Extra repayments</a></li>
                     <li class="" data-block="assets"><a>Assets Dynamics</a></li>
+                    <li class="" data-block="whatif"><a>What-if</a></li>
                     <li class="" data-block="help"><a>Help / Instructions</a></li>
                 </ul>
             </div>
-
 
             <div data-block="mortgage" class="block">
                 <div class="columns">
@@ -290,7 +290,7 @@
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>%</i></span></div>
                         </div>
-                        <div class="field" id="overpayment_penalty" data-default="10" data-tune="1">
+                        <div class="field" id="overpayment_penalty" data-default="100" data-tune="1">
                             <label>Penalty for repaying more than allowed</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>%</i></span></div>
@@ -444,6 +444,32 @@
                             <span class="icon"><i>></i></span></div>
                         </div>
 
+                        <div class="field" id="assets_roi" data-formula="assets_housing / total_loan_invested">
+                            <label>Housing ROI</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>></i></span></div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div data-block="whatif" class="block">
+                <div class="columns">
+                    <div class="column">
+                        <div class="field" id="variable" data-type="raw" data-default="savings(100000,200000,10000)">
+                            <label>Variables</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>&gt;</i></span></div>
+                        </div>
+
+                        <div class="field" id="metrics"  data-type="raw" data-default="loan_interest_rate,assets_roi,total_loan_invested">
+                            <label>Metrics</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>&gt;</i></span></div>
+                        </div>
                     </div>
 
                 </div>
@@ -466,8 +492,8 @@
                             ---<br>
                             &bull; output values - calculatable automatically based on input values<br>
                             &bull; fields with output values are disabled for manual input<br>
-                            &bull; when pointed with a mouse - tooltip shown for the field will display the field's calculation formula<br>
-                            &bull;  - tooltip for input values will display the field's variable name (used in formulas)<br>
+                            &bull; when pointed with a mouse - tooltip for the field will show the field's variable name and calculation formula<br>
+                            &bull;  - tooltip for input values will display the field's variable name (used in other formulas)<br>
                             <br>
 
                             
@@ -476,14 +502,61 @@
                             ---<br>
                             &bull; buying house price<br>
                             &bull; the same price is being used for "home ownership tax" (eigenwoningforfait)<br>
-                            &bull; i.e. it is treated also as a WOZ houes value<br> 
+                            &bull; i.e. it is treated also as a house's WOZ value<br> 
+                            <br>
+
+                            <hr/>
+                            <b>Tax refund target</b><br>
+                            ---<br>
+                            &bull; For Annuity and Linear types of mortgages - a portion of interest payed is tax deductible(hypotheekrenteaftrek)<br>
+                            &bull; tax refund target setting controls what happens to the tax benefit generated therefrom<br> 
+                            &bull; 0 - tax benefit is ignored as if it is not happening<br> 
+                            &bull; 1 - tax benefit is accrued as a "bonus" amount and summed up in "total tax refunded"<br> 
+                            &bull; 2 - tax benefit is used as an extra repayment towards principal debt<br> 
                             <br>
 
                             <hr/>
                             <b>"net" amounts</b><br>
                             ---<br>
-                            &bull; these calculated by substracting tax benefits (hypotheekrenteaftrek) from "gross" amounts<br>
-                            &bull; in case tax reimbursement goes into principal debt repayment (tax refund target = 2) - benefits assumed to be 0<br> 
+                            &bull; if tax refund target = 2 "net" values calculated by substracting tax benefits (hypotheekrenteaftrek) from "gross" amounts<br>
+                            <br>
+
+                            <hr/>
+                            <b>Extra repayments</b><br>
+                            ---<br>
+                            &bull; There are several repayments that can be modelled:<br>
+                            &bull; <b>[Mortgage] tab</b><br>
+                            &bull; Monthly repayment<br>
+                            &bull; Flexible periodic repayment: you can set period of the repayment (usually 12 months), first month of the repayment and repayment value<br>
+                            &bull; <b>[Extra repayments] tab</b><br>
+                            &bull; 2 additional flexible periodic repayments<br>
+                            &bull; extra_repayment_topup: every month an extra repayment will be made such that total payment is not less than this value<br>
+                            &bull; <b>Settings</b><br>
+                            &bull; Max. allowed yearly repayment sum - % from the original debt<br>
+                            &bull; If total annual extra repayments amount surpass the max allowed threshold - surplus will be "taxed" by penalty %, and actual repayments made will be lower<br>
+                            &bull; If penalty % is set to 100 - all extra repayments will be capped in such a way that no penalties occur<br>
+                            <br>
+
+                            <hr/>
+                            <b>Asset dynamics</b><br>
+                            ---<br>
+                            &bull; Final (up to the loan's term) assets status calculated for two scenarios:<br>
+                            &bull; Renting: monthly increment = salary - rent + yeary bonus (if the month is right), deposit rate is assumed for all current assets accumulated<br>
+                            &bull; Housing: montlhy increment = salary - house ownership tax - loan payment (net) + yeary bonus (if the month is right), deposit rate assumed for all current assets accumulated, housing market rate assumed for the current estate (fraction) owned <br>
+                            &bull; <b>Comparisons</b><br>
+                            &bull; Housing / Renting - ratio of final assets for aforementioned scenario<br>
+                            &bull; Housing ROI = final housing assets / total amount of money invested in the mortgage<br>
+                            <br>
+
+                            <hr/>
+                            <b>Whatif analysis</b><br>
+                            ---<br>
+                            &bull; It is a mechanism to model parameters of the loan as a function of any other parameter<br>
+                            &bull; <b>"Variable"</b>: is a descriptor of a range of input values tested of a form: <b>variable_name(start_value, end_value, increment)</b><br>
+                            &bull; Any (but only one at a time) parameter of a mortgage loan can be "modelled"<br>
+                            &bull; <b>"Metrics"</b>: is a list of comma-separated output parameters of the mortgage of interest</b><br>
+                            &bull; Metrics values as a function of an input parameter will be plotted on the "what-if graph"<br>
+                            &bull; What-if function works only if <b>[What-If]</b> tab is activated<br>
                             <br>
 
                             <hr/>
@@ -491,6 +564,10 @@
                             ---<br>
                             &bull; <a style="color:red" href="https://www.hypotheekrente.nl/rente/10-jaar-rentevast/60/#overzicht">Comparison</a><br>
                             &bull; <a style="color:red" href="https://www.abnamro.nl/en/personal/mortgages/interest-rates/index.html">ABN Amro</a><br>
+                            &bull; <a style="color:red" href="https://www.ing.nl/particulier/hypotheek/actuele-hypotheekrente">ING</a><br>
+                            &bull; <a style="color:red" href="https://www.rabobank.nl/particulieren/hypotheek/hypotheekrente">Rabo Bank</a><br>
+                            
+                            
                         </p>
                     </div>
 
@@ -508,6 +585,7 @@
                     <li class="" data-block="schedule"><a>Payments Schedule</a></li>
                     <li class="" data-block="graph_payments"><a>Payments Graph</a></li>
                     <li class="" data-block="graph_assets"><a>Assets Graph</a></li>
+                    <li class="" data-block="graph_whatif"><a>What-if Graph</a></li>
                 </ul>
             </div>
 
@@ -602,6 +680,14 @@
                 <div class="columns">
                     <div class="column">
                         <div id="graph_assets_target"></div>
+                    </div>  
+                </div>
+            </div>
+
+            <div data-block="graph_whatif" class="block">
+                <div class="columns">
+                    <div class="column">
+                        <div id="graph_whatif_target"></div>
                     </div>  
                 </div>
             </div>

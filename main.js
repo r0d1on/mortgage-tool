@@ -147,6 +147,7 @@ function init_fields() {
             "id" : field.id,
             "input" : input,
             "formula" : field.dataset["formula"],
+            "type" : field.dataset["type"],
             //"value" : (input.value!="") ? "" : 1.0*input.value,
             "params" : get_parameters(field.dataset["formula"]),
             "dom" : field
@@ -191,8 +192,10 @@ function get_field_value(id, path) {
     let value = (fdesc.input===undefined) ? fdesc.value : fdesc.value||fdesc.input.value;
 
     if (fdesc.input!==undefined) { // user input field
-        if (!fdesc.input.disabled) {
-            if (value=="") {
+        if (!fdesc.input.disabled) { // mannual input field
+            if (fdesc.type=='raw') {
+                return value;
+            } else if (value=="") {
                 console.log(`field ${id} value must be specified`);
                 return undefined;
             } else if (/[\+-\/\*\(\)]/g.test(value)) { // ad-hoc formula
@@ -231,14 +234,16 @@ function get_field_value(id, path) {
     return value;
 }
 
-function recalculate_fields() {
+function recalculate_fields(direct) {
     // cleanup
     Object.keys(FIELDS).map((id)=>{
         let fdesc = FIELDS[id];
         if (fdesc.input===undefined) {
+            // direct invisible field
             fdesc.value = undefined;
         } else {
             if (fdesc.input.disabled) {
+                // formula field
                 fdesc.input.value = "";
                 fdesc.value = undefined;
             }
@@ -254,10 +259,17 @@ function recalculate_fields() {
             };
     });
 
+     
+    let wf = document.querySelectorAll("div[data-block='whatif']")[0];
+    if (wf.classList.contains("is-visible") && (!direct)) {
+        graph_whatif();
+    };
+
     document.title = `${get_field_value("loan")}  [${get_field_value("loan_type")}:${get_field_value("tax_scheme")}]`;
     document.title += ` ${get_field_value("loan_term_actual")} * ${Math.round(get_field_value("payment_first"))}`;
     document.title += ` / ${Math.round(get_field_value("total_paid_net_monthly"))}`;
     document.title += ` / ${Math.round(100 * get_field_value("assets_delta")) / 100}`;
+    document.title += ` / ${Math.round(100 * get_field_value("assets_roi")) / 100}`;
 }
 
 function loan_schedule(loan_params) {
@@ -383,6 +395,62 @@ function graph_assets(asset_params, rent, monthly_ownership_tax, loan, house_pri
     Plotly.newPlot("graph_assets_target", data, layout);
 }
 
+function graph_whatif() {
+    let variable = get_field_value("variable").split("(");
+    let range = variable[1].replaceAll(")", "").split(',');
+    variable = variable[0];
+    let results = [];
+
+    let old_value = FIELDS[variable].input.value;
+
+    for(let value = range[0]*1; value <= range[1]*1; value+=range[2]*1) {
+        FIELDS[variable].input.value = value;
+        let result = {};
+        result[variable] = value;
+        recalculate_fields(true);
+        get_field_value("metrics").split(",").map((metric)=>{
+            const key = metric.trim();
+            result[key] = get_field_value(key);
+        });
+        results.push(result);
+    };
+
+    FIELDS[variable].input.value = old_value;
+    recalculate_fields(true);
+
+    let xs = results.map((record)=>{
+        return record[variable];
+    });
+
+    let data =  Object
+    .keys(results[0])
+    .filter((v)=>{return v!=variable})    
+    .map((key)=>{
+        return {
+            x : xs,
+            y : results.map((record)=>{
+                return Math.round(100 * record[key]) / 100
+            }),
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: key,
+            //visible: key=="debt" ? 'legendonly' : undefined
+        }
+    });
+
+    let layout = {
+        title:'What-if modelling : '+variable,
+        xaxis: {
+            title: results
+        },
+        yaxis: {
+            title: 'metrics'
+        }
+    };
+
+    Plotly.newPlot("graph_whatif_target", data, layout);
+}
+
 
 function loan_stats(loan_params) {
     let result = calculate_loan(loan_params);
@@ -432,7 +500,7 @@ function calc_assets_housing({current_assets, deposit_rate, monthly_salary, loan
 
     let assets = current_assets - savings;
 
-    let house_rate = house_market_rate/(100*12);
+    let house_rate = house_market_rate / (100*12);
     let estate_owned = house_price - loan;
 
     for(let i=0; i<loan_term; i++) {

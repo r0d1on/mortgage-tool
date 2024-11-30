@@ -67,8 +67,15 @@ function calculate_loan_payments(loan_params, ICB) {
     actual_extra_payments += extra_payment + extra_payment2;
     if (actual_extra_payments > lp.max_extra_payment_per_year) {
       penalty = (actual_extra_payments - lp.max_extra_payment_per_year) * (lp.overpayment_penalty / 100);
-      extra_payment  -= penalty * extra_payment/(extra_payment + extra_payment2);
-      extra_payment2 -= penalty * extra_payment2/(extra_payment + extra_payment2);
+      actual_extra_payments -= extra_payment + extra_payment2;
+      [extra_payment, extra_payment2] = [
+        extra_payment - penalty * extra_payment / (extra_payment + extra_payment2),
+        extra_payment2 - penalty * extra_payment2 / (extra_payment + extra_payment2)
+      ];
+      if (lp.overpayment_penalty == 100) {
+        penalty = 0;
+      };
+      actual_extra_payments += extra_payment + extra_payment2;
     } else {
       penalty = 0;
     };
@@ -137,7 +144,7 @@ function calculate_loan(loan_params) {
         });
   
     } else {
-        throw "unknown loan_type value, it must be '1' or '2'";
+        throw "unknown loan_type value, it must be in [1,2,3]";
     };
 
     return {
