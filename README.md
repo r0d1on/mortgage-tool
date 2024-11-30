@@ -1,4 +1,4 @@
-# Mortgage calculator tool for Neherlands
+# Mortgage calculator tool for Netherlands
 
 ![Tool screenshot](screenshot.png)
 
