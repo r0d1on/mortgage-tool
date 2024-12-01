@@ -162,6 +162,10 @@ div.is-visible {
     top: 0.5em;
 }
 
+.disclaimer {
+    padding: 0px !important; 
+}
+
 .disclaimer p {
     font-size: .85rem;
 }
@@ -181,6 +185,7 @@ div.is-visible {
     padding: .5em 1em;
     text-overflow: ellipsis;
     white-space: nowrap;
+    margin-left: 30%;
 }
 
 .github-inner {
