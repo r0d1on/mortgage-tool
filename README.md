@@ -34,8 +34,8 @@ Allowes for mortgage modelling as a function of a parameter.
 ---
 # support:
 
- * ![buy me a coffee](images/buy_me_a_coffee.svg) [buymeacoffee.com/r0d1on](https://buymeacoffee.com/r0d1on)
- * ![patreon](images/patreon.svg) [patreon.com/r0d1on](https://patreon.com/r0d1on)
+ * [buymeacoffee.com/r0d1on](https://buymeacoffee.com/r0d1on)
+ * [patreon.com/r0d1on](https://patreon.com/r0d1on)
 
 
 
