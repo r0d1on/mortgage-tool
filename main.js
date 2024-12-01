@@ -343,7 +343,6 @@ function graph_payments(loan_params) {
     Plotly.newPlot("graph_payments_target", data, layout);
 }
 
-
 function graph_assets(asset_params, rent, monthly_ownership_tax, loan, house_price, house_market_rate) {
     let result_renting = calc_assets_renting(asset_params, rent);
     let result_housing = calc_assets_housing(asset_params, monthly_ownership_tax, loan, house_price, house_market_rate);
@@ -482,7 +481,8 @@ function calc_assets_renting({current_assets, deposit_rate, monthly_salary, loan
         if (assets<0) console.warn(`Renting: Asset balance is negative, month:${i+1}`);
         monthly.push({
             month : i+1,
-            increment, assets
+            increment,
+            total_assets: assets
         });
     };
 
@@ -516,9 +516,10 @@ function calc_assets_housing({current_assets, deposit_rate, monthly_salary, loan
         if (assets<0) console.warn(`Housing: Asset balance is negative, month:${i+1}`);
         monthly.push({
             month : i+1,
-            increment, assets,
+            increment,
+            total_assets : estate_owned*Math.pow(1.0+house_rate, i+1) + assets,
+            liquid_assets : assets,
             estate_owned : estate_owned*Math.pow(1.0+house_rate, i+1),
-            total_assets : estate_owned*Math.pow(1.0+house_rate, i+1) + assets
         });
     };
 
