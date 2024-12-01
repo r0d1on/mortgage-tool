@@ -1,13 +1,23 @@
-# Mortgage calculator tool for Neherlands
+# Mortgage calculator tool for Netherlands
 
 ![Tool screenshot](screenshot.png)
 
 ---
-# features:
+# basic features:
 
 * Simple :)
-* Annuity / Linear mortgage types
-* Adjustable parameters
+* Annuity / Linear / Interest-only mortgage types
+* Adjustable additional repayment schedules, monthly, flexible periodic repayments
+* Renting / income parameters for assets ROI modelling
+
+---
+# "What-if" modelling:
+
+Allowes for mortgage modelling as a function of a parameter.
+* any adjustable mortgage parameter can be "probed" on a range of values (e.g. extra monthly repayment).
+* resulting output parameters of the mortgage then plotted on the graph (e.g. actual mortgage term).
+
+![what-if analysis](screenshot-whatif.png)
 
 ---
 # hosted on github pages:
