@@ -395,56 +395,133 @@ function graph_assets(asset_params, rent, monthly_ownership_tax, loan, house_pri
 }
 
 function graph_whatif() {
-    let variable = get_field_value("variable").split("(");
-    let range = variable[1].replaceAll(")", "").split(',');
-    variable = variable[0];
-    let results = [];
+    let variable1 = get_field_value("variable1").split("(");
+    let range1 = variable1[1].replaceAll(")", "").split(',');
+    variable1 = variable1[0];
+    let old_value1 = FIELDS[variable1].input.value;
 
-    let old_value = FIELDS[variable].input.value;
+    let variable2 = get_field_value("variable2").split("(");
+    variable2 = (variable2[0].trim()=="") ? undefined : variable2;
+    let range2 = undefined;
+    let old_value2 = undefined;
 
-    for(let value = range[0]*1; value <= range[1]*1; value+=range[2]*1) {
-        FIELDS[variable].input.value = value;
-        let result = {};
-        result[variable] = value;
-        recalculate_fields(true);
-        get_field_value("metrics").split(",").map((metric)=>{
-            const key = metric.trim();
-            result[key] = get_field_value(key);
-        });
-        results.push(result);
+    if (variable2!==undefined) {
+        range2 = variable2[1].replaceAll(")", "").split(',');
+        variable2 = variable2[0];
+        old_value2 = (variable2.trim()=="")?undefined:(FIELDS[variable2].input.value);        
     };
 
-    FIELDS[variable].input.value = old_value;
+    let results = [];
+    for(let value1 = range1[0]*1; value1 <= range1[1]*1; value1 += (range1[1]*1 - range1[0]*1) / range1[2]*1) {
+        FIELDS[variable1].input.value = value1;
+
+        if (variable2==undefined) { // 2d plot, many metrics
+            let result = {};
+            result[variable1] = value1;
+            recalculate_fields(true);
+            get_field_value("metrics").split(",").map((metric)=>{
+                const key = metric.trim();
+                result[key] = get_field_value(key);
+            });
+            results.push(result);
+
+        } else { // 3d surface plot - two parameters, one metric
+            let result = [];
+            for(let value2 = range2[0]*1; value2 <= range2[1]*1; value2+=(range2[1]*1 - range2[0]*1) / range2[2]*1) {
+                FIELDS[variable2].input.value = value2;
+                let xyz = {};
+                xyz[variable1] = value1;
+                xyz[variable2] = value2;
+                recalculate_fields(true);
+
+                const key = get_field_value("metrics").split(",")[0].trim();
+                xyz[key] = get_field_value(key);
+                /*
+                .map((metric)=>{
+                    const key = metric.trim();
+                    xyz[key] = get_field_value(key);
+                });
+                */
+                result.push(xyz);
+            };
+            results.push(result);
+        }
+    };
+
+    // restore original parameters
+    FIELDS[variable1].input.value = old_value1;
+    if (variable2!==undefined) 
+        FIELDS[variable2].input.value = old_value2;
     recalculate_fields(true);
 
-    let xs = results.map((record)=>{
-        return record[variable];
-    });
+    let data = null;
+    let layout = null;
 
-    let data =  Object
-    .keys(results[0])
-    .filter((v)=>{return v!=variable})    
-    .map((key)=>{
-        return {
-            x : xs,
-            y : results.map((record)=>{
-                return Math.round(100 * record[key]) / 100
-            }),
-            type: 'scatter',
-            mode: 'lines+markers',
-            name: key,
-            //visible: key=="debt" ? 'legendonly' : undefined
-        }
-    });
+    if (variable2==undefined) {
+        let xs = results.map((record)=>{
+            return record[variable1];
+        });
+    
+        data =  Object
+        .keys(results[0])
+        .filter((v)=>{return v!=variable1})
+        .map((key)=>{
+            return {
+                x : xs,
+                y : results.map((record)=>{
+                    return Math.round(100 * record[key]) / 100
+                }),
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: key,
+                //visible: key=="debt" ? 'legendonly' : undefined
+            }
+        });
+    
+        layout = {
+            title:'What-if modelling : ' + variable1,
+            xaxis: {
+                title: results
+            },
+            yaxis: {
+                title: 'metrics'
+            }
+        };
 
-    let layout = {
-        title:'What-if modelling : '+variable,
-        xaxis: {
-            title: results
-        },
-        yaxis: {
-            title: 'metrics'
-        }
+    } else {
+        const key = get_field_value("metrics").split(",")[0].trim();
+        data = [{
+            z: results.map((a)=>{return a.map((r)=>{return r[key]})}),
+            y: results.map((a)=>{return a[0][variable1]}),
+            x: results[0].map((r)=>{return r[variable2]}),
+            type: 'surface',
+            contours: {
+              z: {
+                show:true,
+                usecolormap: true,
+                highlightcolor:"#42f462",
+                project:{z: true}
+              }
+            }
+        }];
+        layout = {
+            title: {
+                text: 'What-if modelling: ' + key + ", x=" + variable2 + ', y=' + variable1 + "",
+            },
+            scene: {camera: {eye: {x: 1.87, y: 0.88, z: 0.84}}},
+            width: 700,
+            height: 700,
+            xaxis: {
+                title: {
+                    text: variable1,
+                },
+            },
+            yaxis: {
+                title: {
+                    text: variable2,
+                }
+            }            
+        };
     };
 
     Plotly.newPlot("graph_whatif_target", data, layout);

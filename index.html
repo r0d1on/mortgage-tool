@@ -7,9 +7,9 @@
 
     <script src='https://cdn.plot.ly/plotly-2.35.2.min.js'></script>
 
-    <script type="text/javascript" src="loans.js"></script>
-    <script type="text/javascript" src="main.js"></script>
-    <script type="text/javascript" src="deploy_info.js"></script>
+    <script src="loans.js"></script>
+    <script src="main.js"></script>
+    <script src="deploy_info.js"></script>
 
     <link rel="icon" href="https://r0d1on.github.io/mortgage-tool/favicon.ico">
 
@@ -29,14 +29,12 @@
 <body>
     <div class="container">
 
-        <section class="section">
-            <section class="title">
-                <div class="header">
-                    <h1>Mortgage modelling tool</h1>
-                    <h2>Mortgage calculator and analysis tool (Netherlands)</h2>
-                    <h2 id="version"></h2>
-                </div>
-            </section>
+        <section class="section title">
+            <div class="header">
+                <h1>Mortgage modelling tool</h1>
+                <h2>Mortgage calculator and analysis tool (Netherlands)</h2>
+                <h2 id="version">vresion</h2>
+            </div>
         </section>
 
         <section class="section">
@@ -459,13 +457,18 @@
             <div data-block="whatif" class="block">
                 <div class="columns">
                     <div class="column">
-                        <div class="field" id="variable" data-type="raw" data-default="savings(100000,200000,10000)">
-                            <label>Variables</label>
+                        <div class="field" id="variable1" data-type="raw" data-default="extra_payment_topup(100,3000,10)">
+                            <label>Variable#1</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>&gt;</i></span></div>
+                        </div>
+                        <div class="field" id="variable2" data-type="raw" data-default="">
+                            <label>Variable#2</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>&gt;</i></span></div>
                         </div>
 
-                        <div class="field" id="metrics"  data-type="raw" data-default="loan_interest_rate,assets_roi,total_loan_invested">
+                        <div class="field" id="metrics"  data-type="raw" data-default="assets_delta,loan_interest_rate,total_loan_invested,total_paid_net_monthly,loan_term_actual,assets_roi">
                             <label>Metrics</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>&gt;</i></span></div>
@@ -479,7 +482,7 @@
                 <div class="columns">
                     <div class="column">
                         <p>
-                            <hr/>
+                            <hr>
                             <b>input values</b><br>
                             ---<br>
                             &bull; input fields allow entering simple formulas using arithmetical espressions<br>
@@ -487,7 +490,7 @@
                             &bull; most of the input values can be "tuned": hover mouse over and scroll up/down with Shift pressed<br>
                             <br>
 
-                            <hr/>
+                            <hr>
                             <b>output values</b><br>
                             ---<br>
                             &bull; output values - calculatable automatically based on input values<br>
@@ -497,7 +500,7 @@
                             <br>
 
                             
-                            <hr/>
+                            <hr>
                             <b>house price</b><br>
                             ---<br>
                             &bull; buying house price<br>
@@ -505,7 +508,7 @@
                             &bull; i.e. it is treated also as a house's WOZ value<br> 
                             <br>
 
-                            <hr/>
+                            <hr>
                             <b>Tax refund target</b><br>
                             ---<br>
                             &bull; For Annuity and Linear types of mortgages - a portion of interest payed is tax deductible(hypotheekrenteaftrek)<br>
@@ -515,13 +518,13 @@
                             &bull; 2 - tax benefit is used as an extra repayment towards principal debt<br> 
                             <br>
 
-                            <hr/>
+                            <hr>
                             <b>"net" amounts</b><br>
                             ---<br>
                             &bull; if tax refund target = 2 "net" values calculated by substracting tax benefits (hypotheekrenteaftrek) from "gross" amounts<br>
                             <br>
 
-                            <hr/>
+                            <hr>
                             <b>Extra repayments</b><br>
                             ---<br>
                             &bull; There are several repayments that can be modelled:<br>
@@ -537,7 +540,7 @@
                             &bull; If penalty % is set to 100 - all extra repayments will be capped in such a way that no penalties occur<br>
                             <br>
 
-                            <hr/>
+                            <hr>
                             <b>Asset dynamics</b><br>
                             ---<br>
                             &bull; Final (up to the loan's term) assets status calculated for two scenarios:<br>
@@ -548,18 +551,20 @@
                             &bull; Housing ROI = final housing assets / total amount of money invested in the mortgage<br>
                             <br>
 
-                            <hr/>
+                            <hr>
                             <b>Whatif analysis</b><br>
                             ---<br>
                             &bull; It is a mechanism to model parameters of the loan as a function of any other parameter<br>
-                            &bull; <b>"Variable"</b>: is a descriptor of a range of input values tested of a form: <b>variable_name(start_value, end_value, increment)</b><br>
-                            &bull; Any (but only one at a time) parameter of a mortgage loan can be "modelled"<br>
-                            &bull; <b>"Metrics"</b>: is a list of comma-separated output parameters of the mortgage of interest</b><br>
-                            &bull; Metrics values as a function of an input parameter will be plotted on the "what-if graph"<br>
+                            &bull; <b>"Variable1"</b>: is a descriptor of a range of input values tested of a form: <b>variable_name(start_value, end_value, steps)</b><br>
+                            &bull; <b>"Variable2"</b>: is a descriptor of a range of input values tested of a form: <b>variable_name(start_value, end_value, steps)</b><br>
+                            &bull; Any parameter of a mortgage loan can be "modelled"<br>
+                            &bull; <b>"Metrics"</b>: is a list of comma-separated output parameters of the mortgage of interest<br>
+                            &bull; If only Variable1 is specified - all metrics will be plotted on the <b>2-D</b> plot. metrics = mortgage(variable1)"<br>
+                            &bull; If both Variable1 and Variable2 specified - first metric in the list will be plotted on the <b>3-D</b> plot(surface). metric = mortgage(variable1, variable2)"<br>
                             &bull; What-if function works only if <b>[What-If]</b> tab is activated, gaph is updated every time any changes made to either variables or metrics<br>
                             <br>
 
-                            <hr/>
+                            <hr>
                             <b>Interest rates</b><br>
                             ---<br>
                             &bull; <a style="color:red" href="https://www.hypotheekrente.nl/rente/10-jaar-rentevast/60/#overzicht">Overview</a><br>
@@ -706,10 +711,10 @@
                     <h3>Donate:</h3>
                     <ul>
                         <li>
-                            <img width="32" height="32" src="images/buy_me_a_coffee.svg"/> <a href="https://buymeacoffee.com/r0d1on">buymeacoffee.com/r0d1on</a>
+                            <img width="32" height="32" alt="" src="images/buy_me_a_coffee.svg"/> <a href="https://buymeacoffee.com/r0d1on">buymeacoffee.com/r0d1on</a>
                         </li>
                         <li>
-                            <img width="32" height="32" src="images/patreon.svg"/> <a href="https://patreon.com/r0d1on/shop">patreon.com/r0d1on</a>
+                            <img width="32" height="32" alt="" src="images/patreon.svg"/> <a href="https://patreon.com/r0d1on/shop">patreon.com/r0d1on</a>
                         </li>                        
                     </ul>
                 </div>
@@ -722,7 +727,7 @@
                         <p><b>Involve a qualified professional before making any decisions.</b></p>
                     </section>
                 </div>
-               
+            </div>
         </section>
 
     </div>
