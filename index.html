@@ -41,12 +41,12 @@
             <h1>Mortgage parameters:</h1>
             <div class="tabs is-primary">
                 <ul>
-                    <li class="is-active" data-block="mortgage"><a>Mortgage</a></li>
-                    <li class="" data-block="costs"><a>Purchase Costs</a></li>
-                    <li class="" data-block="repayments"><a>Extra repayments</a></li>
-                    <li class="" data-block="assets"><a>Assets Dynamics</a></li>
-                    <li class="" data-block="whatif"><a>What-if</a></li>
-                    <li class="" data-block="help"><a>Help / Instructions</a></li>
+                    <li class="is-active" data-block="mortgage"><a tabindex=0 role=button>Mortgage</a></li>
+                    <li class="" data-block="costs"><a tabindex=1 role=button>Purchase Costs</a></li>
+                    <li class="" data-block="repayments"><a tabindex=2 role=button>Extra repayments</a></li>
+                    <li class="" data-block="assets"><a tabindex=3 role=button>Assets Dynamics</a></li>
+                    <li class="" data-block="whatif"><a tabindex=4 role=button>What-if</a></li>
+                    <li class="" data-block="help"><a tabindex=5 role=button>Help / Instructions</a></li>
                 </ul>
             </div>
 
@@ -55,153 +55,153 @@
 
                     <div class="column">
                         <div class="field" id="house_price" data-default="400000" data-tune="10000">
-                            <label>House price</label>
+                            <label>House price
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                         <div class="field" id="savings" data-default="100000" data-tune="10000">
-                            <label>Savings used for downpayment</label>
+                            <label>Savings used for downpayment
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
 
                         <div class="field" id="cost" data-formula="purchase_cost">
-                            <label>Purchase cost (without NHG fee)</label>
+                            <label>Purchase cost (without NHG fee)
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
 
                         <div class="field" id="downpayment" data-formula="savings - cost">
-                            <label>Downpayment</label>
+                            <label>Downpayment
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
 
                         <div class="field" id="loan" data-formula="house_price - downpayment">
-                            <label>Required loan amount</label>
+                            <label>Required loan amount
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                         <div class="field" id="loan_rate" data-formula="Math.round(10000 * loan / house_price)/100">
-                            <label>Loan amount / House price AKA Loan-to-Value</label>
+                            <label>Loan amount / House price AKA Loan-to-Value
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>%</i></span></div>
+                            <span class="icon"><i>%</i></span></div></label>
                         </div>
                     </div>
 
                     <div class="column">
                         <div class="field" id="loan_term" data-default="30*12" data-tune="12">
-                            <label>Loan term (months)</label>
+                            <label>Loan term (months)
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>m</i></span></div>
+                            <span class="icon"><i>m</i></span></div></label>
                         </div>
                         <div class="field" id="loan_term_actual" data-formula="loan_stats(loan_params).actual_term">
-                            <label>Loan term actual (months)</label>
+                            <label>Loan term actual (months)
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>m</i></span></div>
+                            <span class="icon"><i>m</i></span></div></label>
                         </div>
                         <div class="field" id="loan_term_reduction" data-formula="loan_term - loan_term_actual">
-                            <label>Loan term reduction (months)</label>
+                            <label>Loan term reduction (months)
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>m</i></span></div>
+                            <span class="icon"><i>m</i></span></div></label>
                         </div>
                         <div class="field" id="interest" data-default="3.8" data-tune="0.01">
-                            <label>Loan Interest</label>
+                            <label>Loan Interest
                             <div class="control"><input class="input" type="text" value="3.8">
-                            <span class="icon"><i>%</i></span></div>
+                            <span class="icon"><i>%</i></span></div></label>
                         </div>
                         <div class="field" id="deduction" data-default="36.93" data-tune="0.01">
-                            <label>Loan interest tax deductible (hypotheekrenteaftrek):</label>
+                            <label>Loan interest tax deductible (hypotheekrenteaftrek):<
                             <div class="control"><input class="input" type="text" value="36.93">
-                            <span class="icon"><i>%</i></span></div>
+                            <span class="icon"><i>%</i></span></div>/label>
                         </div>
                         <div class="field" id="loan_type" data-default="1" data-tune="1">
-                            <label>Loan type: 1 - Annuity, 2 - Linear, 3 - Interest only</label>
+                            <label>Loan type: 1 - Annuity, 2 - Linear, 3 - Interest only
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>&gt;</i></span></div>
+                            <span class="icon"><i>&gt;</i></span></div></label>
                         </div>                        
                         <div class="field" id="tax_scheme" data-default="1" data-tune="1">
-                            <label>Tax refund target: 0 - none, 1 - benefit, 2 - principal</label>
+                            <label>Tax refund target: 0 - none, 1 - benefit, 2 - principal
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>&gt;</i></span></div>
+                            <span class="icon"><i>&gt;</i></span></div></label>
                         </div>
 
                     </div>
 
                     <div class="column">
                         <div class="field" id="total_tax_returned" data-formula="loan_stats(loan_params).total_tax_returned">
-                            <label>Total tax returned (hypotheekrenteaftrek):</label>
+                            <label>Total tax returned (hypotheekrenteaftrek):
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                         <div class="field" id="loan_interest_rate" data-formula="Math.round(10000 * total_paid_interest / loan) / 100">
-                            <label>Total interest paid / Loan amount</label>
+                            <label>Total interest paid / Loan amount
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>%</i></span></div>
+                            <span class="icon"><i>%</i></span></div></label>
                         </div>
 
                         <div class="field" id="extra_payment_monthly" data-default="0" data-tune="50">
-                            <label>Extra repayment, monthly</label>
+                            <label>Extra repayment, monthly
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                         <div class="field" id="extra_payment_period" data-default="0" data-tune="1">
-                            <label>Extra periodic payment, period</label>
+                            <label>Extra periodic payment, period
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>&gt;</i></span></div>
+                            <span class="icon"><i>&gt;</i></span></div></label>
                         </div>
                         <div class="field" id="extra_payment_start" data-default="1" data-tune="1">
-                            <label>Extra periodic payment, first month:</label>
+                            <label>Extra periodic payment, first month:
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>&gt;</i></span></div>
+                            <span class="icon"><i>&gt;</i></span></div></label>
                         </div>
                         <div class="field" id="extra_payment_value" data-default="0" data-tune="500">
-                            <label>Extra periodic payment</label>
+                            <label>Extra periodic payment
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
 
                     </div>
 
                     <div class="column">
                         <div class="field" id="total_loan_invested" data-formula="total_paid_net + savings">
-                            <label>Total loan invested</label>
+                            <label>Total loan invested
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
 
                         <div class="field" id="total_paid_extra" data-formula="loan_stats(loan_params).total_paid_extra">
-                            <label>Total repaid extra</label>
+                            <label>Total repaid extra
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
 
                         <div class="field" id="total_paid_gross" data-formula="loan_stats(loan_params).total_paid_gross">
-                            <label>Total repaid (gross)</label>
+                            <label>Total repaid (gross)
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                         <div class="field" id="total_paid_net" data-formula="loan_stats(loan_params).total_paid_net">
-                            <label>Total repaid (net)</label>
+                            <label>Total repaid (net)
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                         <div class="field" id="total_paid_penalty" data-formula="loan_stats(loan_params).total_paid_penalty">
-                            <label>Total paid penalties</label>
+                            <label>Total paid penalties
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
 
                         <div class="field" id="total_paid_interest" data-formula="total_paid_gross - loan - total_paid_penalty">
-                            <label>Total interest paid</label>
+                            <label>Total interest paid
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
 
                         <div class="field" id="total_paid_net_monthly" data-formula="total_paid_net / loan_term_actual">
-                            <label>Total loan invested, monthly average</label>
+                            <label>Total loan invested, monthly average
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>                        
 
                     </div>
@@ -212,68 +212,68 @@
                 <div class="columns">
                     <div class="column">
                         <div class="field" id="cost_advisor" data-default="2500">
-                            <label>Financial advisor</label>
+                            <label>Financial advisor
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                         <div class="field" id="cost_makelaar" data-default="3950">
-                            <label>Real estate agent</label>
+                            <label>Real estate agent
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                         <div class="field" id="cost_valuation" data-default="800">
-                            <label>Valuation</label>
+                            <label>Valuation
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                         <div class="field" id="cost_notary" data-default="1200">
-                            <label>Notary</label>
+                            <label>Notary
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                         <div class="field" id="cost_survey" data-default="800">
-                            <label>Structural survey</label>
+                            <label>Structural survey
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                     </div>
 
 
                     <div class="column">
                         <div class="field" id="cost_transfer_tax" data-formula="0.02 * house_price">
-                            <label>Transfer tax</label>
+                            <label>Transfer tax
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                         <div class="field" id="cost_bank" data-formula="0.001 * house_price">
-                            <label>Bank guarantee</label>
+                            <label>Bank guarantee
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                         <div class="field" id="purchase_cost" data-formula="cost_advisor + cost_bank + cost_makelaar + cost_notary + cost_survey + cost_transfer_tax + cost_valuation">
-                            <label>Purchase costs:</label>
+                            <label>Purchase costs:
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                         <div class="field" id="cost_nhg" data-formula="house_price > 435000 ? 0 : 0.006 * (house_price - (savings - purchase_cost))">
-                            <label>NHG fee</label>
+                            <label>NHG fee
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                         <div class="field" id="total_purchase_cost" data-formula="purchase_cost + 1*cost_nhg">
-                            <label>Purchase costs + NHG fee:</label>
+                            <label>Purchase costs + NHG fee:
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                         <div class="field" id="purchase_deductible_cost" data-formula="cost_advisor + cost_notary + cost_survey + cost_valuation + 1*cost_nhg">
-                            <label>Tax deductible purchase costs (hypotheekrenteaftrek):</label>
+                            <label>Tax deductible purchase costs (hypotheekrenteaftrek):
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                         <div class="field" id="purchase_deductible_cost_pct" data-formula="Math.round(1000*(purchase_deductible_cost / total_purchase_cost))/10">
-                            <label>Tax deductible purchase costs % from all costs:</label>
+                            <label>Tax deductible purchase costs % from all costs:
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                     </div>
                 </div>
@@ -284,64 +284,64 @@
 
                     <div class="column">
                         <div class="field" id="max_extra_payments_per_year_pct" data-default="10" data-tune="1">
-                            <label>Max extra repayment per year, %</label>
+                            <label>Max extra repayment per year, %
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>%</i></span></div>
+                            <span class="icon"><i>%</i></span></div></label>
                         </div>
                         <div class="field" id="overpayment_penalty" data-default="100" data-tune="1">
-                            <label>Penalty for repaying more than allowed</label>
+                            <label>Penalty for repaying more than allowed
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>%</i></span></div>
+                            <span class="icon"><i>%</i></span></div></label>
                         </div>
                         <div class="field" id="max_extra_payment_per_year" data-formula="(max_extra_payments_per_year_pct / 100) * loan">
-                            <label>Max extra repayment per year</label>
+                            <label>Max extra repayment per year
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                     </div>
 
 
                     <div class="column">
                         <div class="field" id="extra_payment_period1" data-default="0" data-tune="1">
-                            <label>Extra periodic payment#1, period</label>
+                            <label>Extra periodic payment#1, period
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>&gt;</i></span></div>
+                            <span class="icon"><i>&gt;</i></span></div></label>
                         </div>
                         <div class="field" id="extra_payment_start1" data-default="1" data-tune="1">
-                            <label>Extra periodic payment#1, first month:</label>
+                            <label>Extra periodic payment#1, first month:
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>&gt;</i></span></div>
+                            <span class="icon"><i>&gt;</i></span></div></label>
                         </div>
                         <div class="field" id="extra_payment_value1" data-default="0" data-tune="500">
-                            <label>Extra periodic payment#1</label>
+                            <label>Extra periodic payment#1
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                     </div>
 
                     <div class="column">
                         <div class="field" id="extra_payment_period2" data-default="0" data-tune="1">
-                            <label>Extra periodic payment#2, period</label>
+                            <label>Extra periodic payment#2, period
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>&gt;</i></span></div>
+                            <span class="icon"><i>&gt;</i></span></div></label>
                         </div>
                         <div class="field" id="extra_payment_start2" data-default="1" data-tune="1">
-                            <label>Extra periodic payment#2, first month:</label>
+                            <label>Extra periodic payment#2, first month:
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>&gt;</i></span></div>
+                            <span class="icon"><i>&gt;</i></span></div></label>
                         </div>
                         <div class="field" id="extra_payment_value2" data-default="0" data-tune="500">
-                            <label>Extra periodic payment#2</label>
+                            <label>Extra periodic payment#2
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                     </div>
 
                     <div class="column">
                         <div class="field" id="extra_payment_topup" data-default="0" data-tune="50">
-                            <label>Extra repayment, add up monthly to minimal payment</label>
+                            <label>Extra repayment, add up monthly to minimal payment
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                     </div>                    
 
@@ -352,102 +352,101 @@
                 <div class="columns">
                     <div class="column">
                         <div class="field" id="deposit_rate" data-default="0.0" data-tune="0.2">
-                            <label>Deposit rate</label>
+                            <label>Deposit rate
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>%</i></span></div>
+                            <span class="icon"><i>%</i></span></div></label>
                         </div>
 
                         <div class="field" id="house_market_rate" data-default="0.0" data-tune="0.2">
-                            <label>House appreciation rate</label>
+                            <label>House appreciation rate
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>%</i></span></div>
+                            <span class="icon"><i>%</i></span></div></label>
                         </div>
                         
                         <div class="field" id="monthly_salary" data-default="3000" data-tune="500">
-                            <label>Monthly salary</label>
+                            <label>Monthly salary
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                         <div class="field" id="bonus_month" data-default="1" data-tune="1">
-                            <label>Annual bonus, accrual month</label>
+                            <label>Annual bonus, accrual month
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>&gt;</i></span></div>
+                            <span class="icon"><i>&gt;</i></span></div></label>
                         </div>
                         <div class="field" id="bonus" data-default="1000" data-tune="1000">
-                            <label>Annual bonus, amount</label>
+                            <label>Annual bonus, amount
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                     </div>
 
                     <div class="column">
                         <div class="field" id="current_assets" data-default="100000" data-tune="1000">
-                            <label>Current total assets</label>
+                            <label>Current total assets
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                         <div class="field" id="assets_to_downpayment" data-formula="Math.round(1000 * savings / current_assets)/10">
-                            <label>Assets used for downpayment</label>
+                            <label>Assets used for downpayment
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>%</i></span></div>
+                            <span class="icon"><i>%</i></span></div></label>
                         </div>
                     </div>
 
 
                     <div class="column">
                         <div class="field" id="rent" data-default="1500" data-tune="100">
-                            <label>Monthly rent</label>
+                            <label>Monthly rent
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                         <div class="field" id="total_rent_actual" data-formula="rent * loan_term_actual">
-                            <label>Total rent paid (would be, during actual term)</label>
+                            <label>Total rent paid (would be, during actual term)
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                         <div class="field" id="total_rent" data-formula="rent * loan_term">
-                            <label>Total rent paid (would be, during total term)</label>
+                            <label>Total rent paid (would be, during total term)
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
 
                         <div class="field" id="assets_renting" data-formula="calc_assets_renting(asset_params,  rent).outcome">
-                            <label>Final assets: renting</label>
+                            <label>Final assets: renting
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                     </div>
 
 
                     <div class="column">
                         <div class="field" id="ownership_pct" data-default="0.35">
-                            <label>House ownership tax percentage (eigenwoningforfait)</label>
+                            <label>House ownership tax percentage (eigenwoningforfait)
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>%</i></span></div>
+                            <span class="icon"><i>%</i></span></div></label>
                         </div>
                         <div class="field" id="monthly_ownership_tax" data-formula="house_price * ( ownership_pct / 100 ) / 12">
-                            <label>monthly house ownership tax (eigenwoningforfait)</label>
+                            <label>monthly house ownership tax (eigenwoningforfait)
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
                         <div class="field" id="assets_housing" data-formula="calc_assets_housing(asset_params, monthly_ownership_tax, loan, house_price, house_market_rate).outcome">
-                            <label>Final assets: housing</label>
+                            <label>Final assets: housing
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
+                            <span class="icon"><i>€</i></span></div></label>
                         </div>
 
                         <div class="field" id="assets_delta" data-formula="assets_housing / assets_renting">
-                            <label>Housing / Renting</label>
+                            <label>Housing / Renting
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>></i></span></div>
+                            <span class="icon"><i>></i></span></div></label>
                         </div>
 
                         <div class="field" id="assets_roi" data-formula="assets_housing / total_loan_invested">
-                            <label>Housing ROI</label>
+                            <label>Housing ROI
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>></i></span></div>
+                            <span class="icon"><i>></i></span></div></label>
                         </div>
-
 
                     </div>
 
@@ -458,20 +457,20 @@
                 <div class="columns">
                     <div class="column">
                         <div class="field" id="variable1" data-type="raw" data-default="extra_payment_topup(100,3000,10)">
-                            <label>Variable#1</label>
+                            <label>Variable#1
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>&gt;</i></span></div>
+                            <span class="icon"><i>&gt;</i></span></div></label>
                         </div>
                         <div class="field" id="variable2" data-type="raw" data-default="">
-                            <label>Variable#2</label>
+                            <label>Variable#2
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>&gt;</i></span></div>
+                            <span class="icon"><i>&gt;</i></span></div></label>
                         </div>
 
                         <div class="field" id="metrics"  data-type="raw" data-default="assets_delta,loan_interest_rate,total_loan_invested,total_paid_net_monthly,loan_term_actual,assets_roi">
-                            <label>Metrics</label>
+                            <label>Metrics
                             <div class="control"><input class="input" type="text" value="">
-                            <span class="icon"><i>&gt;</i></span></div>
+                            <span class="icon"><i>&gt;</i></span></div></label>
                         </div>
                     </div>
 
@@ -571,10 +570,8 @@
                             &bull; <a style="color:red" href="https://www.abnamro.nl/en/personal/mortgages/interest-rates/index.html">ABN Amro</a><br>
                             &bull; <a style="color:red" href="https://www.ing.nl/particulier/hypotheek/actuele-hypotheekrente">ING</a><br>
                             &bull; <a style="color:red" href="https://www.rabobank.nl/particulieren/hypotheek/hypotheekrente">Rabo Bank</a><br>
-                            
                         </p>
                     </div>
-
                 </div>
             </div>
         </section>
@@ -585,11 +582,11 @@
             <h1 class="subtitle">Modelling results:</h1>
             <div class="tabs is-primary">
                 <ul>
-                    <li class="is-active" data-block="stats"><a>Stats</a></li>
-                    <li class="" data-block="schedule"><a>Payments Schedule</a></li>
-                    <li class="" data-block="graph_payments"><a>Payments Graph</a></li>
-                    <li class="" data-block="graph_assets"><a>Assets Graph</a></li>
-                    <li class="" data-block="graph_whatif"><a>What-if Graph</a></li>
+                    <li class="is-active" data-block="stats"><a tabindex=6 role=button>Stats</a></li>
+                    <li class="" data-block="schedule"><a tabindex=7 role=button>Payments Schedule</a></li>
+                    <li class="" data-block="graph_payments"><a tabindex=8 role=button>Payments Graph</a></li>
+                    <li class="" data-block="graph_assets"><a tabindex=9 role=button>Assets Graph</a></li>
+                    <li class="" data-block="graph_whatif"><a tabindex=10 role=button>What-if Graph</a></li>
                 </ul>
             </div>
 
@@ -711,10 +708,10 @@
                     <h3>Donate:</h3>
                     <ul>
                         <li>
-                            <img width="32" height="32" alt="" src="images/buy_me_a_coffee.svg"/> <a href="https://buymeacoffee.com/r0d1on">buymeacoffee.com/r0d1on</a>
+                            <img width="32" height="32" alt="buy me a coffee icon" src="images/buy_me_a_coffee.svg"> <a href="https://buymeacoffee.com/r0d1on">buymeacoffee.com/r0d1on</a>
                         </li>
                         <li>
-                            <img width="32" height="32" alt="" src="images/patreon.svg"/> <a href="https://patreon.com/r0d1on/shop">patreon.com/r0d1on</a>
+                            <img width="32" height="32" alt="patreon icon" src="images/patreon.svg"> <a href="https://patreon.com/r0d1on/shop">patreon.com/r0d1on</a>
                         </li>                        
                     </ul>
                 </div>
