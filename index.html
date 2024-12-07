@@ -55,10 +55,21 @@
 
                     <div class="column">
                         <div class="field" id="house_price" data-default="400000" data-tune="10000">
-                            <label>House price</label>
+                            <label>House sell price</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
                         </div>
+                        <div class="field" id="value_discount" data-default="115" data-tune="1">
+                            <label>House sell price / House value</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>%</i></span></div>
+                        </div>
+                        <div class="field" id="house_value" data-formula="Math.round(100 * house_price / value_discount)">
+                            <label>House value</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+
                         <div class="field" id="savings" data-default="100000" data-tune="10000">
                             <label>Savings used for downpayment</label>
                             <div class="control"><input class="input" type="text" value="">
@@ -82,8 +93,8 @@
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
                         </div>
-                        <div class="field" id="loan_rate" data-formula="Math.round(10000 * loan / house_price)/100">
-                            <label>Loan amount / House price AKA Loan-to-Value</label>
+                        <div class="field" id="loan_rate" data-formula="Math.round(10000 * loan / house_value)/100">
+                            <label>Loan amount / House value AKA Loan-to-Value</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>%</i></span></div>
                         </div>
@@ -125,7 +136,6 @@
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>&gt;</i></span></div>
                         </div>
-
                     </div>
 
                     <div class="column">
@@ -236,6 +246,16 @@
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
                         </div>
+                        <div class="field" id="nhg_max_price" data-default="450000">
+                            <label>NHG price cap</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" id="nhg_cost_pct" data-default="0.4">
+                            <label>NHG fee rate</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>%</i></span></div>
+                        </div>
                     </div>
 
 
@@ -255,7 +275,7 @@
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
                         </div>
-                        <div class="field" id="cost_nhg" data-formula="house_price > 435000 ? 0 : 0.006 * (house_price - (savings - purchase_cost))">
+                        <div class="field" id="cost_nhg" data-formula="house_price > nhg_max_price ? 0 : (nhg_cost_pct / 100) * (house_price - (savings - purchase_cost))">
                             <label>NHG fee</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
@@ -391,6 +411,11 @@
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>%</i></span></div>
                         </div>
+                        <div class="field" id="assets_left" data-formula="current_assets - savings">
+                            <label>Assets left after downpayment</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
                     </div>
 
 
@@ -411,7 +436,7 @@
                             <span class="icon"><i>€</i></span></div>
                         </div>
 
-                        <div class="field" id="assets_renting" data-formula="calc_assets_renting(asset_params,  rent).outcome">
+                        <div class="field" id="assets_renting" data-formula="assets_result.renting.outcome">
                             <label>Final assets: renting</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
@@ -425,25 +450,31 @@
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>%</i></span></div>
                         </div>
-                        <div class="field" id="monthly_ownership_tax" data-formula="house_price * ( ownership_pct / 100 ) / 12">
+                        <div class="field" id="monthly_ownership_tax" data-formula="house_value * ( ownership_pct / 100 ) / 12">
                             <label>monthly house ownership tax (eigenwoningforfait)</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
                         </div>
-                        <div class="field" id="assets_housing" data-formula="calc_assets_housing(asset_params, monthly_ownership_tax, loan, house_price, house_market_rate).outcome">
+                        <div class="field" id="assets_housing" data-formula="assets_result.housing.outcome">
                             <label>Final assets: housing</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
                         </div>
 
-                        <div class="field" id="assets_delta" data-formula="assets_housing / assets_renting">
+                        <div class="field" id="assets_delta" data-round="3" data-formula="assets_housing / assets_renting">
                             <label>Housing / Renting</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>></i></span></div>
                         </div>
 
-                        <div class="field" id="assets_roi" data-formula="assets_housing / total_loan_invested">
+                        <div class="field" id="assets_roi" data-round="3" data-formula="assets_housing / total_loan_invested">
                             <label>Housing ROI</label>
+                            <div class="control"><input class="input" type="text" value="">
+                            <span class="icon"><i>></i></span></div>
+                        </div>
+
+                        <div class="field" id="months_to_even" data-formula="assets_result.months_to_even">
+                            <label>Months to even housing vs renting</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>></i></span></div>
                         </div>
@@ -473,8 +504,8 @@
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>&gt;</i></span></div>
                         </div>
+                        <button id="recalc_button" onclick="recalculate_fields()">Recalculate</button>
                     </div>
-
                 </div>
             </div>
 
@@ -502,9 +533,8 @@
                             <hr>
                             <b>house price</b><br>
                             ---<br>
-                            &bull; buying house price<br>
-                            &bull; the same price is being used for "home ownership tax" (eigenwoningforfait)<br>
-                            &bull; i.e. it is treated also as a house's WOZ value<br> 
+                            &bull; sell price of the house<br>
+                            &bull; for "home ownership tax" (eigenwoningforfait) and for assets calculation - house value is used<br>
                             <br>
 
                             <hr>
@@ -554,13 +584,12 @@
                             <b>Whatif analysis</b><br>
                             ---<br>
                             &bull; It is a mechanism to model parameters of the loan as a function of any other parameter<br>
-                            &bull; <b>"Variable1"</b>: is a descriptor of a range of input values tested of a form: <b>variable_name(start_value, end_value, steps)</b><br>
-                            &bull; <b>"Variable2"</b>: is a descriptor of a range of input values tested of a form: <b>variable_name(start_value, end_value, steps)</b><br>
-                            &bull; Any parameter of a mortgage loan can be "modelled"<br>
-                            &bull; <b>"Metrics"</b>: is a list of comma-separated output parameters of the mortgage of interest<br>
-                            &bull; If only Variable1 is specified - all metrics will be plotted on the <b>2-D</b> plot. metrics = mortgage(variable1)"<br>
-                            &bull; If both Variable1 and Variable2 specified - first metric in the list will be plotted on the <b>3-D</b> plot(surface). metric = mortgage(variable1, variable2)"<br>
-                            &bull; What-if function works only if <b>[What-If]</b> tab is activated, gaph is updated every time any changes made to either variables or metrics<br>
+                            &bull; Any parameter of the loan can be "tested"<br>
+                            &bull; <b>"Variable1" / "Variable2"</b>: range descriptors for variables you'd like to "test". Format: <b>variable_name(start_value, end_value, steps)</b><br>
+                            &bull; <b>"Metrics"</b> comma-separated list of expressions (using loan parameter names), - result of which you'd like to see on the plot. In a simpliest case - it is just a parameter name of interest (e.g. <b>loan_term_actual</b>)<br>
+                            &bull; If only Variable1 is specified - all metrics will be plotted on the <b>2-D</b>.<br>
+                            &bull; If both Variable1 and Variable2 specified - first metric in the list will be plotted on the <b>3-D</b> plot(surface)."<br>
+                            &bull; Probing takes time (depend on the number of steps requested), probing launched by <b>[Recalculate]</b> button.<br>
                             <br>
 
                             <hr>
@@ -596,11 +625,16 @@
                             <div class="control"></div>
                         </div>
 
-                        <div class="field" id="asset_params" data-formula="gather_param_values(['current_assets', 'deposit_rate', 'monthly_salary', 'loan_result', 'loan_term', 'savings', 'bonus_month', 'bonus'],'').calculation_context">
-                            <label>Hidden cell to collect loan parameters structure</label>
+                        <div class="field" id="asset_params" data-formula="gather_param_values(['current_assets', 'deposit_rate', 'monthly_salary', 'loan_result', 'loan_term', 'savings', 'bonus_month', 'bonus', 'rent', 'monthly_ownership_tax', 'loan', 'house_value', 'house_market_rate'],'').calculation_context">
+                            <label>Hidden cell to collect asset calculation parameters</label>
                             <div class="control"></div>
                         </div>
-                        
+
+                        <div class="field" id="assets_result" data-formula="calc_assets(asset_params)">
+                            <label>Hidden cell to hold montlhy asset calculations</label>
+                            <div class="control"></div>
+                        </div>
+
                         <div class="field" id="loan_result" data-formula="calculate_loan(loan_params)">
                             <label>Hidden cell to collect loan schedule and stats</label>
                             <div class="control"></div>
@@ -616,7 +650,7 @@
                             <div class="control"><input class="input" type="text" value=""></div>
                         </div>
 
-                        <div class="field" id="graph_a" data-formula="graph_assets(asset_params, rent, monthly_ownership_tax, loan, house_price, house_market_rate)">
+                        <div class="field" id="graph_a" data-formula="graph_assets(assets_result)">
                             <label>Hidden cell to update loan payments graph</label>
                             <div class="control"><input class="input" type="text" value=""></div>
                         </div>

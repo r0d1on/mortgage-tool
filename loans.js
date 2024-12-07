@@ -144,7 +144,7 @@ function calculate_loan(loan_params) {
         });
   
     } else {
-        throw "unknown loan_type value, it must be in [1,2,3]";
+        throw `unknown loan_type value (${loan_params.loan_type}), it must be in [1,2,3]`;
     };
 
     return {
