@@ -550,7 +550,7 @@ function calc_assets_renting({current_assets, deposit_rate, monthly_salary, loan
 
     let assets = current_assets;
 
-    for(let i=0; i<loan_term; i++) {
+    for(let i=0; i<loan_term_actual; i++) {
         assets += assets * deposit_rate_m;
         increment = monthly_salary - rent + ((((i%12)+1)==bonus_month)?bonus:0);
         if (increment<0) console.warn(`Renting: Monthly asset increment is negative, month:${i+1}, increment ${increment}`);
@@ -580,7 +580,7 @@ function calc_assets_housing({current_assets, deposit_rate, monthly_salary, loan
     let house_rate = house_market_rate / (100*12);
     let estate_owned = house_price - loan;
 
-    for(let i=0; i<loan_term; i++) {
+    for(let i=0; i<loan_term_actual; i++) {
         let payment = (i < loan_term_actual) ? loan_result.monthly[i] : {total_payment:0, tax_return:0, capital_payment:0};
         assets += assets * deposit_rate_m;
         increment = monthly_salary - monthly_ownership_tax + payment.tax_return - payment.total_payment + ((((i%12)+1)==bonus_month)?bonus:0);
