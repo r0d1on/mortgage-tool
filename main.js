@@ -1,3 +1,7 @@
+function throw_error(text) {
+    console.trace();
+    throw text;
+}
 
 function init_tabs() {
     Array.from(document.getElementsByClassName("tabs")).map((div)=>{
@@ -81,7 +85,7 @@ function saveState() {
     Object.keys(FIELDS).map((id)=>{
         let fdesc = FIELDS[id];
         if (fdesc.input!==undefined) {
-            if ( (!fdesc.input.disabled) && (fdesc.input.value != fdesc.dom.dataset['default']) ) {
+            if ( (!fdesc.input.disabled) && (fdesc.input.value != fdesc.field.dataset['default']) ) {
                 str_state += (str_state=="") ? "?" : "&";
                 str_state += `${id}=${fdesc.input.value}`;
             };
@@ -111,19 +115,21 @@ function init_fields() {
     let saved_state = loadState();
 
     Array.from(document.getElementsByClassName("field")).map((field)=>{
-        if (field.id in FIELDS) 
-            throw `duplicate field id ${field.id}`
+        const input = field.getElementsByTagName("input")[0];
+        const id = field.id||input.id;
 
-        let input = field.getElementsByTagName("input")[0];
+        if (id === undefined) 
+            throw_error(`undefined id for field: ${field}`)
 
-        if (input===undefined) {
+        if (id in FIELDS) 
+            throw_error(`duplicate field id ${id}`)
 
-        } else {
+        if (input!==undefined) {
             if (field.dataset["formula"]!==undefined) {
                 input.disabled = true;
             } else {
-                if (saved_state[field.id]!==undefined) {
-                    input.value = saved_state[field.id];
+                if (saved_state[id]!==undefined) {
+                    input.value = saved_state[id];
                 } else if (field.dataset['default']!==undefined) {
                     input.value = field.dataset['default'];
                 };
@@ -132,7 +138,8 @@ function init_fields() {
                     input.addEventListener("wheel", (e)=>{
                         let tune = e.target.parentNode.parentNode.dataset['tune'];
                         if ((tune)&&(e.shiftKey)) {
-                            let value = get_field_value(e.target.parentNode.parentNode.id, "");
+                            let id = e.target.parentNode.parentNode.id || e.target.id;
+                            let value = get_field_value(id, "");
                             if (e.deltaY>0) {
                                 e.target.value = value - 1.0*tune;
                             } else {
@@ -154,18 +161,17 @@ function init_fields() {
                     });
                 };
             }
-            field.title = input.disabled ? `${field.id} = ${field.dataset["formula"]}` : field.id;
+            field.title = input.disabled ? `${id} = ${field.dataset["formula"]}` : id;
         };
 
-        FIELDS[field.id] = {
-            "id" : field.id,
+        FIELDS[id] = {
+            "id" : id,
+            "field" : field,
             "input" : input,
             "formula" : field.dataset["formula"],
             "type" : field.dataset["type"],
             "round" : field.dataset["round"]||2,
-            //"value" : (input.value!="") ? "" : 1.0*input.value,
-            "params" : get_parameters(field.dataset["formula"]),
-            "dom" : field
+            "params" : get_parameters(field.dataset["formula"])
         }
     });
 }
@@ -196,7 +202,7 @@ function gather_param_values(params, path) {
         const param_name = params[i];
 
         if (path.includes(`[${param_name}]`))
-            throw `cyclic dependency:  ${path}->${param_name}`
+            throw_error(`cyclic dependency:  ${path}->${param_name}`)
 
         calculation_context[params[i]] = get_field_value(param_name, `${path}->[${param_name}]`);
         if (calculation_context[params[i]]===undefined) {
@@ -213,7 +219,7 @@ function gather_param_values(params, path) {
 
 function get_field_value(id, path) {
     const fdesc = FIELDS[id];
-    if (fdesc===undefined) throw `undefined parameter ${id} requested from path ${path}`;
+    if (fdesc===undefined) throw_error(`undefined parameter ${id} requested from path ${path}`);
 
     let value = (fdesc.input===undefined) ? fdesc.value : fdesc.value||fdesc.input.value;
 
@@ -237,7 +243,7 @@ function get_field_value(id, path) {
 
     if (error) {
         fdesc.input.value = error;
-        throw error;
+        throw_error(error);
     } else {
         try {
             value = evalInScope(fdesc.formula, calculation_context);
@@ -251,7 +257,7 @@ function get_field_value(id, path) {
         } catch (ex) {
             if (fdesc.input!==undefined)
                 fdesc.input.value = `Error in formula: ${ex.message}`;
-            throw ex;
+            throw_error(ex);
         }
     }
 
@@ -259,10 +265,11 @@ function get_field_value(id, path) {
     return value;
 }
 
+let tick_state = [0,0];
 function recalculate_fields(direct) {
     let button = document.getElementById("recalc_button");
 
-    button.innerHTML = "..calculating..";
+    button.innerHTML = "..calculation error: check console..";
 
     if (!direct) {
         OVERRIDES = {};
@@ -301,12 +308,21 @@ function recalculate_fields(direct) {
         button.innerHTML = "Recalculate";
     };
     
-
-    document.title = `${get_field_value("loan")}  [${get_field_value("loan_type")}:${get_field_value("tax_scheme")}]`;
-    document.title += ` ${get_field_value("loan_term_actual")} * ${Math.round(get_field_value("payment_first"))}`;
-    document.title += ` / ${Math.round(get_field_value("total_paid_net_monthly"))}`;
-    document.title += ` / ${Math.round(100 * get_field_value("assets_delta")) / 100}`;
-    document.title += ` / ${Math.round(100 * get_field_value("assets_roi")) / 100}`;
+    if (!direct) {
+        document.title = `${get_field_value("loan")}  [${get_field_value("loan_type")}:${get_field_value("tax_scheme")}]`;
+        document.title += ` ${get_field_value("loan_term_actual")} * ${Math.round(get_field_value("payment_first"))}`;
+        document.title += ` / ${Math.round(get_field_value("total_paid_net_monthly"))}`;
+        document.title += ` / ${Math.round(100 * get_field_value("assets_delta")) / 100}`;
+        document.title += ` / ${Math.round(100 * get_field_value("assets_roi")) / 100}`;
+    } else {
+        document.title = "⏳";
+        tick_state[0]+=1;
+        if (tick_state[0]>10) {
+            tick_state[0]=0;
+            tick_state[1]+=1;
+        }
+        document.title += ['/','-','\\','|'][tick_state[1]%4];
+    };
 }
 
 OVERRIDES = {};
@@ -315,7 +331,7 @@ function loan_schedule(loan_result) {
     function extre_payment_adjuster(event) {
         let old_value = event.target.innerHTML;
         let new_value = prompt("Enter adjusted extra payment value", old_value);
-        if (new_value!=old_value) {
+        if ((new_value!=old_value)&&(new_value!==undefined)&&(new_value!="")&&(new_value!=null)) {
             OVERRIDES[event.target.id] = new_value*1;
             recalculate_fields(true)
         };
@@ -487,10 +503,25 @@ function graph_whatif() {
         return [var_def, range, old_value];
     }
 
+    function add(target, source) {
+        Array.from(Object.keys(source)).map((key)=>{
+            target[key] = source[key]; 
+        });        
+    }
+
+    let all_parameters = Array.from(Object.keys(FIELDS));
+    let original_parametetrs = {};
+    
+    let tmp = gather_param_values(all_parameters, "").calculation_context;
+    Array.from(Object.keys(tmp)).map((key)=>{
+        original_parametetrs[key + "_0"] = tmp[key];
+    });
+
     function get_metric_value(metric) {
         return eval_if_needed(metric, ()=>{
-            let {calculation_context, error} = gather_param_values(Array.from(Object.keys(FIELDS)), "");
+            let {calculation_context, error} = gather_param_values(all_parameters, "");
             if (error) console.error("Error while calculating context:", error);
+            add(calculation_context, original_parametetrs);
             return calculation_context;
         }, (metric)=>{
             return get_field_value(metric)
