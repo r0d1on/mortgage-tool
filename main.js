@@ -45,9 +45,17 @@ function get_parameters(formula) {
     let params = [];
     if (formula===undefined) return params;
 
-    const rg=/([a-zA-Z_\.]+)\(([^\)]*)\)(\.[a-zA-Z_]+)*/g;
+    const rg_fld=/([a-zA-Z_][a-zA-Z0-9_]*)(\.[a-zA-Z_][a-zA-Z0-9_]*)+/g; // structure.field
+    for (const match of formula.matchAll(rg_fld)) {
+        const sub = match[0];
+        if (match[1]!="Math") {
+            params.push(match[1]);
+            formula = formula.replaceAll(sub," ");
+        }
+    };
 
-    for (const match of formula.matchAll(rg)) {
+    const rg_fn=/([a-zA-Z_\.]+)\(([^\)]*)\)(\.[a-zA-Z_]+)*/g; // function().field call
+    for (const match of formula.matchAll(rg_fn)) {
         const sub = match[0];
         get_parameters(match[2]).map((p)=>{
             params.push(p);
@@ -119,26 +127,32 @@ function init_fields() {
                 } else if (field.dataset['default']!==undefined) {
                     input.value = field.dataset['default'];
                 };
-                input.addEventListener("wheel", (e)=>{
-                    let tune = e.target.parentNode.parentNode.dataset['tune'];
-                    if ((tune)&&(e.shiftKey)) {
-                        let value = get_field_value(e.target.parentNode.parentNode.id, "");
-                        if (e.deltaY>0) {
-                            e.target.value = value - 1.0*tune;
-                        } else {
-                            e.target.value = value + 1.0*tune;
+
+                if (field.dataset["type"]!='raw') {
+                    input.addEventListener("wheel", (e)=>{
+                        let tune = e.target.parentNode.parentNode.dataset['tune'];
+                        if ((tune)&&(e.shiftKey)) {
+                            let value = get_field_value(e.target.parentNode.parentNode.id, "");
+                            if (e.deltaY>0) {
+                                e.target.value = value - 1.0*tune;
+                            } else {
+                                e.target.value = value + 1.0*tune;
+                            };
+                            e.preventDefault();
+                            saveState();
+                            recalculate_fields();
+                            return true;
                         };
-                        e.preventDefault();
+                    });
+                    input.addEventListener("change", ()=>{
                         saveState();
                         recalculate_fields();
-                        return true;
-                    };
-                });
-
-                input.addEventListener("change", ()=>{
-                    saveState();
-                    recalculate_fields();
-                });
+                    });
+                } else {
+                    input.addEventListener("change", ()=>{
+                        saveState();
+                    });
+                };
             }
             field.title = input.disabled ? `${field.id} = ${field.dataset["formula"]}` : field.id;
         };
@@ -148,6 +162,7 @@ function init_fields() {
             "input" : input,
             "formula" : field.dataset["formula"],
             "type" : field.dataset["type"],
+            "round" : field.dataset["round"]||2,
             //"value" : (input.value!="") ? "" : 1.0*input.value,
             "params" : get_parameters(field.dataset["formula"]),
             "dom" : field
@@ -160,6 +175,17 @@ function evalInScope(js, contextAsScope) {
         with(this) { return eval(js); }; 
     }
     .call(contextAsScope);
+}
+
+function eval_if_needed(expression, context, mapper) {
+    context = (context===undefined) ? {} : context;
+    mapper = (mapper===undefined) ? ((v)=>{return v}) : mapper;
+    if (/[\+-\/\*\(\)]/g.test(expression)) {
+        if (typeof(context)=="function") context = context();
+        return evalInScope(expression, context);
+    } else {
+        return mapper(expression);
+    }
 }
 
 function gather_param_values(params, path) {
@@ -198,10 +224,8 @@ function get_field_value(id, path) {
             } else if (value=="") {
                 console.log(`field ${id} value must be specified`);
                 return undefined;
-            } else if (/[\+-\/\*\(\)]/g.test(value)) { // ad-hoc formula
-                return 1.0*evalInScope(value, {});
             };
-            return 1.0*value;
+            return 1.0*eval_if_needed(value);
         }
     };
     
@@ -220,7 +244,8 @@ function get_field_value(id, path) {
             if (fdesc.input===undefined) {
                 fdesc.value = value;
             } else {
-                fdesc.input.value = Math.round(100.0 * value)/100.0;
+                const xp = 10**fdesc.round;
+                fdesc.input.value = Math.round(xp * value)/xp;
                 fdesc.value = value;
             };
         } catch (ex) {
@@ -235,6 +260,14 @@ function get_field_value(id, path) {
 }
 
 function recalculate_fields(direct) {
+    let button = document.getElementById("recalc_button");
+
+    button.innerHTML = "..calculating..";
+
+    if (!direct) {
+        OVERRIDES = {};
+    };
+    
     // cleanup
     Object.keys(FIELDS).map((id)=>{
         let fdesc = FIELDS[id];
@@ -259,11 +292,15 @@ function recalculate_fields(direct) {
             };
     });
 
-     
     let wf = document.querySelectorAll("div[data-block='whatif']")[0];
     if (wf.classList.contains("is-visible") && (!direct)) {
         graph_whatif();
     };
+
+    if (!direct) {
+        button.innerHTML = "Recalculate";
+    };
+    
 
     document.title = `${get_field_value("loan")}  [${get_field_value("loan_type")}:${get_field_value("tax_scheme")}]`;
     document.title += ` ${get_field_value("loan_term_actual")} * ${Math.round(get_field_value("payment_first"))}`;
@@ -272,8 +309,18 @@ function recalculate_fields(direct) {
     document.title += ` / ${Math.round(100 * get_field_value("assets_roi")) / 100}`;
 }
 
-function loan_schedule(loan_params) {
-    let result = calculate_loan(loan_params);
+OVERRIDES = {};
+
+function loan_schedule(loan_result) {
+    function extre_payment_adjuster(event) {
+        let old_value = event.target.innerHTML;
+        let new_value = prompt("Enter adjusted extra payment value", old_value);
+        if (new_value!=old_value) {
+            OVERRIDES[event.target.id] = new_value*1;
+            recalculate_fields(true)
+        };
+    };
+
     let schedule_dom = document.querySelectorAll("div[data-block='schedule']")[0];
     schedule_dom = schedule_dom.getElementsByClassName("column")[0];
     schedule_dom.innerHTML="";
@@ -282,7 +329,7 @@ function loan_schedule(loan_params) {
 
     let thead = document.createElement("thead");
     let tr = document.createElement("tr");
-    Object.keys(result.monthly[0]).map((key)=>{
+    Object.keys(loan_result.monthly[0]).map((key)=>{
         let th = document.createElement("th");
         th.textContent=key;
         tr.appendChild(th);
@@ -292,12 +339,47 @@ function loan_schedule(loan_params) {
 
     let tbody = document.createElement("tbody");
 
-    result.monthly.map((record)=>{
-        tr = document.createElement("tr");
+    let month = 0;
+    let annual = {};
+    let debt = 0;
+    loan_result.monthly.map((record)=>{
+        month+=1;
+        if (month==1) debt = record["debt"];
 
+        if ((month%12==1)&&(month>1)) {
+            tr = document.createElement("tr");
+            Object.keys(record).map((key)=>{
+                let td = document.createElement("td");
+                let content = Math.round(100*annual[key])/100;
+                if (key=="debt") {
+                    content = Math.round(1000*record[key] / debt) / 10 + "%";
+                } else if (key=="month") {
+                    content = ("year_" + (month-1)/12);
+                };
+                td.innerHTML = `<b style="color:#00F">${content}</b>`;
+                tr.appendChild(td);
+                annual[key] = 0;
+            });
+            tbody.appendChild(tr);
+        };
+
+        tr = document.createElement("tr");
         Object.keys(record).map((key)=>{
             let td = document.createElement("td");
-            td.textContent = Math.round(100*record[key])/100;
+            if (key=="debt") {
+                annual[key] = (annual[key]||record[key]);
+            } else {
+                annual[key] = (annual[key]||0) + record[key];
+            };
+
+            td.innerHTML = Math.round(100*record[key])/100;
+            if (key=="extra_payment") {
+                td.id = "xp_" + record["month"];
+                td.addEventListener("click", extre_payment_adjuster);
+                if ("xp_" + record["month"] in OVERRIDES) {
+                    td.classList.add("overrided");
+                };
+            }
             tr.appendChild(td);
         });
         tbody.appendChild(tr);
@@ -305,24 +387,22 @@ function loan_schedule(loan_params) {
     table.appendChild(tbody);
 
     schedule_dom.appendChild(table);
-    console.log(result);
+    console.log(loan_result);
 }
 
-function graph_payments(loan_params) {
-    let result = calculate_loan(loan_params);
-
-    let months = result.monthly.map((record)=>{
+function graph_payments(loan_result) {
+    let months = loan_result.monthly.map((record)=>{
         return Math.round(100*record["month"])/100
     });
 
     let data =  Object
-    .keys(result.monthly[0])
+    .keys(loan_result.monthly[0])
     .filter((v)=>{return v!='month'})    
     .map((key)=>{
         return {
             x : months,
-            y : result.monthly.map((record)=>{
-                return Math.round(100*record[key])/100
+            y : loan_result.monthly.map((record)=>{
+                return record[key];
             }),
             type: 'scatter',
             name: key,
@@ -343,9 +423,9 @@ function graph_payments(loan_params) {
     Plotly.newPlot("graph_payments_target", data, layout);
 }
 
-function graph_assets(asset_params, rent, monthly_ownership_tax, loan, house_price, house_market_rate) {
-    let result_renting = calc_assets_renting(asset_params, rent);
-    let result_housing = calc_assets_housing(asset_params, monthly_ownership_tax, loan, house_price, house_market_rate);
+function graph_assets(assets_result) {
+    let result_renting = assets_result.renting;
+    let result_housing = assets_result.housing;
 
     let months = result_renting.monthly.map((record)=>{
         return Math.round(100*record["month"])/100
@@ -358,7 +438,7 @@ function graph_assets(asset_params, rent, monthly_ownership_tax, loan, house_pri
         return {
             x : months,
             y : result_renting.monthly.map((record)=>{
-                return Math.round(100*record[key])/100
+                return record[key]
             }),
             type: 'scatter',
             name: key+"_renting",
@@ -373,7 +453,7 @@ function graph_assets(asset_params, rent, monthly_ownership_tax, loan, house_pri
         data.push({
             x : months,
             y : result_housing.monthly.map((record)=>{
-                return Math.round(100*record[key])/100
+                return record[key]
             }),
             type: 'scatter',
             name: key+"_housing",
@@ -395,24 +475,33 @@ function graph_assets(asset_params, rent, monthly_ownership_tax, loan, house_pri
 }
 
 function graph_whatif() {
-    let variable1 = get_field_value("variable1").split("(");
-    let range1 = variable1[1].replaceAll(")", "").split(',');
-    variable1 = variable1[0];
-    let old_value1 = FIELDS[variable1].input.value;
+    function parse_variable(name) {
+        let var_def = get_field_value(name).split("(");
+        if (var_def[0].trim()=="") 
+            return [];
+        let range = var_def[1].replaceAll(")", "").split(',').map((value)=>{
+            return 1.0*eval_if_needed(value);
+        });
+        var_def = var_def[0];
+        let old_value = FIELDS[var_def].input.value;
+        return [var_def, range, old_value];
+    }
 
-    let variable2 = get_field_value("variable2").split("(");
-    variable2 = (variable2[0].trim()=="") ? undefined : variable2;
-    let range2 = undefined;
-    let old_value2 = undefined;
+    function get_metric_value(metric) {
+        return eval_if_needed(metric, ()=>{
+            let {calculation_context, error} = gather_param_values(Array.from(Object.keys(FIELDS)), "");
+            if (error) console.error("Error while calculating context:", error);
+            return calculation_context;
+        }, (metric)=>{
+            return get_field_value(metric)
+        });
+    }
 
-    if (variable2!==undefined) {
-        range2 = variable2[1].replaceAll(")", "").split(',');
-        variable2 = variable2[0];
-        old_value2 = (variable2.trim()=="")?undefined:(FIELDS[variable2].input.value);        
-    };
+    let [variable1, range1, old_value1] = parse_variable("variable1");
+    let [variable2, range2, old_value2] = parse_variable("variable2");
 
     let results = [];
-    for(let value1 = range1[0]*1; value1 <= range1[1]*1; value1 += (range1[1]*1 - range1[0]*1) / range1[2]*1) {
+    for(let value1 = range1[0]*1; value1 <= range1[1]*1; value1 += (range1[1]*1 - range1[0]*1) / (range1[2]*1 - 1)) {
         FIELDS[variable1].input.value = value1;
 
         if (variable2==undefined) { // 2d plot, many metrics
@@ -420,28 +509,22 @@ function graph_whatif() {
             result[variable1] = value1;
             recalculate_fields(true);
             get_field_value("metrics").split(",").map((metric)=>{
-                const key = metric.trim();
-                result[key] = get_field_value(key);
+                const metric0 = metric.trim();
+                result[metric0] = get_metric_value(metric0);
             });
             results.push(result);
 
         } else { // 3d surface plot - two parameters, one metric
             let result = [];
-            for(let value2 = range2[0]*1; value2 <= range2[1]*1; value2+=(range2[1]*1 - range2[0]*1) / range2[2]*1) {
+            for(let value2 = range2[0]*1; value2 <= range2[1]*1; value2+=(range2[1]*1 - range2[0]*1) / (range2[2]*1 - 1)) {
                 FIELDS[variable2].input.value = value2;
                 let xyz = {};
                 xyz[variable1] = value1;
                 xyz[variable2] = value2;
                 recalculate_fields(true);
 
-                const key = get_field_value("metrics").split(",")[0].trim();
-                xyz[key] = get_field_value(key);
-                /*
-                .map((metric)=>{
-                    const key = metric.trim();
-                    xyz[key] = get_field_value(key);
-                });
-                */
+                const metric0 = get_field_value("metrics").split(",")[0].trim(); // take first metric
+                xyz[metric0] = get_metric_value(metric0);
                 result.push(xyz);
             };
             results.push(result);
@@ -469,7 +552,7 @@ function graph_whatif() {
             return {
                 x : xs,
                 y : results.map((record)=>{
-                    return Math.round(100 * record[key]) / 100
+                    return record[key]
                 }),
                 type: 'scatter',
                 mode: 'lines+markers',
@@ -492,8 +575,8 @@ function graph_whatif() {
         const key = get_field_value("metrics").split(",")[0].trim();
         data = [{
             z: results.map((a)=>{return a.map((r)=>{return r[key]})}),
-            y: results.map((a)=>{return a[0][variable1]}),
             x: results[0].map((r)=>{return r[variable2]}),
+            y: results.map((a)=>{return a[0][variable1]}),
             type: 'surface',
             contours: {
               z: {
@@ -527,9 +610,8 @@ function graph_whatif() {
     Plotly.newPlot("graph_whatif_target", data, layout);
 }
 
-
-function loan_stats(loan_params) {
-    let result = calculate_loan(loan_params);
+function loan_stats(loan_result) {
+    let result = loan_result;
     return {
         "payment_first" : result.monthly[0].total_payment - result.monthly[0].extra_payment2,
         "payment_last" : result.monthly[result.monthly.length-1].total_payment- result.monthly[result.monthly.length-1].extra_payment2,
@@ -542,68 +624,70 @@ function loan_stats(loan_params) {
     }
 }
 
-function calc_assets_renting({current_assets, deposit_rate, monthly_salary, loan_result, loan_term, savings, bonus_month, bonus},  rent) {
+function calc_assets({current_assets, deposit_rate, monthly_salary, loan_result, loan_term, savings, bonus_month, bonus, rent, monthly_ownership_tax, loan, house_value, house_market_rate}) {
     let deposit_rate_m = deposit_rate/(100*12);
     let loan_term_actual = loan_result.monthly.length;
-    let increment = 0;
-    let monthly = [];
 
-    let assets = current_assets;
+    let increment_renting = 0;
+    let increment_housing = 0;
 
-    for(let i=0; i<loan_term; i++) {
-        assets += assets * deposit_rate_m;
-        increment = monthly_salary - rent + ((((i%12)+1)==bonus_month)?bonus:0);
-        if (increment<0) console.warn(`Renting: Monthly asset increment is negative, month:${i+1}, increment ${increment}`);
-        assets += increment;
-        if (assets<0) console.warn(`Renting: Asset balance is negative, month:${i+1}`);
-        monthly.push({
-            month : i+1,
-            increment,
-            total_assets: assets
-        });
-    };
+    let monthly_renting = [];
+    let monthly_housing = [];
 
-    return {
-        monthly : monthly,
-        outcome : assets
-    };
-}
-
-function calc_assets_housing({current_assets, deposit_rate, monthly_salary, loan_result, loan_term, savings, bonus_month, bonus}, monthly_ownership_tax, loan, house_price, house_market_rate) {
-    let deposit_rate_m = deposit_rate/(100*12);
-    let loan_term_actual = loan_result.monthly.length;
-    let increment = 0;
-    let monthly = [];
-
-    let assets = current_assets - savings;
+    let assets_renting = current_assets;
+    let assets_housing = current_assets - savings;
 
     let house_rate = house_market_rate / (100*12);
-    let estate_owned = house_price - loan;
+    let estate_owned = house_value - loan;
 
-    for(let i=0; i<loan_term; i++) {
+    let months_to_even = loan_term;
+
+    for(let i=0; i<30*12; i++) {
         let payment = (i < loan_term_actual) ? loan_result.monthly[i] : {total_payment:0, tax_return:0, capital_payment:0};
-        assets += assets * deposit_rate_m;
-        increment = monthly_salary - monthly_ownership_tax + payment.tax_return - payment.total_payment + ((((i%12)+1)==bonus_month)?bonus:0);
-        if (increment<0) console.warn(`Housing: monthly asset increment is negative, month:${i+1}, increment ${increment}`);
-        assets += increment;
 
-        estate_owned += payment.capital_payment;
+        assets_renting += assets_renting * deposit_rate_m;
+        assets_housing += assets_housing * deposit_rate_m;
 
-        house_price += house_price * house_rate;
-        if (assets<0) console.warn(`Housing: Asset balance is negative, month:${i+1}`);
-        monthly.push({
+        increment_renting = monthly_salary - rent + ((((i%12)+1)==bonus_month)?bonus:0);
+        if (increment_renting<0) console.warn(`monthly increment_renting is negative, month:${i+1}, increment ${increment_renting}`);
+        assets_renting += increment_renting;
+        if (assets_renting<0) console.warn(`Renting: Asset balance is negative, month:${i+1}`);
+        monthly_renting.push({
             month : i+1,
-            increment,
-            total_assets : estate_owned*Math.pow(1.0+house_rate, i+1) + assets,
-            liquid_assets : assets,
-            estate_owned : estate_owned*Math.pow(1.0+house_rate, i+1),
+            increment: increment_renting,
+            total_assets: assets_renting
         });
+
+        increment_housing = monthly_salary - monthly_ownership_tax + payment.tax_return - payment.total_payment + ((((i%12)+1)==bonus_month)?bonus:0);
+        if (increment_housing < 0) console.warn(`monthly increment_housing is negative, month:${i+1}, increment ${increment_housing}`);
+        assets_housing += increment_housing;
+        if (assets_housing < 0) console.warn(`Housing: Asset balance is negative, month:${i+1}`);
+        estate_owned += payment.capital_payment;
+        house_value += house_value * house_rate;
+        monthly_housing.push({
+            month : i+1,
+            increment: increment_housing,
+            total_assets : estate_owned * Math.pow(1.0+house_rate, i+1) + assets_housing,
+            liquid_assets : assets_housing,
+            estate_owned : estate_owned * Math.pow(1.0+house_rate, i+1),
+        });
+
+        if (estate_owned * Math.pow(1.0+house_rate, i+1) + assets_housing >= assets_renting)
+            months_to_even = Math.min(months_to_even, i);
     };
 
     return {
-        monthly : monthly,
-        outcome : assets + house_price
+        renting : {
+            monthly : monthly_renting,
+            outcome : assets_renting
+        },
+        housing : {
+            monthly : monthly_housing,
+            outcome : assets_housing + house_value
+        },
+        months_to_even
     };
+
 }
 
 document.addEventListener('DOMContentLoaded', function() {
