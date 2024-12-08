@@ -3,8 +3,25 @@ function throw_error(text) {
     throw text;
 }
 
+let TABS = {};
 function init_tabs() {
-    Array.from(document.getElementsByClassName("tabs")).map((div)=>{
+    function activate_tab(tab, index) {
+        Object.keys(TABS[index].blocks).map((block)=>{
+            TABS[index].blocks[block].classList.remove("is-visible");
+        });
+        TABS[index].blocks[tab].classList.add("is-visible");
+
+        Object.keys(TABS[index].tabs).map((tab)=>{
+            TABS[index].tabs[tab].classList.remove("is-active");
+        });
+        TABS[index].tabs[tab].classList.add("is-active");
+        TABS[index]['activated'] = tab;
+    };
+
+    let saved_state = loadState();
+
+    TABS = {};
+    Array.from(document.getElementsByClassName("tabs")).map((div, ix)=>{
         var blocks = (
             Array.from(div.parentElement.getElementsByClassName("block"))
             .reduce((a, v)=>{
@@ -12,7 +29,6 @@ function init_tabs() {
                 return a
             }, {})
         );
-
         var tabs = (
             Array.from(div.getElementsByTagName("li"))
             .reduce((a, v)=>{
@@ -20,29 +36,27 @@ function init_tabs() {
                 return a
             }, {})
         );
+        TABS[ix] = {blocks, tabs};
 
         Object.keys(tabs).map((name)=>{
-            tabs[name].addEventListener("click", ((theblock)=>{
-                return ()=>{
-                    Object.keys(blocks).map((block)=>{
-                        blocks[block].classList.remove("is-visible");
-                    });
-                    blocks[theblock].classList.add("is-visible");
-
-                    Object.keys(tabs).map((tab)=>{
-                        tabs[tab].classList.remove("is-active");
-                    });
-                    tabs[theblock].classList.add("is-active");
+            tabs[name].addEventListener("click", ((theblock, index)=>{
+                return (e)=>{
+                    activate_tab(theblock, index);
+                    saveState();
                 };
             })(
-                name,
+                name, ix
             ));
 
-            if (tabs[name].classList.contains("is-active"))
-                tabs[name].click();
+            if (tabs[name].classList.contains("is-active")) {
+                activate_tab(name, ix);
+            }
         });
+
+        if (`t_${ix}` in saved_state) {
+            activate_tab(saved_state[`t_${ix}`], ix);
+        };
     });
-    
 }
 
 function get_parameters(formula) {
@@ -78,9 +92,15 @@ function get_parameters(formula) {
 }
 
 let FIELDS = {};
-
 function saveState() {
     let str_state = "";
+
+    Object.keys(TABS).map((index)=>{
+        if (TABS[index]['activated']!=['mortgage', 'stats'][index]) {
+            str_state += (str_state=="") ? "?" : "&";
+            str_state += `t_${index}=${TABS[index]['activated']}`;
+        };
+    });
 
     Object.keys(FIELDS).map((id)=>{
         let fdesc = FIELDS[id];
@@ -93,7 +113,8 @@ function saveState() {
     });    
 
     if (str_state!="") {
-        window.history.pushState({page: ""}, "", window.location.pathname.split('/').pop() + str_state);
+        const url = window.location.pathname.split('/').pop() + str_state;
+        window.history.pushState({page: url}, "", url);
     };
 }
 

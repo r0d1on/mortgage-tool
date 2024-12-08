@@ -275,7 +275,7 @@
                             <div class="control"><input id="purchase_cost" class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
                         </div>
-                        <div class="field" data-formula="house_price > nhg_max_price ? 0 : (nhg_cost_pct / 100) * (house_price - (savings - purchase_cost))">
+                        <div class="field" data-formula="house_price > nhg_max_price ? 0 : (nhg_cost_pct / 100) * (house_price + purchase_cost - savings)">
                             <label for="cost_nhg">NHG fee</label>
                             <div class="control"><input id="cost_nhg" class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
