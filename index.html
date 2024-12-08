@@ -106,7 +106,7 @@
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>m</i></span></div>
                         </div>
-                        <div class="field" id="loan_term_actual" data-formula="loan_stats(loan_params).actual_term">
+                        <div class="field" id="loan_term_actual" data-formula="loan_stats(loan_result).actual_term">
                             <label>Loan term actual (months)</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>m</i></span></div>
@@ -139,7 +139,7 @@
                     </div>
 
                     <div class="column">
-                        <div class="field" id="total_tax_returned" data-formula="loan_stats(loan_params).total_tax_returned">
+                        <div class="field" id="total_tax_returned" data-formula="loan_stats(loan_result).total_tax_returned">
                             <label>Total tax returned (hypotheekrenteaftrek):</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
@@ -180,23 +180,23 @@
                             <span class="icon"><i>€</i></span></div>
                         </div>
 
-                        <div class="field" id="total_paid_extra" data-formula="loan_stats(loan_params).total_paid_extra">
+                        <div class="field" id="total_paid_extra" data-formula="loan_stats(loan_result).total_paid_extra">
                             <label>Total repaid extra</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
                         </div>
 
-                        <div class="field" id="total_paid_gross" data-formula="loan_stats(loan_params).total_paid_gross">
+                        <div class="field" id="total_paid_gross" data-formula="loan_stats(loan_result).total_paid_gross">
                             <label>Total repaid (gross)</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
                         </div>
-                        <div class="field" id="total_paid_net" data-formula="loan_stats(loan_params).total_paid_net">
+                        <div class="field" id="total_paid_net" data-formula="loan_stats(loan_result).total_paid_net">
                             <label>Total repaid (net)</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
                         </div>
-                        <div class="field" id="total_paid_penalty" data-formula="loan_stats(loan_params).total_paid_penalty">
+                        <div class="field" id="total_paid_penalty" data-formula="loan_stats(loan_result).total_paid_penalty">
                             <label>Total paid penalties</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
@@ -640,12 +640,12 @@
                             <div class="control"></div>
                         </div>
 
-                        <div class="field" id="schedule" data-formula="loan_schedule(loan_params)">
+                        <div class="field" id="schedule" data-formula="loan_schedule(loan_result)">
                             <label>Hidden cell to update loan payments schedule</label>
                             <div class="control"><input class="input" type="text" value=""></div>
                         </div>
 
-                        <div class="field" id="graph_p" data-formula="graph_payments(loan_params)">
+                        <div class="field" id="graph_p" data-formula="graph_payments(loan_result)">
                             <label>Hidden cell to update loan payments graph</label>
                             <div class="control"><input class="input" type="text" value=""></div>
                         </div>
@@ -663,12 +663,12 @@
             <div data-block="stats" class="block">
                 <div class="columns">
                     <div class="column">
-                        <div class="field" id="payment_first" data-formula="loan_stats(loan_params).payment_first">
+                        <div class="field" id="payment_first" data-formula="loan_stats(loan_result).payment_first">
                             <label>First payment (without periodic repayment)</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
                         </div>
-                        <div class="field" id="payment_last" data-formula="loan_stats(loan_params).payment_last">
+                        <div class="field" id="payment_last" data-formula="loan_stats(loan_result).payment_last">
                             <label>Last payment (without periodic repayment)</label>
                             <div class="control"><input class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>

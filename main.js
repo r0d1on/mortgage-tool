@@ -263,6 +263,10 @@ function recalculate_fields(direct) {
     let button = document.getElementById("recalc_button");
 
     button.innerHTML = "..calculating..";
+
+    if (!direct) {
+        OVERRIDES = {};
+    };
     
     // cleanup
     Object.keys(FIELDS).map((id)=>{
@@ -305,8 +309,18 @@ function recalculate_fields(direct) {
     document.title += ` / ${Math.round(100 * get_field_value("assets_roi")) / 100}`;
 }
 
-function loan_schedule(loan_params) {
-    let result = calculate_loan(loan_params);
+OVERRIDES = {};
+
+function loan_schedule(loan_result) {
+    function extre_payment_adjuster(event) {
+        let old_value = event.target.innerHTML;
+        let new_value = prompt("Enter adjusted extra payment value", old_value);
+        if (new_value!=old_value) {
+            OVERRIDES[event.target.id] = new_value*1;
+            recalculate_fields(true)
+        };
+    };
+
     let schedule_dom = document.querySelectorAll("div[data-block='schedule']")[0];
     schedule_dom = schedule_dom.getElementsByClassName("column")[0];
     schedule_dom.innerHTML="";
@@ -315,7 +329,7 @@ function loan_schedule(loan_params) {
 
     let thead = document.createElement("thead");
     let tr = document.createElement("tr");
-    Object.keys(result.monthly[0]).map((key)=>{
+    Object.keys(loan_result.monthly[0]).map((key)=>{
         let th = document.createElement("th");
         th.textContent=key;
         tr.appendChild(th);
@@ -325,12 +339,47 @@ function loan_schedule(loan_params) {
 
     let tbody = document.createElement("tbody");
 
-    result.monthly.map((record)=>{
-        tr = document.createElement("tr");
+    let month = 0;
+    let annual = {};
+    let debt = 0;
+    loan_result.monthly.map((record)=>{
+        month+=1;
+        if (month==1) debt = record["debt"];
 
+        if ((month%12==1)&&(month>1)) {
+            tr = document.createElement("tr");
+            Object.keys(record).map((key)=>{
+                let td = document.createElement("td");
+                let content = Math.round(100*annual[key])/100;
+                if (key=="debt") {
+                    content = Math.round(1000*record[key] / debt) / 10 + "%";
+                } else if (key=="month") {
+                    content = ("year_" + (month-1)/12);
+                };
+                td.innerHTML = `<b style="color:#00F">${content}</b>`;
+                tr.appendChild(td);
+                annual[key] = 0;
+            });
+            tbody.appendChild(tr);
+        };
+
+        tr = document.createElement("tr");
         Object.keys(record).map((key)=>{
             let td = document.createElement("td");
-            td.textContent = Math.round(100*record[key])/100;
+            if (key=="debt") {
+                annual[key] = (annual[key]||record[key]);
+            } else {
+                annual[key] = (annual[key]||0) + record[key];
+            };
+
+            td.innerHTML = Math.round(100*record[key])/100;
+            if (key=="extra_payment") {
+                td.id = "xp_" + record["month"];
+                td.addEventListener("click", extre_payment_adjuster);
+                if ("xp_" + record["month"] in OVERRIDES) {
+                    td.classList.add("overrided");
+                };
+            }
             tr.appendChild(td);
         });
         tbody.appendChild(tr);
@@ -338,23 +387,21 @@ function loan_schedule(loan_params) {
     table.appendChild(tbody);
 
     schedule_dom.appendChild(table);
-    console.log(result);
+    console.log(loan_result);
 }
 
-function graph_payments(loan_params) {
-    let result = calculate_loan(loan_params);
-
-    let months = result.monthly.map((record)=>{
+function graph_payments(loan_result) {
+    let months = loan_result.monthly.map((record)=>{
         return Math.round(100*record["month"])/100
     });
 
     let data =  Object
-    .keys(result.monthly[0])
+    .keys(loan_result.monthly[0])
     .filter((v)=>{return v!='month'})    
     .map((key)=>{
         return {
             x : months,
-            y : result.monthly.map((record)=>{
+            y : loan_result.monthly.map((record)=>{
                 return record[key];
             }),
             type: 'scatter',
@@ -563,8 +610,8 @@ function graph_whatif() {
     Plotly.newPlot("graph_whatif_target", data, layout);
 }
 
-function loan_stats(loan_params) {
-    let result = calculate_loan(loan_params);
+function loan_stats(loan_result) {
+    let result = loan_result;
     return {
         "payment_first" : result.monthly[0].total_payment - result.monthly[0].extra_payment2,
         "payment_last" : result.monthly[result.monthly.length-1].total_payment- result.monthly[result.monthly.length-1].extra_payment2,

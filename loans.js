@@ -64,6 +64,10 @@ function calculate_loan_payments(loan_params, ICB) {
       capital_payment = debt - extra_payment - extra_payment2;
     };
 
+    if (("xp_"+(i+1)) in OVERRIDES) {
+      extra_payment = OVERRIDES["xp_"+(i+1)];
+    };
+
     actual_extra_payments += extra_payment + extra_payment2;
     if (actual_extra_payments > lp.max_extra_payment_per_year) {
       penalty = (actual_extra_payments - lp.max_extra_payment_per_year) * (lp.overpayment_penalty / 100);

@@ -232,3 +232,8 @@ table tbody tr:nth-child(even) {
     line-height: 1.5;
     margin-top: 1em;
 }
+
+.overrided {
+    font-weight: bold;
+    color : #d40;
+}
