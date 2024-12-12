@@ -112,10 +112,8 @@ function saveState() {
         }
     });    
 
-    if (str_state!="") {
-        const url = window.location.pathname.split('/').pop() + str_state;
-        window.history.pushState({page: url}, "", url);
-    };
+    const url = window.location.pathname.split('/').pop() + str_state;
+    window.history.pushState({page: url}, "", url);
 }
 
 function loadState() {
