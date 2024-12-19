@@ -15,13 +15,12 @@
 
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="theme-color" content="#000000">
-    <meta name="description" content="Annuity and linear flexible mortgage calculator for Netherlands">
-    <meta name="keywords"
-        content="Mortgage calculator netherlands, hypotheek berekenen, mortgage payment calculator netherlands, dutch mortgage calculator, annuity mortgage calculator, linear mortgage calculator, interest only mortgage calculator, calculate monthly mortgage payment netherlands, mortgage interest calculator netherlands, mortgage planning tool, mortgage rates, mortgage modelling tool, mortgage simulation, mortgage repayment, monthly mortgage cost breakdown, Annuity vs Lineal mortgage">
+    <meta name="description" content="Mortgage payments calculator for Netherlands, hypotheek berekenen">
+    <meta name="keywords" content="Mortgage calculator netherlands, Hypotheek betalings calculator, extra aflossen hypotheek, hypotheek berekenen, dutch mortgage calculator, bruto netto hypotheek, hypotheek aflossen berekenen, annuity mortgage, linear mortgage, interest only mortgage, mortgage planning tool, mortgage repayment, monthly mortgage breakdown, lineaire hypotheek, hypotheek maandlasten berekenen, annuïteitenhypotheek">
     <link rel="apple-touch-icon" href="https://r0d1on.github.io/mortgage-tool/icon.png">
     <link rel="manifest" href="https://r0d1on.github.io/mortgage-tool/manifest.json">
 
-    <title>Mortgage calculator and analysis tool (Netherlands)</title>
+    <title>Mortgage payments calculator (for Netherlands)</title>
 
     <link href="main.css" rel="stylesheet">
 </head>
@@ -383,9 +382,9 @@
                             <span class="icon"><i>%</i></span></div>
                         </div>
                         
-                        <div class="field" data-default="3000" data-tune="500">
-                            <label for="monthly_salary">Monthly salary</label>
-                            <div class="control"><input id="monthly_salary" class="input" type="text" value="">
+                        <div class="field" data-default="500" data-tune="500">
+                            <label for="monthly_savings">Monthly savings (salary - expenses - rent)</label>
+                            <div class="control"><input id="monthly_savings" class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
                         </div>
                         <div class="field" data-default="1" data-tune="1">
@@ -416,6 +415,18 @@
                             <div class="control"><input id="assets_left" class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
                         </div>
+
+                        <div class="field" data-formula="(monthly_savings + rent) * ([0, 185, 147, 273][loan_type])">
+                            <label for="max_loan">Approx. maximum loan</label>
+                            <div class="control"><input id="max_loan" class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" data-formula="max_loan + current_assets">
+                            <label for="max_value">Approx. maximum house value</label>
+                            <div class="control"><input id="max_value" class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+
                     </div>
 
 
@@ -635,7 +646,7 @@
                             <div class="control"></div>
                         </div>
 
-                        <div class="field" id="asset_params" data-formula="gather_param_values(['current_assets', 'deposit_rate', 'monthly_salary', 'loan_result', 'loan_term', 'savings', 'bonus_month', 'bonus', 'rent', 'monthly_ownership_tax', 'loan', 'house_value', 'house_market_rate'],'').calculation_context">
+                        <div class="field" id="asset_params" data-formula="gather_param_values(['current_assets', 'deposit_rate', 'monthly_savings', 'loan_result', 'loan_term', 'savings', 'bonus_month', 'bonus', 'rent', 'monthly_ownership_tax', 'loan', 'house_value', 'house_market_rate'],'').calculation_context">
                             <label>Hidden cell to collect asset calculation parameters</label>
                             <div class="control"></div>
                         </div>

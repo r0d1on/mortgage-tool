@@ -345,7 +345,6 @@ function recalculate_fields(direct) {
 }
 
 OVERRIDES = {};
-
 function loan_schedule(loan_result) {
     function extre_payment_adjuster(event) {
         let old_value = event.target.innerHTML;
@@ -674,7 +673,7 @@ function loan_stats(loan_result) {
     }
 }
 
-function calc_assets({current_assets, deposit_rate, monthly_salary, loan_result, loan_term, savings, bonus_month, bonus, rent, monthly_ownership_tax, loan, house_value, house_market_rate}) {
+function calc_assets({current_assets, deposit_rate, monthly_savings, loan_result, loan_term, savings, bonus_month, bonus, rent, monthly_ownership_tax, loan, house_value, house_market_rate}) {
     let deposit_rate_m = deposit_rate/(100*12);
     let loan_term_actual = loan_result.monthly.length;
 
@@ -698,7 +697,7 @@ function calc_assets({current_assets, deposit_rate, monthly_salary, loan_result,
         assets_renting += assets_renting * deposit_rate_m;
         assets_housing += assets_housing * deposit_rate_m;
 
-        increment_renting = monthly_salary - rent + ((((i%12)+1)==bonus_month)?bonus:0);
+        increment_renting = monthly_savings + ((((i%12)+1)==bonus_month)?bonus:0);
         if (increment_renting<0) console.warn(`monthly increment_renting is negative, month:${i+1}, increment ${increment_renting}`);
         assets_renting += increment_renting;
         if (assets_renting<0) console.warn(`Renting: Asset balance is negative, month:${i+1}`);
@@ -708,7 +707,7 @@ function calc_assets({current_assets, deposit_rate, monthly_salary, loan_result,
             total_assets: assets_renting
         });
 
-        increment_housing = monthly_salary - monthly_ownership_tax + payment.tax_return - payment.total_payment + ((((i%12)+1)==bonus_month)?bonus:0);
+        increment_housing = monthly_savings + rent - monthly_ownership_tax + payment.tax_return - payment.total_payment + ((((i%12)+1)==bonus_month)?bonus:0);
         if (increment_housing < 0) console.warn(`monthly increment_housing is negative, month:${i+1}, increment ${increment_housing}`);
         assets_housing += increment_housing;
         if (assets_housing < 0) console.warn(`Housing: Asset balance is negative, month:${i+1}`);
