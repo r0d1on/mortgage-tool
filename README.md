@@ -27,7 +27,7 @@ Allowes bi-parametric modelling.
 ---
 # hosted on github pages:
 
- * https://r0d1on.github.io/mortgage-tool/
+ * [English](https://r0d1on.github.io/mortgage-tool/)
  * [Nederlands](https://r0d1on.github.io/mortgage-tool/index-nl.html)
 
 ---
