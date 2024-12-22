@@ -5,7 +5,9 @@
 ---
 # features:
 
-* Minimalistic design: virtually no dependencies and no need to install anything for local testing / development
+* Minimalistic design:
+    - virtually no dependencies
+    - no need to install anything for local testing / development
 * Superflexible, yet to get started you only need to provide a handful of figures:
     - House sell price
     - Savings used for downpayment
