@@ -10,11 +10,16 @@
     - Savings used for downpayment
     - Loan Interest
     - Loan type
-* Annuity / Linear / Interest-only mortgage types
-* Adjustable additional periodic repayment schedules, monthly, flexible periodic repayments
-* Adjustable in-place payments (click on any cell in "extra_payment" column in the "Payments schedule")
-* Renting, income parameters for assets ROI modelling
-* what-if modellig provides uni- and bi-parameter mortgage modelling functionality
+* Supports 3 most popular mortgage types in Netherlands: "Annuity", "Linear" and "Interest-only"
+* Adjustable additional periodic extra repayment schedules, monthly, flexible periodic repayments:
+    - you can "program" a monthly additional repayment
+    - you can add 3 additional periodic repayments with any periodicity and starting month
+* Adjustable in-place payments (click on any cell in "extra_payment" column in the "Payments schedule"):
+    - for already calculated payment schedule you can "change" any payment in-place and scheduled will be recalculated from that point onward.
+* Renting, income parameters for assets ROI modelling:
+    - takes into account deposit rate, house market growth rate salary and renting parameters to calculate monthly assets state and final "ROI" figures
+* what-if modellig provides uni- and bi-parameter mortgage modelling functionality:
+    - to test different loan parameters and to find the most convenient/profitable configuration
 
 ---
 # "What-if" modelling:
