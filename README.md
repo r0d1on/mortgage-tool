@@ -29,6 +29,29 @@ Allowes bi-parametric modelling.
 
  * https://r0d1on.github.io/mortgage-tool/
 
+
+---
+# Local development / testing:
+
+1. Clone the repo: `git clone https://github.com/r0d1on/mortgage-tool`
+2. make changes
+3. open `index.html` in your browser
+
+
+---
+# How to contribute:
+
+All contributions you make are **highly appreciated**.
+
+## Add changes, open a pull request
+
+1. [Fork the Project](https://docs.github.com/articles/fork-a-repo) 
+2. Create your Feature Branch (`git checkout -b feature/new-amazing-parameter`)
+3. Commit your Changes (`git commit -m 'added new loan parameter'`)
+4. Push to the Branch (`git push origin feature/new-amazing-parameter`)
+5. [Open a Pull Request](https://docs.github.com/articles/using-pull-requests)
+
+
 ---
 # credits:
 
