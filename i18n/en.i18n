@@ -1,0 +1,301 @@
+"description" content="
+Mortgage payments calculator, Dutch
+\
+"keywords" content="
+Mortgage calculator netherlands, dutch mortgage calculator, annuity mortgage, linear mortgage, interest only mortgage, mortgage planning tool, mortgage repayment, monthly mortgage breakdown
+\
+data-id="language" href="
+index-nl.html
+\
+data-id="language" href="index-nl.html">
+toets hier voor Nederlands
+\
+<title>
+Mortgage payments calculator (for Netherlands)
+\
+data-id="h_1">
+Mortgage modelling tool
+\
+data-id="h_2">
+Mortgage calculator and analysis tool (Netherlands)
+\
+data-id="h_3">
+Mortgage parameters:
+\
+data-id="b_mortgage">
+Mortgage
+\
+data-id="b_costs">
+Purchase Costs
+\
+data-id="b_repayments">
+Extra repayments
+\
+data-id="b_assets">
+Assets Dynamics
+\
+data-id="b_whatif">
+What-if
+\
+data-id="b_help">
+Help / Instructions
+\
+for="house_price">
+House sell price
+\
+for="value_discount">
+House sell price / House value
+\
+for="house_value">
+House value
+\
+for="savings">
+Savings used for downpayment
+\
+for="cost">
+Purchase cost (without NHG fee)
+\
+for="downpayment">
+Downpayment
+\
+for="loan">
+Required loan amount
+\
+for="loan_rate">
+Loan amount / House value AKA Loan-to-Value
+\
+for="loan_term">
+Loan term (months)
+\
+for="loan_term_actual">
+Loan term actual (months)
+\
+for="loan_term_reduction">
+Loan term reduction (months)
+\
+for="interest">
+Loan Interest
+\
+for="deduction">
+Loan interest tax deductible (hypotheekrenteaftrek):
+\
+for="loan_type">
+Loan type: 1 - Annuity, 2 - Linear, 3 - Interest only
+\
+for="tax_scheme">
+Tax refund target: 0 - none, 1 - benefit, 2 - principal
+\
+for="total_tax_returned">
+Total tax returned (hypotheekrenteaftrek):
+\
+for="loan_interest_rate">
+Total interest paid / Loan amount
+\
+for="extra_payment_monthly">
+Extra repayment, monthly
+\
+for="extra_payment_period">
+Extra periodic payment, period
+\
+for="extra_payment_start">
+Extra periodic payment, first month:
+\
+for="extra_payment_value">
+Extra periodic payment
+\
+for="total_loan_invested">
+Total loan invested
+\
+for="total_paid_extra">
+Total repaid extra
+\
+for="total_paid_gross">
+Total repaid (gross)
+\
+for="total_paid_net">
+Total repaid (net)
+\
+for="total_paid_penalty">
+Total paid penalties
+\
+for="total_paid_interest">
+Total interest paid
+\
+for="total_paid_net_monthly">
+Total loan invested, monthly average
+\
+for="cost_advisor">
+Financial advisor
+\
+for="cost_makelaar">
+Real estate agent
+\
+for="cost_valuation">
+Valuation
+\
+for="cost_notary">
+Notary
+\
+for="cost_survey">
+Structural survey
+\
+for="nhg_max_price">
+NHG price cap
+\
+for="nhg_cost_pct">
+NHG fee rate
+\
+for="cost_transfer_tax">
+Transfer tax
+\
+for="cost_bank">
+Bank guarantee
+\
+for="purchase_cost">
+Purchase costs:
+\
+for="cost_nhg">
+NHG fee
+\
+for="total_purchase_cost">
+Purchase costs + NHG fee:
+\
+for="purchase_deductible_cost">
+Tax deductible purchase costs (hypotheekrenteaftrek):
+\
+for="purchase_deductible_cost_pct">
+Tax deductible purchase costs % from all costs:
+\
+for="max_extra_payments_per_year_pct">
+Max extra repayment per year, %
+\
+for="overpayment_penalty">
+Penalty for repaying more than allowed
+\
+for="max_extra_payment_per_year">
+Max extra repayment per year
+\
+for="extra_payment_period1">
+Extra periodic payment#1, period
+\
+for="extra_payment_start1">
+Extra periodic payment#1, first month:
+\
+for="extra_payment_value1">
+Extra periodic payment#1
+\
+for="extra_payment_period2">
+Extra periodic payment#2, period
+\
+for="extra_payment_start2">
+Extra periodic payment#2, first month:
+\
+for="extra_payment_value2">
+Extra periodic payment#2
+\
+for="extra_payment_topup">
+Extra repayment, add up monthly to minimal payment
+\
+for="deposit_rate">
+Deposit rate
+\
+for="house_market_rate">
+House appreciation rate
+\
+for="monthly_savings">
+Monthly savings (salary - expenses - rent)
+\
+for="bonus_month">
+Annual bonus, accrual month
+\
+for="bonus">
+Annual bonus, amount
+\
+for="current_assets">
+Current total assets
+\
+for="assets_to_downpayment">
+Assets used for downpayment
+\
+for="assets_left">
+Assets left after downpayment
+\
+for="max_loan">
+Approx. maximum loan
+\
+for="max_value">
+Approx. maximum house value
+\
+for="rent">
+Monthly rent
+\
+for="total_rent_actual">
+Total rent paid (would be, during actual term)
+\
+for="total_rent">
+Total rent paid (would be, during total term)
+\
+for="assets_renting">
+Final assets: renting
+\
+for="ownership_pct">
+House ownership tax percentage (eigenwoningforfait)
+\
+for="monthly_ownership_tax">
+monthly house ownership tax (eigenwoningforfait)
+\
+for="assets_housing">
+Final assets: housing
+\
+for="assets_delta">
+Housing / Renting
+\
+for="assets_roi">
+Housing ROI
+\
+for="months_to_even">
+Months to even housing vs renting
+\
+for="variable1">
+Variable#1
+\
+for="variable2">
+Variable#2
+\
+for="metrics">
+Metrics
+\
+onclick="recalculate_fields()">
+Recalculate
+\
+data-id="b_stats">
+Stats
+\
+data-id="b_schedule">
+Payments Schedule
+\
+data-id="b_g_payments">
+Payments Graph
+\
+data-id="b_g_assets">
+Assets Graph
+\
+data-id="b_g_whatif">
+What-if Graph
+\
+for="payment_first">
+First payment (without periodic repayment)
+\
+for="payment_last">
+Last payment (without periodic repayment)
+\
+for="payment_first_extra">
+First payment - monthly rent
+\
+for="payment_last_extra">
+Last payment - monthly rent
+\
+data-id="h_4">
+Modelling results:
+\
+

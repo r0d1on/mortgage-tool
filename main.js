@@ -284,6 +284,7 @@ function get_field_value(id, path) {
     return value;
 }
 
+let recalc_tag = ["Recalculate"];
 let tick_state = [0,0];
 function recalculate_fields(direct) {
     let button = document.getElementById("recalc_button");
@@ -324,7 +325,7 @@ function recalculate_fields(direct) {
     };
 
     if (!direct) {
-        button.innerHTML = "Recalculate";
+        button.innerHTML = recalc_tag[0];
     };
     
     if (!direct) {
@@ -740,6 +741,7 @@ function calc_assets({current_assets, deposit_rate, monthly_savings, loan_result
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    recalc_tag[0] = document.getElementById("recalc_button").innerHTML;
     init_tabs();
     init_fields();
     recalculate_fields();

@@ -1,0 +1,301 @@
+"description" content="
+Hypotheekbetalingscalculator, hypotheek berekenen
+\
+"keywords" content="
+Hypotheek betalings calculator, extra aflossen hypotheek, hypotheek berekenen, bruto netto hypotheek, hypotheek aflossen berekenen, annuïteitenhypotheek, lineaire hypotheek, hypotheek maandlasten berekenen
+\
+data-id="language" href="
+.
+\
+data-id="language" href=".">
+click here for English version
+\
+<title>
+Hypotheekbetalingscalculator
+\
+data-id="h_1">
+Hypotheekmodelleringstool
+\
+data-id="h_2">
+Hypotheekberekenaar en analysehulpmiddel
+\
+data-id="h_3">
+Hypotheekparameters:
+\
+data-id="b_mortgage">
+Hypotheek
+\
+data-id="b_costs">
+Aankoopkosten
+\
+data-id="b_repayments">
+Extra aflossingen
+\
+data-id="b_assets">
+Dynamiek van de activa
+\
+data-id="b_whatif">
+Wat-als-analyse
+\
+data-id="b_help">
+Hulp / Instructies
+\
+for="house_price">
+Verkoopprijs huis
+\
+for="value_discount">
+Verkoopprijs huis / woningwaarde
+\
+for="house_value">
+Woningwaarde
+\
+for="savings">
+Spaargeld voor de aanbetaling
+\
+for="cost">
+Aankoopkosten (zonder NHG)
+\
+for="downpayment">
+Aanbetaling
+\
+for="loan">
+Vereiste leningbedrag
+\
+for="loan_rate">
+Leningbedrag / Woningwaarde (Loan-to-Value)
+\
+for="loan_term">
+Leningtermijn (maanden)
+\
+for="loan_term_actual">
+Werkelijke leningtermijn (maanden)
+\
+for="loan_term_reduction">
+Vermindering van de looptijd van de lening (maanden)
+\
+for="interest">
+Leningrente
+\
+for="deduction">
+Hypotheekrenteaftrek:
+\
+for="loan_type">
+Leningtype: 1 - Annuïteiten, 2 - Lineaire lening, 3 - Interest-only
+\
+for="tax_scheme">
+Doel belastingteruggave: 0 - geen, 1 - voordeel, 2 - hoofdschuld
+\
+for="total_tax_returned">
+Totale belastingteruggave (hypotheekrenteaftrek)
+\
+for="loan_interest_rate">
+Totaal betaalde rente / Leningbedrag
+\
+for="extra_payment_monthly">
+Extra aflossing, maandelijks
+\
+for="extra_payment_period">
+Extra periodieke betaling, periode
+\
+for="extra_payment_start">
+Extra periodieke betaling, eerste maand
+\
+for="extra_payment_value">
+Extra periodieke betaling
+\
+for="total_loan_invested">
+Totaal geïnvesteerde lening
+\
+for="total_paid_extra">
+Totaal extra afgelost
+\
+for="total_paid_gross">
+Totaal terugbetaald (bruto)
+\
+for="total_paid_net">
+Totaal terugbetaald (netto)
+\
+for="total_paid_penalty">
+Totaal betaalde boetes
+\
+for="total_paid_interest">
+Totaal betaalde rente
+\
+for="total_paid_net_monthly">
+Totaal geïnvesteerde lening, maandgemiddelde
+\
+for="cost_advisor">
+Financieel adviseur
+\
+for="cost_makelaar">
+Makelaar
+\
+for="cost_valuation">
+Woningtaxatie
+\
+for="cost_notary">
+Notaris
+\
+for="cost_survey">
+Bouwkundige keuring
+\
+for="nhg_max_price">
+NHG-prijslimiet
+\
+for="nhg_cost_pct">
+NHG-tarief
+\
+for="cost_transfer_tax">
+Overdrachtsbelasting
+\
+for="cost_bank">
+Bankgarantie
+\
+for="purchase_cost">
+Huis aankoopkosten
+\
+for="cost_nhg">
+NHG-kosten
+\
+for="total_purchase_cost">
+Huis aankoopkosten + NHG-kosten:
+\
+for="purchase_deductible_cost">
+Fiscaal aftrekbare aankoopkosten (hypotheekrenteaftrek)
+\
+for="purchase_deductible_cost_pct">
+% belastingaftrekbare aankoopkosten van de totale kosten
+\
+for="max_extra_payments_per_year_pct">
+Maximale extra aflossing per jaar, %
+\
+for="overpayment_penalty">
+Boete voor te veel aflossen dan toegestaan
+\
+for="max_extra_payment_per_year">
+Maximale extra aflossing per jaar
+\
+for="extra_payment_period1">
+Extra periodieke betaling #1, termijn
+\
+for="extra_payment_start1">
+Extra periodieke betaling #1, eerste maand:
+\
+for="extra_payment_value1">
+Extra periodieke betaling #1
+\
+for="extra_payment_period2">
+Extra periodieke betaling #2, termijn
+\
+for="extra_payment_start2">
+Extra periodieke betaling #2, eerste maand:
+\
+for="extra_payment_value2">
+Extra periodieke betaling #2
+\
+for="extra_payment_topup">
+Extra aflossing, maandelijks bij de minimale betaling optellen
+\
+for="deposit_rate">
+Depositorente
+\
+for="house_market_rate">
+Waardestijging van de woning
+\
+for="monthly_savings">
+Maandelijkse besparingen (salaris - uitgaven - huur)
+\
+for="bonus_month">
+Jaarbonus, opbouwmaand
+\
+for="bonus">
+Jaarbonus
+\
+for="current_assets">
+Huidige totale activa
+\
+for="assets_to_downpayment">
+Activa gebruikt voor de aanbetaling
+\
+for="assets_left">
+Activa na de aanbetaling
+\
+for="max_loan">
+Ongeveer het maximale leningbedrag
+\
+for="max_value">
+Ongeveer het maximale woningwaarde
+\
+for="rent">
+Maandhuur
+\
+for="total_rent_actual">
+Totaal betaalde huur (tijdens de werkelijke leningtermijn)
+\
+for="total_rent">
+Totaal betaalde huur (tijdens de leningtermijn)
+\
+for="assets_renting">
+Eindactiva: huren
+\
+for="ownership_pct">
+Eigenwoningforfait rente
+\
+for="monthly_ownership_tax">
+Eigenwoningforfait, maandelijkse bedrag
+\
+for="assets_housing">
+Eindactiva: woning
+\
+for="assets_delta">
+Woning / Huren
+\
+for="assets_roi">
+Woning ROI
+\
+for="months_to_even">
+Maanden om huis kopen vs huren gelijk te maken
+\
+for="variable1">
+Variabele#1
+\
+for="variable2">
+Variabele#2
+\
+for="metrics">
+Cijfers
+\
+onclick="recalculate_fields()">
+Bereken het opnieuw
+\
+data-id="b_stats">
+Statistieken
+\
+data-id="b_schedule">
+Hypotheek aflossingsschema
+\
+data-id="b_g_payments">
+Statistieken grafieken
+\
+data-id="b_g_assets">
+Activa grafieken
+\
+data-id="b_g_whatif">
+Wat-als grafieken
+\
+for="payment_first">
+Eerste hypotheekbetaling (zonder periodieke extra aflossing)
+\
+for="payment_last">
+Laatste hypotheekbetaling (zonder periodieke extra aflossing)
+\
+for="payment_first_extra">
+Eerste hypotheekbetaling - Maandhuur
+\
+for="payment_last_extra">
+Laatste betaling - Maandhuur
+\
+data-id="h_4">
+Resultaten van modellering
+\
+
