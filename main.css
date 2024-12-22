@@ -1,3 +1,7 @@
+body {
+    min-width: 970px;
+}
+
 body, h1, h2, h3, p {
     margin: 0;
     padding: 0;
@@ -20,9 +24,10 @@ body, h1, h2, h3, p {
     vertical-align: top; 
     /* color: #4b4f58; */
     font-size: 1.0rem;
-    padding-left: 2.5em;
+    padding-left: 24px;
     font-family: monospace;       
     color: #000;
+    min-width:175px;
 }
 
 .input:disabled {
@@ -156,7 +161,7 @@ div.is-visible {
 }
 
 .control .icon {
-    left: 15px;
+    left: 7px;
     pointer-events: none;
     position: absolute;
     top: 0.5em;
