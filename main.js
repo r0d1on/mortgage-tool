@@ -747,11 +747,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let plotly_waiter = ()=>{
         if (window.Plotly===undefined) {
-            setTimeout(plotly_waiter, 200);
             console.log("d");
+            setTimeout(plotly_waiter, 500);
         } else {
-            recalculate_fields();
             console.log("i");
+            setTimeout(recalculate_fields, 500);
         }; 
     };
     plotly_waiter();
