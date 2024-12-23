@@ -280,7 +280,7 @@ function get_field_value(id, path) {
         }
     }
 
-    console.log(id, value);
+    // console.log(id, value);
     return value;
 }
 
@@ -422,7 +422,7 @@ function loan_schedule(loan_result) {
     table.appendChild(tbody);
 
     schedule_dom.appendChild(table);
-    console.log(loan_result);
+    // console.log(loan_result);
 }
 
 function graph_payments(loan_result) {
@@ -744,11 +744,15 @@ document.addEventListener('DOMContentLoaded', function() {
     recalc_tag[0] = document.getElementById("recalc_button").innerHTML;
     init_tabs();
     init_fields();
-    if (window.Plotly===undefined) {
-        document.getElementById("plotlyjs").addEventListener('load', ()=>{
+
+    let plotly_waiter = ()=>{
+        if (window.Plotly===undefined) {
+            setTimeout(plotly_waiter, 200);
+            console.log("d");
+        } else {
             recalculate_fields();
-        });
-    } else {
-        recalculate_fields();
+            console.log("i");
+        }; 
     };
+    plotly_waiter();
 });
