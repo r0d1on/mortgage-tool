@@ -34,8 +34,11 @@ function init_tabs() {
             Array.from(div.getElementsByTagName("li"))
             .reduce((a, v)=>{
                 a[v.dataset["block"]]=v;
-                v.getElementsByTagName("a")[0].href = `${base}?t_${ix}=${v.dataset["block"]}`;
-                v.getElementsByTagName("a")[0].onclick=()=>{return false;};
+                if (((ix==0)&&(v.dataset["block"]=='mortgage'))||((ix==1)&&(v.dataset["block"]=='stats'))) {
+                } else {
+                    v.getElementsByTagName("a")[0].href = `${base}?t_${ix}=${v.dataset["block"]}`;
+                    v.getElementsByTagName("a")[0].onclick=()=>{return false;};
+                }
                 return a;
             }, {})
         );
