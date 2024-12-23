@@ -4,16 +4,15 @@
 
 <head><script async src="https://www.googletagmanager.com/gtag/js?id=G-LLS4MGZ572"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}; gtag('js', new Date()); gtag('config', 'G-LLS4MGZ572');</script>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
-    <script src='https://cdn.plot.ly/plotly-2.35.2.min.js'></script>
+    <script id="plotlyjs" src='https://cdn.plot.ly/plotly-2.35.2.min.js' async></script>
 
     <link rel="icon" href="https://r0d1on.github.io/mortgage-tool/favicon.ico">
     <link rel="apple-touch-icon" href="https://r0d1on.github.io/mortgage-tool/icon.png">
     <link rel="manifest" href="https://r0d1on.github.io/mortgage-tool/manifest.json">
     <link rel="canonical" href="https://r0d1on.github.io/mortgage-tool/index-nl.html" />    
 
-    <script src="loans.js"></script>
-    <script src="main.js"></script>
+    <script src="loans.js" async></script>
+    <script src="main.js" async></script>
     <script src="deploy_info.js"></script>
 
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -790,7 +789,7 @@
             const gh_pages_host = "r0d1on.github.io"; //"127.0.0.1:5000";
             let show_ribbon = (window.location.href).split(/\/\//)[1].split(/\//)[0]==gh_pages_host;
             //document.body.style['overflow'] = 'hidden';
-            if (false) {
+            if (show_ribbon) {
                 let c = document.createElement("div");
                 c.style["position"] = "absolute";
                 c.style["right"] = "0px";

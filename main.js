@@ -744,5 +744,11 @@ document.addEventListener('DOMContentLoaded', function() {
     recalc_tag[0] = document.getElementById("recalc_button").innerHTML;
     init_tabs();
     init_fields();
-    recalculate_fields();
+    if (window.Plotly===undefined) {
+        document.getElementById("plotlyjs").addEventListener('load', ()=>{
+            recalculate_fields();
+        });
+    } else {
+        recalculate_fields();
+    };
 });
