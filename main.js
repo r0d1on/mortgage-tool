@@ -742,14 +742,18 @@ function calc_assets({current_assets, deposit_rate, monthly_savings, loan_result
 
 document.addEventListener('DOMContentLoaded', function() {
     recalc_tag[0] = document.getElementById("recalc_button").innerHTML;
+    //console.log((new Date()).valueOf(),"x");
     init_tabs();
     init_fields();
 
     let plotly_waiter = ()=>{
         if (window.Plotly===undefined) {
-            setTimeout(plotly_waiter, 500);
+            //console.log((new Date()).valueOf(),"d");
+            setTimeout(plotly_waiter, 200);
         } else {
-            setTimeout(recalculate_fields, 500);
+            //console.log((new Date()).valueOf(),"i");
+            setTimeout(recalculate_fields, 200);
+            //console.log((new Date()).valueOf(),"t");
         };
     };
     plotly_waiter();
