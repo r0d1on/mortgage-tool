@@ -19,6 +19,7 @@ function init_tabs() {
     };
 
     let saved_state = loadState();
+    let base = window.location.pathname;
 
     TABS = {};
     Array.from(document.getElementsByClassName("tabs")).map((div, ix)=>{
@@ -33,7 +34,9 @@ function init_tabs() {
             Array.from(div.getElementsByTagName("li"))
             .reduce((a, v)=>{
                 a[v.dataset["block"]]=v;
-                return a
+                v.getElementsByTagName("a")[0].href = `${base}?t_${ix}=${v.dataset["block"]}`;
+                v.getElementsByTagName("a")[0].onclick=()=>{return false;};
+                return a;
             }, {})
         );
         TABS[ix] = {blocks, tabs};
