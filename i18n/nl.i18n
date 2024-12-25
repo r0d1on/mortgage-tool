@@ -304,4 +304,6 @@ Laatste betaling - Maandhuur
 data-id="h_4">
 Resultaten van modellering
 \
-
+id="graph_whatif_target">
+Deze grafiek wordt bijgewerkt wanneer je op 'Bereken het opnieuw' klikt in de hierboven genoemde 'Wat-als'-sectie.
+\

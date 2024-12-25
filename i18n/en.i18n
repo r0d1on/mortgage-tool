@@ -304,4 +304,6 @@ Last payment - monthly rent
 data-id="h_4">
 Modelling results:
 \
-
+id="graph_whatif_target">
+This graph updated when you run "Recalculate" from "What-if" section above.
+\

@@ -292,12 +292,12 @@ function get_field_value(id, path) {
 
 let recalc_tag = ["Recalculate"];
 let tick_state = [0,0];
-function recalculate_fields(direct) {
+function recalculate_fields(direct, keep_overrides) {
     let button = document.getElementById("recalc_button");
 
     button.innerHTML = "..calculation error: check console..";
 
-    if (!direct) {
+    if (!keep_overrides) {
         OVERRIDES = {};
     };
     
@@ -353,12 +353,12 @@ function recalculate_fields(direct) {
 
 OVERRIDES = {};
 function loan_schedule(loan_result) {
-    function extre_payment_adjuster(event) {
+    function extra_payment_adjuster(event) {
         let old_value = event.target.innerHTML;
         let new_value = prompt("Enter adjusted extra payment value", old_value);
         if ((new_value!=old_value)&&(new_value!==undefined)&&(new_value!="")&&(new_value!=null)) {
             OVERRIDES[event.target.id] = new_value*1;
-            recalculate_fields(true)
+            recalculate_fields(false, true);
         };
     };
 
@@ -416,7 +416,7 @@ function loan_schedule(loan_result) {
             td.innerHTML = Math.round(100*record[key])/100;
             if (key=="extra_payment") {
                 td.id = "xp_" + record["month"];
-                td.addEventListener("click", extre_payment_adjuster);
+                td.addEventListener("click", extra_payment_adjuster);
                 if ("xp_" + record["month"] in OVERRIDES) {
                     td.classList.add("overrided");
                 };
@@ -663,6 +663,8 @@ function graph_whatif() {
         };
     };
 
+    let div_whatif = document.getElementById("graph_whatif_target");
+    div_whatif.innerHTML = "";
     Plotly.newPlot("graph_whatif_target", data, layout);
 }
 
@@ -748,18 +750,14 @@ function calc_assets({current_assets, deposit_rate, monthly_savings, loan_result
 
 document.addEventListener('DOMContentLoaded', function() {
     recalc_tag[0] = document.getElementById("recalc_button").innerHTML;
-    //console.log((new Date()).valueOf(),"x");
     init_tabs();
     init_fields();
 
     let plotly_waiter = ()=>{
         if (window.Plotly===undefined) {
-            //console.log((new Date()).valueOf(),"d");
             setTimeout(plotly_waiter, 200);
         } else {
-            //console.log((new Date()).valueOf(),"i");
             setTimeout(recalculate_fields, 200);
-            //console.log((new Date()).valueOf(),"t");
         };
     };
     plotly_waiter();
