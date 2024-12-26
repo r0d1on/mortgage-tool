@@ -185,12 +185,10 @@ div.is-visible {
     border-radius: .2em;
     color: #666;
     font-size: 1em;
-    margin: .2em;
     overflow: hidden;
     padding: .5em 1em;
     text-overflow: ellipsis;
     white-space: nowrap;
-    margin-left: 30%;
 }
 
 .github-inner {
