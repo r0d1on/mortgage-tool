@@ -33,14 +33,13 @@
         <section class="section title">
             <div class="header">
                 <h1 data-id="h_1">Hypotheek Modelleringstool</h1>
-                <h2 data-id="h_2">Hypotheekberekenaar en analysehulpmiddel voor annuïteit, lineaire en interest-only hypotheken</h2>
-                <h2 data-id="h_5">Amortization schedule, repayments,  end-of-term balance comparisons vs renting and investing</h2></h2>
+                <h2 data-id="h_2">Hypotheekberekenaar en analysehulpmiddel voor annuïteit, lineaire en interest-only hypotheken.</h2>
+                <h2 data-id="h_5">Aflossingsschema, aflossingen, vergelijkingen van eindsaldi versus huren en investeren.</h2>
                 <a data-id="language" href=".">click here for English version</a>
             </div>
         </section>
 
-        <section class="section">
-            <h1 data-id="h_3">Hypotheekparameters:</h1>
+        <section class="section"><h1 data-id="h_3">Hypotheekparameters:</h1>
             <div class="tabs is-primary">
                 <ul>
                     <li class="is-active" data-block="mortgage"><a role=button data-id="b_mortgage">Hypotheek</a></li>
@@ -378,10 +377,14 @@
                             <div class="control"><input id="deposit_rate" class="input" type="text" value="">
                             <span class="icon"><i>%</i></span></div>
                         </div>
-
                         <div class="field" data-default="0.0" data-tune="0.2">
                             <label for="house_market_rate">Waardestijging van de woning</label>
                             <div class="control"><input id="house_market_rate" class="input" type="text" value="">
+                            <span class="icon"><i>%</i></span></div>
+                        </div>
+                        <div class="field" data-default="0.0" data-tune="1.0">
+                            <label for="stocks_rate">Stocks growth rate</label>
+                            <div class="control"><input id="stocks_rate" class="input" type="text" value="">
                             <span class="icon"><i>%</i></span></div>
                         </div>
                         
@@ -396,18 +399,34 @@
                             <span class="icon"><i>&gt;</i></span></div>
                         </div>
                         <div class="field" data-default="1000" data-tune="1000">
-                            <label for="bonus">Jaarbonus</label>
-                            <div class="control"><input id="bonus" class="input" type="text" value="">
+                            <label for="bonus_cash">Annual cash bonus, amount</label>
+                            <div class="control"><input id="bonus_cash" class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" data-default="1000" data-tune="1000">
+                            <label for="bonus_stocks">Annual stocks bonus, amount</label>
+                            <div class="control"><input id="bonus_stocks" class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
                         </div>
                     </div>
 
                     <div class="column">
-                        <div class="field" data-default="100000" data-tune="1000">
+                        <div class="field" data-default="10000" data-tune="1000">
+                            <label for="current_stocks_assets">Current stocks assets</label>
+                            <div class="control"><input id="current_stocks_assets" class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" data-default="90000" data-tune="1000">
+                            <label for="current_cash_assets">Current cash assets</label>
+                            <div class="control"><input id="current_cash_assets" class="input" type="text" value="">
+                            <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" data-formula="current_stocks_assets + current_cash_assets">
                             <label for="current_assets">Huidige totale activa</label>
                             <div class="control"><input id="current_assets" class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
                         </div>
+
                         <div class="field" data-formula="Math.round(1000 * savings / current_assets)/10">
                             <label for="assets_to_downpayment">Activa gebruikt voor de aanbetaling</label>
                             <div class="control"><input id="assets_to_downpayment" class="input" type="text" value="">
@@ -612,9 +631,7 @@
             </div>
         </section>
 
-
-        <section class="section">
-            <h1 class="subtitle" data-id="h_4">Resultaten van modellering</h1>
+        <section class="section"><h1 class="subtitle" data-id="h_4">Resultaten van modellering</h1>
             <div class="tabs is-primary">
                 <ul>
                     <li class="is-active" data-block="stats"><a role=button data-id="b_stats">Statistieken</a></li>
@@ -633,7 +650,7 @@
                             <div class="control"></div>
                         </div>
 
-                        <div class="field" id="asset_params" data-formula="gather_param_values(['current_assets', 'deposit_rate', 'monthly_savings', 'loan_result', 'loan_term', 'savings', 'bonus_month', 'bonus', 'rent', 'monthly_ownership_tax', 'loan', 'house_value', 'house_market_rate'],'').calculation_context">
+                        <div class="field" id="asset_params" data-formula="gather_param_values(['current_cash_assets', 'current_stocks_assets', 'deposit_rate', 'stocks_rate', 'monthly_savings', 'loan_result', 'loan_term', 'savings', 'bonus_month', 'bonus_cash', 'bonus_stocks', 'rent', 'monthly_ownership_tax', 'loan', 'house_value', 'house_market_rate'],'').calculation_context">
                             <label>Hidden cell to collect asset calculation parameters</label>
                             <div class="control"></div>
                         </div>
@@ -733,6 +750,54 @@
                 </div>
             </div>
 
+        </section>
+
+        <section class="section"><h1 data-id="h_6">Kerncijfers:</h1>
+            <div class="columns">
+                <div class="column">
+                    <div class="field" data-formula="loan">
+                        <label for="t_loan">Required loan amount</label>
+                        <div class="control"><input id="t_loan" class="input" type="text" value="">
+                        <span class="icon"><i>€</i></span></div>
+                    </div>
+                    <div class="field" data-formula="loan_term_actual">
+                        <label for="t_loan_term_actual">Loan term, actual (months)</label>
+                        <div class="control"><input id="t_loan_term_actual" class="input" type="text" value="">
+                        <span class="icon"><i>&gt;</i></span></div>
+                    </div>
+                    <div class="field" data-formula="total_loan_invested">
+                        <label for="t_total_loan_invested">Total loan invested</label>
+                        <div class="control"><input id="t_total_loan_invested" class="input" type="text" value="">
+                        <span class="icon"><i>€</i></span></div>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="field" data-formula="payment_first">
+                        <label for="t_payment_first">First payment (without periodic repayment)</label>
+                        <div class="control"><input id="t_payment_first" class="input" type="text" value="">
+                        <span class="icon"><i>€</i></span></div>
+                    </div>
+                    <div class="field" data-formula="payment_first_extra">
+                        <label for="t_payment_first_extra">First payment - monthly rent</label>
+                        <div class="control"><input id="t_payment_first_extra" class="input" type="text" value="">
+                        <span class="icon"><i>€</i></span></div>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="field" data-round="3" data-formula="assets_delta">
+                        <label for="t_assets_delta">Housing / Renting</label>
+                        <div class="control"><input id="t_assets_delta" class="input" type="text" value="">
+                        <span class="icon"><i>&gt;</i></span></div>
+                    </div>
+                    <div class="field" data-round="3" data-formula="assets_roi">
+                        <label for="t_assets_roi">Housing ROI</label>
+                        <div class="control"><input id="t_assets_roi" class="input" type="text" value="">
+                        <span class="icon"><i>&gt;</i></span></div>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <section class="section">
