@@ -717,14 +717,14 @@ function calc_assets({current_cash_assets, current_stocks_assets, deposit_rate, 
         assets_housing[0] += assets_housing[0] * deposit_rate_m;
         assets_housing[1] += assets_housing[1] * stocks_rate_m;
 
-        bonus_cash = ((((i%12)+1)==bonus_month)?bonus_cash:0);
-        bonus_stocks = ((((i%12)+1)==bonus_month)?bonus_stocks:0);
+        m_bonus_cash = (((i%12)+1)==bonus_month) ? bonus_cash : 0;
+        m_bonus_stocks = (((i%12)+1)==bonus_month) ? bonus_stocks : 0;
 
         increment_renting = monthly_savings;
         if (increment_renting < 0) console.warn(`monthly increment_renting is negative, month:${i+1}, increment ${increment_renting}`);
-        assets_renting[0] += increment_renting + bonus_cash;
-        assets_renting[1] += bonus_stocks;
-        increment_renting += bonus_cash + bonus_stocks;
+        assets_renting[0] += increment_renting + m_bonus_cash;
+        assets_renting[1] += m_bonus_stocks;
+        increment_renting += m_bonus_cash + m_bonus_stocks;
         if (sum(assets_renting) < 0) console.warn(`Renting: Asset balance is negative, month:${i+1}`);
         monthly_renting.push({
             month : i+1,
@@ -734,9 +734,9 @@ function calc_assets({current_cash_assets, current_stocks_assets, deposit_rate, 
 
         increment_housing = monthly_savings + rent - monthly_ownership_tax + payment.tax_return - payment.total_payment;
         if (increment_housing < 0) console.warn(`monthly increment_housing is negative, month:${i+1}, increment ${increment_housing}`);
-        assets_housing[0] += increment_housing + bonus_cash;
-        assets_housing[1] += bonus_stocks;
-        increment_housing += bonus_cash + bonus_stocks;
+        assets_housing[0] += increment_housing + m_bonus_cash;
+        assets_housing[1] += m_bonus_stocks;
+        increment_housing += m_bonus_cash + m_bonus_stocks;
         if (sum(assets_housing) < 0) console.warn(`Housing: Asset balance is negative, month:${i+1}`);
         estate_owned += payment.capital_payment;
         house_value += house_value * house_rate;
