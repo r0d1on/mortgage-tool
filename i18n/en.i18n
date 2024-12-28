@@ -73,6 +73,9 @@ Downpayment
 for="loan">
 Required loan amount
 \
+for="t_loan">
+Required loan amount
+\
 for="loan_rate">
 Loan amount / House value AKA Loan-to-Value
 \
@@ -80,6 +83,9 @@ for="loan_term">
 Loan term (months)
 \
 for="loan_term_actual">
+Loan term actual (months)
+\
+for="t_loan_term_actual">
 Loan term actual (months)
 \
 for="loan_term_reduction">
@@ -116,6 +122,9 @@ for="extra_payment_value">
 Extra periodic payment
 \
 for="total_loan_invested">
+Total loan invested
+\
+for="t_total_loan_invested">
 Total loan invested
 \
 for="total_paid_extra">
@@ -262,7 +271,13 @@ Final assets: housing
 for="assets_delta">
 Housing / Renting
 \
+for="t_assets_delta">
+Housing / Renting
+\
 for="assets_roi">
+Housing ROI
+\
+for="t_assets_roi">
 Housing ROI
 \
 for="months_to_even">
@@ -298,10 +313,16 @@ What-if Graph
 for="payment_first">
 First payment (without periodic repayment)
 \
+for="t_payment_first">
+First payment (without periodic repayment)
+\
 for="payment_last">
 Last payment (without periodic repayment)
 \
 for="payment_first_extra">
+First payment - monthly rent
+\
+for="t_payment_first_extra">
 First payment - monthly rent
 \
 for="payment_last_extra">
@@ -312,4 +333,10 @@ Modelling results:
 \
 id="graph_whatif_target">
 This graph updated when you run "Recalculate" from "What-if" section above.
+\
+for="extra_payment_roi">
+Extra repayment ROI
+\
+for="t_extra_payment_roi">
+Extra repayment ROI
 \

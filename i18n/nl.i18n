@@ -73,6 +73,9 @@ Aanbetaling
 for="loan">
 Vereiste leningbedrag
 \
+for="t_loan">
+Vereiste leningbedrag
+\
 for="loan_rate">
 Leningbedrag / Woningwaarde (Loan-to-Value)
 \
@@ -80,6 +83,9 @@ for="loan_term">
 Leningtermijn (maanden)
 \
 for="loan_term_actual">
+Werkelijke leningtermijn (maanden)
+\
+for="t_loan_term_actual">
 Werkelijke leningtermijn (maanden)
 \
 for="loan_term_reduction">
@@ -116,6 +122,9 @@ for="extra_payment_value">
 Extra periodieke betaling
 \
 for="total_loan_invested">
+Totaal geïnvesteerde lening
+\
+for="t_total_loan_invested">
 Totaal geïnvesteerde lening
 \
 for="total_paid_extra">
@@ -262,7 +271,13 @@ Eindactiva: woning
 for="assets_delta">
 Woning / Huren
 \
+for="t_assets_delta">
+Woning / Huren
+\
 for="assets_roi">
+Woning ROI
+\
+for="t_assets_roi">
 Woning ROI
 \
 for="months_to_even">
@@ -298,10 +313,16 @@ Wat-als grafieken
 for="payment_first">
 Eerste hypotheekbetaling (zonder periodieke extra aflossing)
 \
+for="t_payment_first">
+Eerste hypotheekbetaling (zonder periodieke extra aflossing)
+\
 for="payment_last">
 Laatste hypotheekbetaling (zonder periodieke extra aflossing)
 \
 for="payment_first_extra">
+Eerste hypotheekbetaling - Maandhuur
+\
+for="t_payment_first_extra">
 Eerste hypotheekbetaling - Maandhuur
 \
 for="payment_last_extra">
@@ -312,4 +333,10 @@ Resultaten van modellering
 \
 id="graph_whatif_target">
 Deze grafiek wordt bijgewerkt wanneer je op 'Bereken het opnieuw' klikt in de hierboven genoemde 'Wat-als'-sectie.
+\
+for="extra_payment_roi">
+Extra aflossing ROI
+\
+for="t_extra_payment_roi">
+Extra aflossing ROI
 \
