@@ -166,7 +166,7 @@
                             <div class="control"><input id="extra_payment_start" class="input" type="text" value="">
                             <span class="icon"><i>&gt;</i></span></div>
                         </div>
-                        <div class="field" data-default="0" data-tune="500">
+                        <div class="field" data-default="0" data-tune="100">
                             <label for="extra_payment_value">Extra periodic payment</label>
                             <div class="control"><input id="extra_payment_value" class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
@@ -333,7 +333,7 @@
                             <div class="control"><input id="extra_payment_start1" class="input" type="text" value="">
                             <span class="icon"><i>&gt;</i></span></div>
                         </div>
-                        <div class="field" data-default="0" data-tune="500">
+                        <div class="field" data-default="0" data-tune="100">
                             <label for="extra_payment_value1">Extra periodic payment#1</label>
                             <div class="control"><input id="extra_payment_value1" class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
@@ -351,7 +351,7 @@
                             <div class="control"><input id="extra_payment_start2" class="input" type="text" value="">
                             <span class="icon"><i>&gt;</i></span></div>
                         </div>
-                        <div class="field" data-default="0" data-tune="500">
+                        <div class="field" data-default="0" data-tune="100">
                             <label for="extra_payment_value2">Extra periodic payment#2</label>
                             <div class="control"><input id="extra_payment_value2" class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
@@ -363,6 +363,11 @@
                             <label for="extra_payment_topup">Extra repayment, add up monthly to minimal payment</label>
                             <div class="control"><input id="extra_payment_topup" class="input" type="text" value="">
                             <span class="icon"><i>€</i></span></div>
+                        </div>
+                        <div class="field" data-round="3" data-formula="(assets_housing - calc_assets_no_repayments(asset_params, loan_params).housing.outcome) / total_paid_extra">
+                            <label for="extra_payment_roi">Extra repayment ROI</label>
+                            <div class="control"><input id="extra_payment_roi" class="input" type="text" value="">
+                            <span class="icon"><i>&gt;</i></span></div>
                         </div>
                     </div>                    
 
@@ -500,9 +505,9 @@
                             <span class="icon"><i>&gt;</i></span></div>
                         </div>
 
-                        <div class="field" data-round="3" data-formula="assets_housing / total_loan_invested">
-                            <label for="assets_roi">Housing ROI</label>
-                            <div class="control"><input id="assets_roi" class="input" type="text" value="">
+                        <div class="field" data-round="3" data-formula="(assets_housing - assets_renting) / (total_paid_interest - total_tax_returned)">
+                            <label for="housing_roi">Housing ROI</label>
+                            <div class="control"><input id="housing_roi" class="input" type="text" value="">
                             <span class="icon"><i>&gt;</i></span></div>
                         </div>
 
@@ -511,7 +516,6 @@
                             <div class="control"><input id="months_to_even" class="input" type="text" value="">
                             <span class="icon"><i>&gt;</i></span></div>
                         </div>
-
 
                     </div>
 
@@ -532,7 +536,7 @@
                             <span class="icon"><i>&gt;</i></span></div>
                         </div>
 
-                        <div class="field" data-type="raw" data-default="assets_delta,loan_interest_rate,total_loan_invested,total_paid_net_monthly,loan_term_actual,assets_roi">
+                        <div class="field" data-type="raw" data-default="assets_delta,loan_interest_rate,total_loan_invested,total_paid_net_monthly,loan_term_actual,housing_roi,extra_payment_roi">
                             <label for="metrics">Metrics</label>
                             <div class="control"><input id="metrics" class="input" type="text" value="">
                             <span class="icon"><i>&gt;</i></span></div>
@@ -791,11 +795,18 @@
                         <div class="control"><input id="t_assets_delta" class="input" type="text" value="">
                         <span class="icon"><i>&gt;</i></span></div>
                     </div>
-                    <div class="field" data-round="3" data-formula="assets_roi">
-                        <label for="t_assets_roi">Housing ROI</label>
-                        <div class="control"><input id="t_assets_roi" class="input" type="text" value="">
+                    <div class="field" data-round="3" data-formula="housing_roi">
+                        <label for="t_housing_roi">Housing ROI</label>
+                        <div class="control"><input id="t_housing_roi" class="input" type="text" value="">
                         <span class="icon"><i>&gt;</i></span></div>
                     </div>
+
+                    <div class="field"  data-round="3" data-formula="extra_payment_roi">
+                        <label for="t_extra_payment_roi">Extra repayment ROI</label>
+                        <div class="control"><input id="t_extra_payment_roi" class="input" type="text" value="">
+                        <span class="icon"><i>&gt;</i></span></div>
+                    </div>
+                    
                 </div>
             </div>
         </section>

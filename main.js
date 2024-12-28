@@ -69,15 +69,6 @@ function get_parameters(formula) {
     let params = [];
     if (formula===undefined) return params;
 
-    const rg_fld=/([a-zA-Z_][a-zA-Z0-9_]*)(\.[a-zA-Z_][a-zA-Z0-9_]*)+/g; // structure.field
-    for (const match of formula.matchAll(rg_fld)) {
-        const sub = match[0];
-        if (match[1]!="Math") {
-            params.push(match[1]);
-            formula = formula.replaceAll(sub," ");
-        }
-    };
-
     const rg_fn=/([a-zA-Z_\.]+)\(([^\)]*)\)(\.[a-zA-Z_]+)*/g; // function().field call
     for (const match of formula.matchAll(rg_fn)) {
         const sub = match[0];
@@ -85,6 +76,15 @@ function get_parameters(formula) {
             params.push(p);
         });
         formula = formula.replaceAll(sub," ");
+    };
+
+    const rg_fld=/([a-zA-Z_][a-zA-Z0-9_]*)(\.[a-zA-Z_][a-zA-Z0-9_]*)+/g; // structure.field
+    for (const match of formula.matchAll(rg_fld)) {
+        const sub = match[0];
+        if (match[1]!="Math") {
+            params.push(match[1]);
+            formula = formula.replaceAll(sub," ");
+        }
     };
 
     formula
@@ -335,11 +335,10 @@ function recalculate_fields(direct, keep_overrides) {
     };
     
     if (!direct) {
-        document.title = `${get_field_value("loan")}  [${get_field_value("loan_type")}:${get_field_value("tax_scheme")}]`;
-        document.title += ` ${get_field_value("loan_term_actual")} * ${Math.round(get_field_value("payment_first"))}`;
-        document.title += ` / ${Math.round(get_field_value("total_paid_net_monthly"))}`;
-        document.title += ` / ${Math.round(100 * get_field_value("assets_delta")) / 100}`;
-        document.title += ` / ${Math.round(100 * get_field_value("assets_roi")) / 100}`;
+        let lt = ['A','L','I'][get_field_value("loan_type")*1-1];
+        document.title = `${lt}:${get_field_value("house_price")}:${get_field_value("savings")}`;
+        document.title += ` ${get_field_value("loan_term")}/${get_field_value("loan_term_actual")}`;
+        document.title += ` ${Math.round(100 * get_field_value("housing_roi")) / 100}`;
     } else {
         document.title = "⏳";
         tick_state[0]+=1;
@@ -764,6 +763,43 @@ function calc_assets({current_cash_assets, current_stocks_assets, deposit_rate, 
         months_to_even
     };
 
+}
+
+function copy(v) {
+    if (typeof(v)=="object") {
+        if (Array.isArray(v)) {
+            return v.map((e)=>{return copy(e)})
+        } else {
+            let o = {};
+            for(const k in v) {
+                o[k] = copy(v[k]);
+            };
+            return o;
+        }
+    } else if (typeof(v)=="number") {
+        return v;
+    } else if (typeof(v)=="string") {
+        return v;
+    } else if (typeof(v)=="unedfined") {
+        return v;
+    } else {
+        throw "do not know how to copy value: " + v;
+    }
+}
+
+function calc_assets_no_repayments(asset_params, loan_params) {
+    let loan_params_no_repayments = copy(loan_params);
+    loan_params_no_repayments.extra_payment_monthly = 0;
+    loan_params_no_repayments.extra_payment_value = 0;
+    loan_params_no_repayments.extra_payment_value1 = 0;
+    loan_params_no_repayments.extra_payment_value2 = 0;
+    loan_params_no_repayments.extra_payment_topup = 0;
+
+    let loan_result_no_repayments = calculate_loan(loan_params_no_repayments);
+ 
+    let asset_params_no_repayments = copy(asset_params);
+    asset_params_no_repayments.loan_result = loan_result_no_repayments;
+    return calc_assets(asset_params_no_repayments);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
