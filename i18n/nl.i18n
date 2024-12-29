@@ -23,10 +23,10 @@ data-id="h_1">
 Hypotheek tool
 \
 data-id="h_2">
-Hypotheekberekenaar en analysehulpmiddel voor annuïteit, lineaire en interest-only hypotheken.
+Hypotheekberekenaar en analysehulpmiddel voor annuïteit, lineaire en interest-only hypotheken
 \
 data-id="h_5">
-Aflossingsschema, aflossingen, vergelijkingen van eindsaldi versus huren en investeren.
+Amortisatieschema, aflossingen, winstgevendheid van leningen versus huren en investeren
 \
 data-id="h_3">
 Hypotheekparameters:
@@ -44,7 +44,7 @@ data-id="b_repayments">
 Extra aflossingen
 \
 data-id="b_assets">
-Dynamiek van de activa
+Winstgevendheid
 \
 data-id="b_whatif">
 Wat-als-analyse
@@ -305,7 +305,7 @@ data-id="b_g_payments">
 Statistieken grafieken
 \
 data-id="b_g_assets">
-Activa grafieken
+Winstgevendheid grafieken
 \
 data-id="b_g_whatif">
 Wat-als grafieken

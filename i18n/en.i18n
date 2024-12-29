@@ -23,10 +23,10 @@ data-id="h_1">
 Mortgage analysis tool
 \
 data-id="h_2">
-Mortgage calculator and analysis tool (Netherlands) for anuity, linear, interest-only loans.
+Mortgage calculator and analysis tool (Netherlands) for anuity, linear, interest-only loans
 \
 data-id="h_5">
-Amortization schedule, repayments,  end-of-term balance comparisons vs renting and investing.
+Amortization schedule, repayments,  loan profitability vs renting and investing
 \
 data-id="h_3">
 Mortgage parameters:
@@ -44,7 +44,7 @@ data-id="b_repayments">
 Extra repayments
 \
 data-id="b_assets">
-Assets Dynamics
+Profitability
 \
 data-id="b_whatif">
 What-if
@@ -86,7 +86,7 @@ for="loan_term_actual">
 Loan term actual (months)
 \
 for="t_loan_term_actual">
-Loan term actual (months)
+Loan term, actual (months)
 \
 for="loan_term_reduction">
 Loan term reduction (months)
@@ -305,7 +305,7 @@ data-id="b_g_payments">
 Payments Graph
 \
 data-id="b_g_assets">
-Assets Graph
+Profitability Graphs
 \
 data-id="b_g_whatif">
 What-if Graph
