@@ -706,10 +706,16 @@ function calc_assets({current_cash_assets, current_stocks_assets, deposit_rate, 
     let house_rate = house_market_rate / (100*12);
     let estate_owned = house_value - loan;
 
+    let total_paid_interest = 0;
+    let total_tax_returned = 0;
+    let assets_delta = 0;
+
     let months_to_even = loan_term;
 
-    for(let i=0; i<30*12; i++) {
-        let payment = (i < loan_term_actual) ? loan_result.monthly[i] : {total_payment:0, tax_return:0, capital_payment:0};
+    for(let i=0; i<loan_term; i++) {
+        let payment = (i < loan_term_actual) ? loan_result.monthly[i] : {total_payment:0, tax_return:0, capital_payment:0, interest_amt:0};
+        total_tax_returned += payment.tax_return;
+        total_paid_interest += payment.interest_amt;
 
         assets_renting[0] += assets_renting[0] * deposit_rate_m;
         assets_renting[1] += assets_renting[1] * stocks_rate_m;
@@ -720,10 +726,10 @@ function calc_assets({current_cash_assets, current_stocks_assets, deposit_rate, 
         m_bonus_stocks = (((i%12)+1)==bonus_month) ? bonus_stocks : 0;
 
         increment_renting = monthly_savings;
-        if (increment_renting < 0) console.warn(`monthly increment_renting is negative, month:${i+1}, increment ${increment_renting}`);
         assets_renting[0] += increment_renting + m_bonus_cash;
         assets_renting[1] += m_bonus_stocks;
         increment_renting += m_bonus_cash + m_bonus_stocks;
+        if (increment_renting < 0) console.warn(`monthly increment_renting is negative, month:${i+1}, increment ${increment_renting}`);
         if (sum(assets_renting) < 0) console.warn(`Renting: Asset balance is negative, month:${i+1}`);
         monthly_renting.push({
             month : i+1,
@@ -732,24 +738,31 @@ function calc_assets({current_cash_assets, current_stocks_assets, deposit_rate, 
         });
 
         increment_housing = monthly_savings + rent - monthly_ownership_tax + payment.tax_return - payment.total_payment;
-        if (increment_housing < 0) console.warn(`monthly increment_housing is negative, month:${i+1}, increment ${increment_housing}`);
         assets_housing[0] += increment_housing + m_bonus_cash;
         assets_housing[1] += m_bonus_stocks;
         increment_housing += m_bonus_cash + m_bonus_stocks;
+        if (increment_housing < 0) console.warn(`monthly increment_housing is negative, month:${i+1}, increment ${increment_housing}`);
         if (sum(assets_housing) < 0) console.warn(`Housing: Asset balance is negative, month:${i+1}`);
         estate_owned += payment.capital_payment;
-        house_value += house_value * house_rate;
+
+        assets_delta = sum(assets_housing) + estate_owned * Math.pow(1.0+house_rate, i+1) - sum(assets_renting);
+
         monthly_housing.push({
             month : i+1,
             increment: increment_housing,
             total_assets : estate_owned * Math.pow(1.0+house_rate, i+1) + sum(assets_housing),
             liquid_assets : sum(assets_housing),
             estate_owned : estate_owned * Math.pow(1.0+house_rate, i+1),
+            assets_delta : assets_delta,
+            roi : (assets_delta < 0) ? null : (30 * 12 * assets_delta / (loan_term * (total_paid_interest - total_tax_returned)))
         });
 
         if (estate_owned * Math.pow(1.0+house_rate, i+1) + sum(assets_housing) >= sum(assets_renting))
             months_to_even = Math.min(months_to_even, i);
     };
+
+    // console.log(total_paid_interest, total_tax_returned)
+    // console.log('>', estate_owned * Math.pow(1.0+house_rate, loan_term), house_value)
 
     return {
         renting : {
@@ -758,7 +771,7 @@ function calc_assets({current_cash_assets, current_stocks_assets, deposit_rate, 
         },
         housing : {
             monthly : monthly_housing,
-            outcome : sum(assets_housing) + house_value
+            outcome : sum(assets_housing) + estate_owned * Math.pow(1.0+house_rate, loan_term)
         },
         months_to_even
     };
