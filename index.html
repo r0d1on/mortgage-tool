@@ -32,10 +32,10 @@
 
         <section class="section title">
             <div class="header">
-                <h1 data-id="h_1">Mortgage modelling tool</h1>
+                <h1 data-id="h_1">Mortgage analysis tool</h1>
                 <br>
                 <h2 data-id="h_2">Mortgage calculator and analysis tool (Netherlands) for anuity, linear, interest-only loans</h2>
-                <h2 data-id="h_5">Amortization schedule, repayments,  end-of-term balance comparisons vs renting and investing</h2>
+                <h2 data-id="h_5">Amortization schedule, repayments,  loan profitability vs renting and investing</h2>
                 <a data-id="language" href="index-nl.html">toets hier voor Nederlands</a>
             </div>
         </section>
@@ -46,7 +46,7 @@
                     <li class="is-active" data-block="mortgage"><a role=button data-id="b_mortgage">Mortgage</a></li>
                     <li class="" data-block="costs"><a role=button data-id="b_costs">Purchase Costs</a></li>
                     <li class="" data-block="repayments"><a role=button data-id="b_repayments">Extra repayments</a></li>
-                    <li class="" data-block="assets"><a role=button data-id="b_assets">Assets Dynamics</a></li>
+                    <li class="" data-block="assets"><a role=button data-id="b_assets">Profitability</a></li>
                     <li class="" data-block="whatif"><a role=button data-id="b_whatif">What-if</a></li>
                     <li class="" data-block="help"><a role=button data-id="b_help">Help / Instructions</a></li>
                 </ul>
@@ -601,14 +601,14 @@
                                 &bull; If penalty % is set to 100 - all extra repayments will be capped in such a way that no penalties occur<br>
                             </p><br>
 
-                            <hr><b>Asset dynamics</b><hr>
+                            <hr><b>Profitability analysis</b><hr>
                             <p>
                                 &bull; Final (up to the loan's term) assets status calculated for two scenarios:<br>
                                 &bull; Renting: monthly increment = salary - rent + yeary bonus (if the month is right), deposit rate is assumed for all current assets accumulated<br>
                                 &bull; Housing: montlhy increment = salary - house ownership tax - loan payment (net) + yeary bonus (if the month is right), deposit rate assumed for all current assets accumulated, housing market rate assumed for the current estate (fraction) owned <br>
                                 &bull; <b>Comparisons</b><br>
                                 &bull; Housing / Renting - ratio of final assets for "housing" and "renting" scenarios<br>
-                                &bull; Housing ROI = final housing final assets / total amount invested in the mortgage<br>
+                                &bull; Housing ROI = (housing - renting final assets) / (cost of mortgage : interest paid - tax refund) year-normalized<br>
                             </p><br>
 
                             <hr><b>Whatif analysis</b><hr>
@@ -642,7 +642,7 @@
                     <li class="is-active" data-block="stats"><a role=button data-id="b_stats">Stats</a></li>
                     <li class="" data-block="schedule"><a role=button data-id="b_schedule">Payments Schedule</a></li>
                     <li class="" data-block="graph_payments"><a role=button data-id="b_g_payments">Payments Graph</a></li>
-                    <li class="" data-block="graph_assets"><a role=button data-id="b_g_assets">Assets Graph</a></li>
+                    <li class="" data-block="graph_assets"><a role=button data-id="b_g_assets">Profitability Graphs</a></li>
                     <li class="" data-block="graph_whatif"><a role=button data-id="b_g_whatif">What-if Graph</a></li>
                 </ul>
             </div>
