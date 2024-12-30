@@ -293,9 +293,9 @@ function get_field_value(id, path) {
 let recalc_tag = ["Recalculate"];
 let tick_state = [0,0];
 function recalculate_fields(direct, keep_overrides) {
-    let button = document.getElementById("recalc_button");
-
-    button.innerHTML = "..calculation error: check console..";
+    Array.from(document.getElementsByClassName("recalc_button")).map((b)=>{
+        b.innerHTML = "..calculation error: check console..";
+    });
 
     if (!keep_overrides) {
         OVERRIDES = {};
@@ -325,17 +325,24 @@ function recalculate_fields(direct, keep_overrides) {
             };
     });
 
-    let wf = document.querySelectorAll("div[data-block='whatif']")[0];
-    if (wf.classList.contains("is-visible") && (!direct)) {
+    let section = document.querySelectorAll("div[data-block='whatif']")[0];
+    if (section.classList.contains("is-visible") && (!direct)) {
         graph_whatif();
     };
 
+    section = document.querySelectorAll("div[data-block='entry']")[0];
+    if (section.classList.contains("is-visible") && (!direct)) {
+        graph_entry();
+    };
+
     if (!direct) {
-        button.innerHTML = recalc_tag[0];
+        Array.from(document.getElementsByClassName("recalc_button")).map((b)=>{
+            b.innerHTML = recalc_tag[0];
+        });        
     };
     
     if (!direct) {
-        let lt = ['A','L','I'][get_field_value("loan_type")*1-1];
+        let lt = ['A', 'L', 'I'][get_field_value("loan_type")*1-1];
         document.title = `${lt}:${get_field_value("house_price")}:${get_field_value("savings")}`;
         document.title += ` ${get_field_value("loan_term")}/${get_field_value("loan_term_actual")}`;
         document.title += ` ${Math.round(100 * get_field_value("housing_roi")) / 100}`;
@@ -466,24 +473,40 @@ function graph_payments(loan_result) {
 function graph_assets(assets_result) {
     let result_renting = assets_result.renting;
     let result_housing = assets_result.housing;
+    let result_metrics = assets_result.metrics;
 
     let months = result_renting.monthly.map((record)=>{
         return Math.round(100*record["month"])/100
     });
 
     let data =  Object
-    .keys(result_renting.monthly[0])
-    .filter((v)=>{return v!='month'})    
+    .keys(result_metrics.monthly[0])
+    .filter((v)=>{return (v!='month')&&(!v.startsWith("_"))})
     .map((key)=>{
         return {
             x : months,
-            y : result_renting.monthly.map((record)=>{
+            y : result_metrics.monthly.map((record)=>{
+                return record[key]
+            }),
+            type: 'scatter',
+            name: key+"",
+            visible: key=="debt" ? 'legendonly' : undefined
+        }
+    });
+
+    Object
+    .keys(result_renting.monthly[0])
+    .filter((v)=>{return v!='month'})    
+    .map((key)=>{
+        data.push({
+            x : months,
+            y : result_housing.monthly.map((record)=>{
                 return record[key]
             }),
             type: 'scatter',
             name: key+"_renting",
             visible: key=="debt" ? 'legendonly' : undefined
-        }
+        })
     });
 
     Object
@@ -534,18 +557,18 @@ function graph_whatif() {
     }
 
     let all_parameters = Array.from(Object.keys(FIELDS));
-    let original_parametetrs = {};
+    let original_parameters = {};
     
     let tmp = gather_param_values(all_parameters, "").calculation_context;
     Array.from(Object.keys(tmp)).map((key)=>{
-        original_parametetrs[key + "_0"] = tmp[key];
+        original_parameters[key + "_0"] = copy(tmp[key]);
     });
 
     function get_metric_value(metric) {
         return eval_if_needed(metric, ()=>{
             let {calculation_context, error} = gather_param_values(all_parameters, "");
             if (error) console.error("Error while calculating context:", error);
-            add(calculation_context, original_parametetrs);
+            add(calculation_context, original_parameters);
             return calculation_context;
         }, (metric)=>{
             return get_field_value(metric)
@@ -667,11 +690,158 @@ function graph_whatif() {
     Plotly.newPlot("graph_whatif_target", data, layout);
 }
 
+function graph_entry() {
+    function add(target, source) {
+        Array.from(Object.keys(source)).map((key)=>{
+            target[key] = source[key]; 
+        });        
+    }
+
+    let all_parameters = Array.from(Object.keys(FIELDS));
+    let original_parameters = {};
+    let tmp = gather_param_values(all_parameters, "").calculation_context;
+    Array.from(Object.keys(tmp)).map((key)=>{
+        original_parameters[key + "_0"] = copy(tmp[key]);
+        original_parameters[key] = copy(tmp[key]);
+    });
+
+    function get_metric_value(metric) {
+        return eval_if_needed(metric, ()=>{
+            let {calculation_context, error} = gather_param_values(all_parameters, "");
+            if (error) console.error("Error while calculating context:", error);
+            add(calculation_context, original_parameters);
+            return calculation_context;
+        }, (metric)=>{
+            return get_field_value(metric)
+        });
+    }
+
+    let house_rate = original_parameters.house_market_rate / (100 * 12);
+    let downpayment_pct = original_parameters.assets_to_downpayment / 100;
+    let new_params = {};
+    let probe_month = get_metric_value("entry_probe_month");
+
+    let results = [];
+    for(let delay = 0; delay < original_parameters.loan_term; delay += 1) {
+        let result = {};
+        result["delay"] = delay+1;
+
+        new_params.house_price = original_parameters.house_price * Math.pow(1.0+house_rate, delay+1);
+        new_params.savings = original_parameters.assets_result.renting.monthly[delay].total_assets * downpayment_pct;
+
+        [new_params.current_cash_assets, new_params.current_stocks_assets] = original_parameters.assets_result.metrics.monthly[delay]._assets;
+        if (new_params.current_cash_assets >= new_params.house_price) {
+            results.push(result);
+            break;
+        };
+
+        new_params.bonus_month = (original_parameters.bonus_month) - (delay + 1);
+        while (new_params.bonus_month<=0) new_params.bonus_month += 12;
+
+        new_params.extra_payment_start = (original_parameters.extra_payment_start) - (delay + 1);
+        if (original_parameters.extra_payment_period>0)
+            while (new_params.extra_payment_start<=0) new_params.extra_payment_start += original_parameters.extra_payment_period;
+
+        Array.from(Object.keys(new_params)).map((key)=>{
+            FIELDS[key].input.value = new_params[key];
+        });
+        recalculate_fields(true);
+
+        let state = gather_param_values(all_parameters, "").calculation_context;
+        if (state.loan <= new_params.savings * 0.05) {
+            results.push(result);
+            break;
+        };
+
+        // entry parameters
+        result["entry_total_assets"] = original_parameters.assets_result.renting.monthly[delay].total_assets;
+        result["entry_savings"] = new_params.savings;
+        result["entry_house_price"] = new_params.house_price;
+
+        // loan exit parameters
+        [
+            "loan", "loan_term_actual", "total_paid_net_monthly",
+            "payment_first", "payment_base_first", 
+            "extra_payment_roi", "months_to_even"
+        ].map((metric)=>{
+            result["loan_" + metric] = (state[metric]<0)?null:state[metric];
+        });
+
+        // loan internal parameters, housing
+        [
+            "total_assets"
+        ].map((metric)=>{
+            let r = state.assets_result.housing.monthly[probe_month - delay - 2];
+            if (r!==undefined)
+                result["housing_" + metric + "@" + probe_month] = r[metric];
+        });
+
+        // loan internal parameters, metrics
+        [
+            "housing_roi", "assets_k", "assets_delta" 
+        ].map((metric)=>{
+            let r = state.assets_result.metrics.monthly[probe_month - delay - 2];
+            if (r!==undefined)
+                result[metric + "@" + probe_month] = r[metric];
+        });
+
+        results.push(result);
+    };
+
+    // restore original parameters
+    Array.from(Object.keys(new_params)).map((key)=>{
+        FIELDS[key].input.value = original_parameters[key];
+    });    
+    recalculate_fields(true);
+
+    let data = null;
+    let layout = null;
+
+    let xs = results.map((record)=>{
+        return record["delay"];
+    });
+
+    data =  Object
+    .keys(results[0])
+    .filter((v)=>{return v!="delay"})
+    .map((key)=>{
+        return {
+            x : xs,
+            y : results.map((record)=>{
+                return record[key]
+            }),
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: key,
+            //visible: key=="debt" ? 'legendonly' : undefined
+        }
+    });
+
+    layout = {
+        title:'Entrypoint ananlysis',
+        xaxis: {
+            title: results
+        },
+        yaxis: {
+            title: 'metrics'
+        }
+    };
+
+
+    let div_entry = document.getElementById("graph_entry_target");
+    div_entry.innerHTML = "";
+    Plotly.newPlot("graph_entry_target", data, layout);
+}
+
+
 function loan_stats(loan_result) {
     let result = loan_result;
+    let last = result.monthly.length - 1;
     return {
         "payment_first" : result.monthly[0].total_payment - result.monthly[0].extra_payment2,
-        "payment_last" : result.monthly[result.monthly.length-1].total_payment- result.monthly[result.monthly.length-1].extra_payment2,
+        "payment_base_first" : result.monthly[0].base_payment,
+        "payment_last" : result.monthly[last].total_payment- result.monthly[last].extra_payment2,
+        "payment_base_last" : result.monthly[last].base_payment,
         "total_paid_gross" : result.total_paid_gross,
         "total_paid_net" : result.total_paid_gross - result.total_tax_returned,
         "total_tax_returned" : result.total_tax_returned,
@@ -695,6 +865,7 @@ function calc_assets({current_cash_assets, current_stocks_assets, deposit_rate, 
 
     let monthly_renting = [];
     let monthly_housing = [];
+    let monthly_metrics = [];
 
     let assets_renting = [current_cash_assets, current_stocks_assets];
     let stocks_taken = (current_cash_assets >= savings) ? 0 : (savings - current_cash_assets);
@@ -734,7 +905,7 @@ function calc_assets({current_cash_assets, current_stocks_assets, deposit_rate, 
         monthly_renting.push({
             month : i+1,
             increment: increment_renting,
-            total_assets: sum(assets_renting)
+            total_assets: sum(assets_renting),
         });
 
         increment_housing = monthly_savings + rent - monthly_ownership_tax + payment.tax_return - payment.total_payment;
@@ -744,17 +915,26 @@ function calc_assets({current_cash_assets, current_stocks_assets, deposit_rate, 
         if (increment_housing < 0) console.warn(`monthly increment_housing is negative, month:${i+1}, increment ${increment_housing}`);
         if (sum(assets_housing) < 0) console.warn(`Housing: Asset balance is negative, month:${i+1}`);
         estate_owned += payment.capital_payment;
-
-        assets_delta = sum(assets_housing) + estate_owned * Math.pow(1.0+house_rate, i+1) - sum(assets_renting);
+        estate_owned_rated = estate_owned * Math.pow(1.0+house_rate, i+1);
 
         monthly_housing.push({
             month : i+1,
             increment: increment_housing,
-            total_assets : estate_owned * Math.pow(1.0+house_rate, i+1) + sum(assets_housing),
+            total_assets : sum(assets_housing) + estate_owned_rated,
+
             liquid_assets : sum(assets_housing),
-            estate_owned : estate_owned * Math.pow(1.0+house_rate, i+1),
+            estate_owned : estate_owned_rated,
+        });
+
+        assets_delta = (sum(assets_housing) + estate_owned_rated) - sum(assets_renting);
+        assets_k = (sum(assets_housing) + estate_owned_rated) / sum(assets_renting);
+
+        monthly_metrics.push({
+            month : i+1,
+            _assets: copy(assets_renting),
             assets_delta : assets_delta,
-            roi : (assets_delta < 0) ? null : (30 * 12 * assets_delta / (loan_term * (total_paid_interest - total_tax_returned)))
+            assets_k : assets_k,
+            housing_roi : (assets_delta < 0) ? null : (30 * 12 * assets_delta / (loan_term * (total_paid_interest - total_tax_returned)))
         });
 
         if (estate_owned * Math.pow(1.0+house_rate, i+1) + sum(assets_housing) >= sum(assets_renting))
@@ -773,19 +953,22 @@ function calc_assets({current_cash_assets, current_stocks_assets, deposit_rate, 
             monthly : monthly_housing,
             outcome : sum(assets_housing) + estate_owned * Math.pow(1.0+house_rate, loan_term)
         },
+        metrics : {
+            monthly : monthly_metrics,
+        },
         months_to_even
     };
 
 }
 
-function copy(v) {
+function copy(v, p) {
     if (typeof(v)=="object") {
         if (Array.isArray(v)) {
-            return v.map((e)=>{return copy(e)})
+            return v.map((e)=>{return copy(e, v)})
         } else {
             let o = {};
             for(const k in v) {
-                o[k] = copy(v[k]);
+                o[k] = copy(v[k], v);
             };
             return o;
         }
@@ -793,8 +976,13 @@ function copy(v) {
         return v;
     } else if (typeof(v)=="string") {
         return v;
+    } else if (typeof(v)=="boolean") {
+        return v;
     } else if (typeof(v)=="unedfined") {
         return v;
+    } else if (typeof(v)=="function") {
+        console.log(p, v);
+        throw "attempt to copy a function";
     } else {
         throw "do not know how to copy value: " + v;
     }
@@ -816,7 +1004,7 @@ function calc_assets_no_repayments(asset_params, loan_params) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    recalc_tag[0] = document.getElementById("recalc_button").innerHTML;
+    recalc_tag[0] = document.getElementsByClassName("recalc_button")[0].innerHTML;
     init_tabs();
     init_fields();
 
