@@ -228,7 +228,7 @@ table tbody tr:nth-child(even) {
     width: 100%;
 }
 
-#recalc_button {
+.recalc_button {
     color: #d40;
     font-size: 1em;
     font-weight: 400;
