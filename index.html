@@ -667,9 +667,8 @@
         <section class="section"><h2 class="subtitle" data-id="h_4">Modelling results:</h2>
             <div class="tabs is-primary">
                 <ul>
-                    <li class="is-active" data-block="stats"><a role=button data-id="b_stats">Stats</a></li>
+                    <li class="is-active" data-block="graph_payments"><a role=button data-id="b_g_payments">Payments Graph</a></li>
                     <li class="" data-block="schedule"><a role=button data-id="b_schedule">Payments Schedule</a></li>
-                    <li class="" data-block="graph_payments"><a role=button data-id="b_g_payments">Payments Graph</a></li>
                     <li class="" data-block="graph_assets"><a role=button data-id="b_g_assets">Profitability Graphs</a></li>
                     <li class="" data-block="graph_whatif"><a role=button data-id="b_g_whatif">What-if Graph</a></li>
                     <li class="" data-block="graph_entry"><a role=button data-id="b_g_entry">Entrypoint Graphs</a></li>
@@ -720,52 +719,6 @@
                         </div>
 
                     </div>
-                </div>
-            </div>
-
-
-            <div data-block="stats" class="block is-visible">
-                <div class="columns">
-                    <div class="column">
-                        <div class="field" data-formula="loan_stats_result.payment_first">
-                            <label for="payment_first">First payment (without periodic repayment)</label>
-                            <div class="control"><input id="payment_first" class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
-                        </div>
-                        <div class="field" data-formula="loan_stats_result.payment_base_first">
-                            <label for="payment_base_first">First base payment (capital + interest)</label>
-                            <div class="control"><input id="payment_base_first" class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
-                        </div>
-                        <div class="field" data-formula="loan_stats_result.payment_last">
-                            <label for="payment_last">Last payment (without periodic repayment)</label>
-                            <div class="control"><input id="payment_last" class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
-                        </div>
-                        <div class="field" data-formula="loan_stats_result.payment_base_last">
-                            <label for="payment_base_last">Last base payment (capital + interest)</label>
-                            <div class="control"><input id="payment_base_last" class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
-                        </div>
-
-                    </div>
-
-                    <div class="column vertical_separator">
-                    </div>
-
-                    <div class="column">
-                        <div class="field" data-formula="payment_first - rent">
-                            <label for="payment_first_extra">First payment - monthly rent</label>
-                            <div class="control"><input id="payment_first_extra" class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
-                        </div>
-                        <div class="field" data-formula="payment_last - rent">
-                            <label for="payment_last_extra">Last payment - monthly rent</label>
-                            <div class="control"><input id="payment_last_extra" class="input" type="text" value="">
-                            <span class="icon"><i>€</i></span></div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
 
@@ -831,14 +784,19 @@
                 </div>
 
                 <div class="column">
-                    <div class="field" data-formula="payment_first">
-                        <label for="t_payment_first">First payment (without periodic repayment)</label>
-                        <div class="control"><input id="t_payment_first" class="input" type="text" value="">
+                    <div class="field" data-formula="loan_stats_result.payment_first">
+                        <label for="payment_first">First payment (without periodic repayment)</label>
+                        <div class="control"><input id="payment_first" class="input" type="text" value="">
                         <span class="icon"><i>€</i></span></div>
                     </div>
-                    <div class="field" data-formula="payment_first_extra">
-                        <label for="t_payment_first_extra">First payment - monthly rent</label>
-                        <div class="control"><input id="t_payment_first_extra" class="input" type="text" value="">
+                    <div class="field" data-formula="loan_stats_result.payment_base_first">
+                        <label for="payment_base_first">First base payment (capital + interest)</label>
+                        <div class="control"><input id="payment_base_first" class="input" type="text" value="">
+                        <span class="icon"><i>€</i></span></div>
+                    </div>
+                    <div class="field" data-formula="payment_first - rent">
+                        <label for="payment_first_extra">First payment - monthly rent</label>
+                        <div class="control"><input id="payment_first_extra" class="input" type="text" value="">
                         <span class="icon"><i>€</i></span></div>
                     </div>
                 </div>
