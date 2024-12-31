@@ -349,3 +349,9 @@ Extra repayment ROI
 for="t_extra_payment_roi">
 Extra repayment ROI
 \
+entry_probe_month">
+Month to take loan metrics @:
+\
+graph_entry_target">
+This graph updated when you run "Recalculate" from "Entrypoint" section above.
+\

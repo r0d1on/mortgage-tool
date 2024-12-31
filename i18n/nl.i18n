@@ -349,3 +349,9 @@ Extra aflossing ROI
 for="t_extra_payment_roi">
 Extra aflossing ROI
 \
+entry_probe_month">
+Maand om leningstatistieken te nemen @:
+\
+graph_entry_target">
+Deze grafiek wordt bijgewerkt wanneer u 'Bereken het opnieuw' uitvoert vanuit de sectie 'Startmaand' hierboven.
+\
