@@ -502,7 +502,7 @@
                         </div>
 
                         <div class="field" data-round="0" data-formula="assets_housing - assets_renting">
-                            <label for="assets_delta">Housing / Renting</label>
+                            <label for="assets_delta">Housing - Renting</label>
                             <div class="control"><input id="assets_delta" class="input" type="text" value="">
                             <span class="icon"><i>&gt;</i></span></div>
                         </div>
@@ -530,6 +530,17 @@
             </div>
 
             <div data-block="whatif" class="block">
+                <p>Mechanism to model parameters of the loan as a function of any other parameter (any parameter of the loan can be "tested")</p>
+                <p><b>"Variable1"</b> and <b>"Variable2"</b>: range descriptors for variables you'd like to "test". Format: <b>variable_name(start_value, end_value, steps)</b></p>
+                <p><b>"Metrics"</b> comma-separated list of expressions (using loan parameter names), - result of which you'd like to see on the plot. In a simpliest case - it is just a parameter name of interest (e.g. <b>loan_term_actual</b>)</p>
+                <hr>
+                <p>You can use "original" mortgage parameter value in expressions using <b>_0</b> postfix (e.g. <b>loan_term_actual_0</b>).</p>
+                <p>If you specify only Variable1 - all metrics will be plotted on the <b>2D</b> graph.</p>
+                <p>If you also specify only Variable2 - first metric in the list will be plotted on the <b>3D</b> plot(surface).</p>
+                <p>Probing takes time (depend on the number of steps requested), probing launched by <b>[Recalculate]</b> button.</p>
+                <p>After calculating all possible mortgages for the parameters set requestsd - the metric of interest (first metric in the list) will be drawn in the "What-if Graph" section below.</p>
+                <hr>
+
                 <div class="columns">
                     <div class="column">
                         <div class="field" data-type="raw" data-default="extra_payment_topup(100,3000,10)">
@@ -554,17 +565,18 @@
             </div>
 
             <div data-block="entry" class="block">
+                <p>Modelling "entry" moment for opening the loan (start month)</p>
+                <p>Assets, market growth will be taken into account</p>
+                <p>Current downpayment to assets ratio will be used to determine initial downpayments</p>
+                <p>Start month will be counting from current month onwards</p>
+                <p>Start month will be modelled up to the moment when downpayment >= loan or cash assets >= house price, but not further than current loan_term ahead.</p>
+                <hr>
+                <p>Loan entry parameters will be plotted with entry_ prefix.</p>
+                <p>Loan final parameters will be plotted with loan_ prefix.</p>
+                <hr>
+
                 <div class="columns">
                     <div class="column">
-                        <p>Modelling "entry" moment for opening the loan</p>
-                        <p>Assets, market growth will be taken into account</p>
-                        <p>Current downpayment to assets ratio will be used to determine initial downpayments</p>
-                        <p>Start month will be counting from current month onwards</p>
-                        <p>Start month will be modelled up to the moment when downpayment >= loan or cash assets >= house price, but not further than current loan_term ahead.</p>
-                        <hr>
-                        <p>Loan entry parameters will be plotted with entry_ prefix.</p>
-                        <p>Loan final parameters will be plotted with loan_ prefix.</p>
-                        <hr>
                         <div class="field" data-default="20*12" data-tune="1">
                             <label for="entry_probe_month">Month to take loan metrics @:</label>
                             <div class="control"><input id="entry_probe_month" class="input" type="text" value="">
@@ -639,18 +651,6 @@
                                 &bull; Housing ROI = (housing - renting final assets) / (cost of mortgage : interest paid - tax refund) year-normalized<br>
                             </p><br>
 
-                            <hr><b>Whatif analysis</b><hr>
-                            <p>
-                                &bull; Mechanism to model parameters of the loan as a function of any other parameter (any parameter of the loan can be "tested")<br>
-                                &bull; <b>"Variable1"</b> and <b>"Variable2"</b>: range descriptors for variables you'd like to "test". Format: <b>variable_name(start_value, end_value, steps)</b><br>
-                                &bull; <b>"Metrics"</b> comma-separated list of expressions (using loan parameter names), - result of which you'd like to see on the plot. In a simpliest case - it is just a parameter name of interest (e.g. <b>loan_term_actual</b>)<br>
-                                &bull; it is possible to use "original" mortgage parameter value expressions using <b>_0</b> postfix (e.g. <b>loan_term_actual_0</b>).<br>
-                                &bull; If only Variable1 is specified - all metrics will be plotted on the <b>2D</b>.<br>
-                                &bull; If both Variable1 and Variable2 specified - first metric in the list will be plotted on the <b>3D</b> plot(surface)."<br>
-                                &bull; Probing takes time (depend on the number of steps requested), probing launched by <b>[Recalculate]</b> button.<br>
-                                &bull; After calculating all possible mortgages for the parameters set requestsd - the metric of interest (first metric in the list) will be drawn in the "What-if Graph" section below.
-                            </p><br>
-                        
                             <hr><b>Interest rates</b><hr>
                             <p>
                                 &bull; <a style="color:red" href="https://www.hypotheekrente.nl/rente/10-jaar-rentevast/60/#overzicht">Overview</a><br>
@@ -845,7 +845,7 @@
 
                 <div class="column">
                     <div class="field" data-round="0" data-formula="assets_delta">
-                        <label for="t_assets_delta">Housing / Renting</label>
+                        <label for="t_assets_delta">Housing - Renting</label>
                         <div class="control"><input id="t_assets_delta" class="input" type="text" value="">
                         <span class="icon"><i>&gt;</i></span></div>
                     </div>
