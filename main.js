@@ -561,7 +561,7 @@ function graph_whatif() {
     
     let tmp = gather_param_values(all_parameters, "").calculation_context;
     Array.from(Object.keys(tmp)).map((key)=>{
-        original_parameters[key + "_0"] = copy(tmp[key]);
+        original_parameters[key + "_0"] = structuredClone(tmp[key]);
     });
 
     function get_metric_value(metric) {
@@ -701,8 +701,8 @@ function graph_entry() {
     let original_parameters = {};
     let tmp = gather_param_values(all_parameters, "").calculation_context;
     Array.from(Object.keys(tmp)).map((key)=>{
-        original_parameters[key + "_0"] = copy(tmp[key]);
-        original_parameters[key] = copy(tmp[key]);
+        original_parameters[key + "_0"] = structuredClone(tmp[key]);
+        original_parameters[key] = structuredClone(tmp[key]);
     });
 
     function get_metric_value(metric) {
@@ -931,7 +931,7 @@ function calc_assets({current_cash_assets, current_stocks_assets, deposit_rate, 
 
         monthly_metrics.push({
             month : i+1,
-            _assets: copy(assets_renting),
+            _assets: structuredClone(assets_renting),
             assets_delta : assets_delta,
             assets_k : assets_k,
             housing_roi : (assets_delta < 0) ? null : (30 * 12 * assets_delta / (loan_term * (total_paid_interest - total_tax_returned)))
@@ -961,35 +961,8 @@ function calc_assets({current_cash_assets, current_stocks_assets, deposit_rate, 
 
 }
 
-function copy(v, p) {
-    if (typeof(v)=="object") {
-        if (Array.isArray(v)) {
-            return v.map((e)=>{return copy(e, v)})
-        } else {
-            let o = {};
-            for(const k in v) {
-                o[k] = copy(v[k], v);
-            };
-            return o;
-        }
-    } else if (typeof(v)=="number") {
-        return v;
-    } else if (typeof(v)=="string") {
-        return v;
-    } else if (typeof(v)=="boolean") {
-        return v;
-    } else if (typeof(v)=="unedfined") {
-        return v;
-    } else if (typeof(v)=="function") {
-        console.log(p, v);
-        throw "attempt to copy a function";
-    } else {
-        throw "do not know how to copy value: " + v;
-    }
-}
-
 function calc_assets_no_repayments(asset_params, loan_params) {
-    let loan_params_no_repayments = copy(loan_params);
+    let loan_params_no_repayments = structuredClone(loan_params);
     loan_params_no_repayments.extra_payment_monthly = 0;
     loan_params_no_repayments.extra_payment_value = 0;
     loan_params_no_repayments.extra_payment_value1 = 0;
@@ -998,7 +971,7 @@ function calc_assets_no_repayments(asset_params, loan_params) {
 
     let loan_result_no_repayments = calculate_loan(loan_params_no_repayments);
  
-    let asset_params_no_repayments = copy(asset_params);
+    let asset_params_no_repayments = structuredClone(asset_params);
     asset_params_no_repayments.loan_result = loan_result_no_repayments;
     return calc_assets(asset_params_no_repayments);
 }

@@ -49,6 +49,9 @@ Winstgevendheid
 data-id="b_whatif">
 Wat-als-analyse
 \
+data-id="b_entry">
+Startmaand
+\
 data-id="b_help">
 Hulp / Instructies
 \
@@ -269,15 +272,18 @@ for="assets_housing">
 Eindactiva: woning
 \
 for="assets_delta">
-Woning / Huren
+Woning - Huren
 \
 for="t_assets_delta">
+Woning - Huren
+\
+for="assets_k">
 Woning / Huren
 \
-for="assets_roi">
+for="housing_roi">
 Woning ROI
 \
-for="t_assets_roi">
+for="t_housing_roi">
 Woning ROI
 \
 for="months_to_even">
@@ -309,6 +315,9 @@ Winstgevendheid grafieken
 \
 data-id="b_g_whatif">
 Wat-als grafieken
+\
+data-id="b_g_entry">
+Startmaand grafieken
 \
 for="payment_first">
 Eerste hypotheekbetaling (zonder periodieke extra aflossing)

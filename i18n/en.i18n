@@ -49,6 +49,9 @@ Profitability
 data-id="b_whatif">
 What-if
 \
+data-id="b_entry">
+Entrypoint
+\
 data-id="b_help">
 Help / Instructions
 \
@@ -269,15 +272,18 @@ for="assets_housing">
 Final assets: housing
 \
 for="assets_delta">
-Housing / Renting
+Housing - Renting
 \
 for="t_assets_delta">
+Housing - Renting
+\
+for="assets_k">
 Housing / Renting
 \
-for="assets_roi">
+for="housing_roi">
 Housing ROI
 \
-for="t_assets_roi">
+for="t_housing_roi">
 Housing ROI
 \
 for="months_to_even">
@@ -309,6 +315,9 @@ Profitability Graphs
 \
 data-id="b_g_whatif">
 What-if Graph
+\
+data-id="b_g_entry">
+Entrypoint Graphs
 \
 for="payment_first">
 First payment (without periodic repayment)
