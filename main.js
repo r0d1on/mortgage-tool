@@ -34,7 +34,7 @@ function init_tabs() {
             Array.from(div.getElementsByTagName("li"))
             .reduce((a, v)=>{
                 a[v.dataset["block"]]=v;
-                if (((ix==0)&&(v.dataset["block"]=='mortgage'))||((ix==1)&&(v.dataset["block"]=='stats'))) {
+                if (((ix==0)&&(v.dataset["block"]=='mortgage'))||((ix==1)&&(v.dataset["block"]=='graph_payments'))) {
                 } else {
                     v.getElementsByTagName("a")[0].href = `${base}?t_${ix}=${v.dataset["block"]}`;
                     v.getElementsByTagName("a")[0].onclick=()=>{return false;};
@@ -102,7 +102,7 @@ function saveState() {
     let str_state = "";
 
     Object.keys(TABS).map((index)=>{
-        if (TABS[index]['activated']!=['mortgage', 'stats'][index]) {
+        if (TABS[index]['activated']!=['mortgage', 'graph_payments'][index]) {
             str_state += (str_state=="") ? "?" : "&";
             str_state += `t_${index}=${TABS[index]['activated']}`;
         };

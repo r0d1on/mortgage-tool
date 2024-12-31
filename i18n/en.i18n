@@ -301,9 +301,6 @@ Metrics
 onclick="recalculate_fields()">
 Recalculate
 \
-data-id="b_stats">
-Stats
-\
 data-id="b_schedule">
 Payments Schedule
 \
@@ -322,16 +319,10 @@ Entrypoint Graphs
 for="payment_first">
 First payment (without periodic repayment)
 \
-for="t_payment_first">
-First payment (without periodic repayment)
-\
 for="payment_last">
 Last payment (without periodic repayment)
 \
 for="payment_first_extra">
-First payment - monthly rent
-\
-for="t_payment_first_extra">
 First payment - monthly rent
 \
 for="payment_last_extra">

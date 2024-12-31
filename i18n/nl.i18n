@@ -301,9 +301,6 @@ Cijfers
 onclick="recalculate_fields()">
 Bereken het opnieuw
 \
-data-id="b_stats">
-Statistieken
-\
 data-id="b_schedule">
 Hypotheek aflossingsschema
 \
@@ -322,16 +319,10 @@ Startmaand grafieken
 for="payment_first">
 Eerste hypotheekbetaling (zonder periodieke extra aflossing)
 \
-for="t_payment_first">
-Eerste hypotheekbetaling (zonder periodieke extra aflossing)
-\
 for="payment_last">
 Laatste hypotheekbetaling (zonder periodieke extra aflossing)
 \
 for="payment_first_extra">
-Eerste hypotheekbetaling - Maandhuur
-\
-for="t_payment_first_extra">
 Eerste hypotheekbetaling - Maandhuur
 \
 for="payment_last_extra">
