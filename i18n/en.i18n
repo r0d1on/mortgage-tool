@@ -35,25 +35,25 @@ data-id="h_6">
 Key figures:
 \
 data-id="b_mortgage">
-Mortgage
+🏠 Mortgage
 \
 data-id="b_costs">
-Purchase Costs
+💵 Purchase Costs
 \
 data-id="b_repayments">
-Extra repayments
+💲 Extra repayments
 \
 data-id="b_assets">
-Profitability
+💰 Profitability
 \
 data-id="b_whatif">
-What-if
+✨ What-if
 \
 data-id="b_entry">
-Entrypoint
+✨ Entrypoint
 \
 data-id="b_help">
-Help / Instructions
+❓ Help / Instructions
 \
 for="house_price">
 House sell price
@@ -302,19 +302,19 @@ onclick="recalculate_fields()">
 Recalculate
 \
 data-id="b_schedule">
-Payments Schedule
+𝄜 Payments Schedule
 \
 data-id="b_g_payments">
-Payments Graph
+📈 Payments Graph
 \
 data-id="b_g_assets">
-Profitability Graphs
+📈 Profitability Graphs
 \
 data-id="b_g_whatif">
-What-if Graph
+📈 What-if Graph
 \
 data-id="b_g_entry">
-Entrypoint Graphs
+📈 Entrypoint Graphs
 \
 for="payment_first">
 First payment (without periodic repayment)
