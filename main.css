@@ -240,3 +240,43 @@ table tbody tr:nth-child(even) {
     font-weight: bold;
     color : #d40;
 }
+
+.tooltip {
+    display: inline-flex;
+    width: 27px;
+    height: 27px;
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    justify-content: center;    
+    align-items: center;
+    border: 0px;
+    border-radius: 4px;
+    background-color:#b1d8ff;
+    color: #000000;
+    font-weight: bold;
+}
+
+.tooltip[data-tooltip]::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px 12px;
+    background: #b1d8ff;
+    color: black;
+    font-size: 14px;
+    border-radius: 4px;
+    width: max-content;
+    max-width: 200px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.tooltip[visible="1"]::before {
+    opacity: 1.0;
+    visibility: visible;
+}
