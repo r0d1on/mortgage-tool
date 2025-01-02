@@ -199,6 +199,25 @@ function init_fields() {
             "params" : get_parameters(field.dataset["formula"])
         }
     });
+
+    Array.from(document.getElementsByClassName("tooltip")).map((e)=>{
+        e.addEventListener("click", (e)=>{
+            if (e.target.getAttribute("visible")) {
+                e.target.setAttribute("visible", "");
+            } else {
+                e.target.setAttribute("visible", 1);
+            };
+        });
+        e.addEventListener("mouseover", (e)=>{
+            Array.from(document.getElementsByClassName("tooltip")).map((x)=>{
+                x.setAttribute("visible", "");
+            });
+            e.target.setAttribute("visible", 1);
+        });
+        e.addEventListener("mouseout", (e)=>{
+            e.target.setAttribute("visible", "");
+        });
+    });
 }
 
 function evalInScope(js, contextAsScope) {
