@@ -607,26 +607,26 @@
             <div data-block="help" class="block">
                 <div class="columns">
                     <div class="column">
-                        <hr><b data-id="hlp-01">Input values</b><hr>
-                        <p data-id="hlp-1">Input fields allow entering simple formulas using arithmetical espressions.<br>Example of a valid input: <b>(1+2*3)/4</b><br>Most of the input values can be "tuned": hover mouse over and scroll up/down with Shift pressed<br>When pointed with a mouse - tooltip for the input values will display the field's variable name (used in other formulas). </p><br>
+                        <hr><b data-id="hlp-01">Invoerwaarden</b><hr>
+                        <p data-id="hlp-1">Invoervelden stellen je in staat om eenvoudige formules in te voeren met behulp van rekenkundige expressies.<br>Voorbeeld van een geldige invoer: <b>(1+2*3)/4</b><br>De meeste invoerwaarden kunnen worden "afgestemd": beweeg de muis erover en scroll omhoog/omlaag terwijl je Shift ingedrukt houdt.<br>Wanneer je met de muis aanwijst - wordt de tooltip voor de invoerwaarden de naam van de veldvariabele weergegeven (gebruikt in andere formules). </p><br>
 
-                        <hr><b data-id="hlp-02">Output values</b><hr>
-                        <p data-id="hlp-2">Output values calculated automatically from input values (calculated fields are disabled for manual input)<br>When pointed with a mouse - tooltip for the field will show the field's variable name and calculation formula. </p><br>
+                        <hr><b data-id="hlp-02">Uitvoervelden</b><hr>
+                        <p data-id="hlp-2">Uitgangswaarden worden automatisch berekend uit invoerwaarden (berekende velden zijn uitgeschakeld voor handmatige invoer)<br>Wanneer de muis wordt gericht op een veld, wordt de naam van de variabele van het veld en de berekeningsformule weergegeven in een tooltip. </p><br>
 
-                        <hr><b data-id="hlp-03">Payments Schedule</b><hr>
-                        <p data-id="hlp-3">Monthly mortgage plan<br><b>total_payment</b> = base_payment + extra_payment + extra_payment2 + penalty<br><b>base_payment</b> = capital_payment + interest_amt (capital payment and interest amount values depend on the mortgage type)<br><b>extra_payment</b> - additional montlhy repayments, topped up so that total_payment >= extra_payment_topup<br><b>extra_payment2</b> - additional periodic repayments. </p><br>
+                        <hr><b data-id="hlp-03">Hypotheek aflossingsschema</b><hr>
+                        <p data-id="hlp-3">Maandlasten hypotheekplan<br><b>totaal_betaling</b> = basis_betaling + extra_betaling + extra_betaling2 + boete<br><b>basis_betaling</b> = kapitaal_betaling + rente_bedrag (kapitaalbetaling en rente bedragen zijn afhankelijk van het type hypotheek)<br><b>extra_betaling</b> - extra maandlasten, verhoogd zodat totaal_betaling >= extra_betaling_aanvulling<br><b>extra_betaling2</b> - extra periodieke betalingen. </p><br>
 
-                        <hr><b data-id="hlp-04">Manual adjustments to payments Schedule</b><hr>
-                        <p data-id="hlp-4"><b>extra_payment</b> values can be manually adjusted by clicking on the value in the payment schedule cell. Adjusted values "live" until any other parameters of the loan gets changed and loan gets recalculated. </p><br>
+                        <hr><b data-id="hlp-04">Handmatige aanpassingen aan betalingsschema</b><hr>
+                        <p data-id="hlp-4"><b>extra_payment</b> waarden kunnen handmatig worden aangepast door op de waarde in de betalingsschema-cel te klikken. Aangepaste waarden blijven "live" totdat een van de andere leningparameters wordt gewijzigd en de lening opnieuw wordt berekend. </p><br>
 
-                        <hr><b data-id="hlp-05">Extra repayments</b><hr>
-                        <p data-id="hlp-5">There are several repayments that can be modelled:<br>&bull; <b>Monthly repayment</b>: fixed monthly extra repayment used for every month of the mortgage.<br>&bull; <b>Flexible periodic repayment</b>: more flexible - period, value and starting month of the repayment can be chosen.<br>&bull; there is also 2 additional flexible repayments can be set on <b>[Extra repayments]</b> tab<br>&bull; <b>extra_payment_topup</b>: every month an extra repayment will be "made" automatically such that total monthly payment is <b>not less</b> than this value.<br> </p><br>
+                        <hr><b data-id="hlp-05">Extra aflossingen</b><hr>
+                        <p data-id="hlp-5">Er zijn verschillende aflossingen die gemodelleerd kunnen worden:<br>• <b>Maandlasten</b>: vaste maandlasten voor elke maand van de hypotheek.<br>• <b>Flexibele periodieke aflossing</b>: flexibeler - periode, waarde en startmaand van de aflossing kunnen worden gekozen.<br>• Er kunnen ook 2 extra flexibele aflossingen worden ingesteld op het <b>[Extra aflossingen]</b> tabblad<br>• <b>extra_payment_topup</b>: elke maand wordt een extra aflossing automatisch "gemaakt" zodat de totale maandlasten <b>niet minder</b> zijn dan deze waarde.<br> </p><br>
 
-                        <hr><b data-id="hlp-06">Extra repayment penalties</b><hr>
-                        <p data-id="hlp-6">Banks usually do not like early repayments and set a limit on how much you can repay (yearly) - everything you repay on top of the limit will be penalized.<br>&bull; <b>Max extra repayment per year, %</b> - sets that threshold (% from the original principal debt).<br>&bull; <b>Penalty for repaying more than allowed</b> - sets the value of the penalty  - % from the payment value. If this parameter set to 100 - payments will be automatically adjusted to never exceed the allowed threshold.<br> </p><br>
+                        <hr><b data-id="hlp-06">Boetes voor extra betalingen</b><hr>
+                        <p data-id="hlp-6">Banken houden meestal niet van vervroegde aflossingen en stellen een limiet in voor hoeveel je jaarlijks kunt aflossen - alles wat je boven de limiet aflost, wordt bestraft.<br>• <b>Maximale extra aflossing per jaar, %</b> - stelt die drempel in (% van de oorspronkelijke hoofdsom).<br>• <b>Boete voor meer aflossen dan toegestaan</b> - stelt de waarde van de boete in - % van het betalingsbedrag. Als deze parameter op 100 wordt ingesteld, worden betalingen automatisch aangepast om de toegestane limiet niet te overschrijden.<br> </p><br>
 
-                        <hr><b data-id="hlp-07">Profitability analysis</b><hr>
-                        <p data-id="hlp-7">Using parameters from the corresponding tab you can set values of your income, bonuses expenses etc. These then will be used to calculate different mortgage effeciency metrics.<br>Resulting metrics will be immediately shown in the calculatable fields, also some other metrics and their dynamics during the mortgage lifetime will be plotted on the corresponding graphs section below. </p><br>
+                        <hr><b data-id="hlp-07">Winstgevendheidsanalyse</b><hr>
+                        <p data-id="hlp-7">Met de parameters uit het bijbehorende tabblad kun je de waarden van je inkomen, bonussen, uitgaven enz. instellen. Deze worden vervolgens gebruikt om verschillende hypotheekrendementmetrics te berekenen.<br>De resulterende metrics worden onmiddellijk weergegeven in de berekenbare velden, ook worden enkele andere metrics en hun dynamiek gedurende de looptijd van de hypotheek weergegeven in de bijbehorende grafieken hieronder. </p><br>
 
                         <hr><b>Interest rates</b><hr>
                         <p>
