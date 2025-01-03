@@ -346,3 +346,276 @@ Maand om leningstatistieken te nemen @:
 graph_entry_target">
 Deze grafiek wordt bijgewerkt wanneer u 'Bereken het opnieuw' uitvoert vanuit de sectie 'Startmaand' hierboven.
 \
+for="house_price_tip" data-tooltip="
+Vraagprijs van het pand dat u wilt kopen.
+\
+for="value_discount_tip" data-tooltip="
+Coefficient die de werkelijke woningwaarde bepaalt (relatief aan de vraagprijs).
+\
+for="house_value_tip" data-tooltip="
+Werkelijke woningwaarde (WOZ).
+\
+for="savings_tip" data-tooltip="
+Geld dat u wilt besteden aan het kopen van de woning (aanbetaling lening + transactiekosten).
+\
+for="cost_tip" data-tooltip="
+Eenmalige kosten voor de aankoop van het pand (belastingen, honoraria, enz.).
+\
+for="downpayment_tip" data-tooltip="
+Beschikbaar bedrag voor de lening na aftrek van transactiekosten.
+\
+for="loan_tip" data-tooltip="
+Leningbedrag of hoofdsom: het bedrag dat u van de bank moet lenen.
+\
+for="loan_rate_tip" data-tooltip="
+Deel eigen vermogen in de deal ten opzichte van het geleende bedrag. Hoe kleiner dit is, hoe lager de beschikbare hypotheekrente.
+\
+for="loan_term_tip" data-tooltip="
+Looptijd van de lening. Afgesproken levensduur van de lening.
+\
+for="loan_term_actual_tip" data-tooltip="
+Werkelijke looptijd van de lening. Kan korter zijn dan de afgesproken looptijd bij extra aflossingen.
+\
+for="loan_term_reduction_tip" data-tooltip="
+Aantal maanden verminderd van de looptijd door extra aflossingen.
+\
+for="interest_tip" data-tooltip="
+Jaarlijkse rentevoet van de lening (hypotheek).
+\
+for="deduction_tip" data-tooltip="
+Bepaalt het fiscaal aftrekbare percentage (box-1) van de betaalde rente.
+\
+for="loan_type_tip" data-tooltip="
+Definieert het type lening. De eerste twee zijn fiscaal aftrekbaar; aflossingsvrij niet (box-1).
+\
+for="tax_scheme_tip" data-tooltip="
+Wat er gebeurt met belastingteruggaven: 0 - uitgeschakeld, 1 - als inkomen opgenomen, 2 - (maandelijks) gebruikt voor extra aflossingen.
+\
+for="total_tax_returned_tip" data-tooltip="
+Totale belastingteruggave. Wordt 0 als de lening niet aftrekbaar is of als teruggaven zijn uitgeschakeld of gebruikt.
+\
+for="loan_interest_rate_tip" data-tooltip="
+Rentepercentage ten opzichte van de leningwaarde.
+\
+for="extra_payment_monthly_tip" data-tooltip="
+Waarde van de gewenste maandelijkse extra aflossing.
+\
+for="extra_payment_period_tip" data-tooltip="
+Periodieke extra aflossingstermijn (in maanden). Bijvoorbeeld 12 voor jaarlijkse betalingen.
+\
+for="extra_payment_start_tip" data-tooltip="
+Maand waarin de eerste extra aflossing plaatsvindt.
+\
+for="extra_payment_value_tip" data-tooltip="
+Waarde van de extra aflossing.
+\
+for="total_loan_invested_tip" data-tooltip="
+Totaal besteed bedrag aan de hypotheek (spaargeld + betalingen).
+\
+for="total_paid_extra_tip" data-tooltip="
+Totale extra aflossingen gedaan (indien van toepassing).
+\
+for="total_paid_gross_tip" data-tooltip="
+Totaal betaalde bedrag richting de hypotheek.
+\
+for="total_paid_net_tip" data-tooltip="
+Totale betalingen richting de hypotheek minus belastingteruggaven.
+\
+for="total_paid_penalty_tip" data-tooltip="
+Totale boete betaald voor over-aflossingen (meer dan toegestaan door de bank).
+\
+for="total_paid_interest_tip" data-tooltip="
+Totaal aan rente betaald gedurende de looptijd van de lening.
+\
+for="total_paid_net_monthly_tip" data-tooltip="
+Totaal betaalde hypotheek + spaargeld / werkelijke looptijd.
+\
+for="cost_advisor_tip" data-tooltip="
+Kosten van financieel advies.
+\
+for="cost_makelaar_tip" data-tooltip="
+Kosten voor diensten van een aankoopmakelaar.
+\
+for="cost_valuation_tip" data-tooltip="
+Kosten van een taxatie voorafgaand aan de hypotheekdeal.
+\
+for="cost_notary_tip" data-tooltip="
+Totale notariskosten.
+\
+for="cost_survey_tip" data-tooltip="
+Kosten van een bouwkundige keuring van het pand.
+\
+for="nhg_max_price_tip" data-tooltip="
+Maximale vraagprijs voor NHG-hypotheek (verzekering + lagere rente).
+\
+for="nhg_cost_pct_tip" data-tooltip="
+NHG-kostenpercentage (indien hypotheek NHG-gerechtigd is).
+\
+for="cost_transfer_tax_tip" data-tooltip="
+Overdrachtsbelasting (bij aankoop van een bestaande woning).
+\
+for="cost_bank_tip" data-tooltip="
+Kosten voor een bankgarantie in de voorbereidende fase van de deal.
+\
+for="purchase_cost_tip" data-tooltip="
+Totale aankoopkosten exclusief NHG-kosten.
+\
+for="cost_nhg_tip" data-tooltip="
+NHG-kosten, indien de lening NHG-gerechtigd is.
+\
+for="total_purchase_cost_tip" data-tooltip="
+Aankoopkosten inclusief NHG-kosten.
+\
+for="purchase_deductible_cost_tip" data-tooltip="
+Aftrekbare aankoopkosten: adviseur, notaris, keuring, taxatie en NHG-kosten.
+\
+for="purchase_deductible_cost_pct_tip" data-tooltip="
+% van de aftrekbare kosten ten opzichte van de totale aankoopkosten.
+\
+for="max_extra_payments_per_year_pct_tip" data-tooltip="
+Maximale jaarlijkse extra aflossing toegestaan door de bank (% van de oorspronkelijke hoofdsom).
+\
+for="overpayment_penalty_tip" data-tooltip="
+Boetepercentage bij overschrijding van de maximale extra aflossing. Bij 100 zal het systeem extra aflossingen automatisch aanpassen.
+\
+for="max_extra_payment_per_year_tip" data-tooltip="
+Maximaal toegestane jaarlijkse extra aflossing.
+\
+for="extra_payment_period1_tip" data-tooltip="
+Eerste extra aflossingstermijn (in maanden). Bijvoorbeeld 12 voor jaarlijks.
+\
+for="extra_payment_start1_tip" data-tooltip="
+Eerste maand van extra periodieke aflossingen.
+\
+for="extra_payment_value1_tip" data-tooltip="
+Waarde van de extra periodieke aflossing.
+\
+for="extra_payment_period2_tip" data-tooltip="
+Tweede extra aflossingstermijn (in maanden). Bijvoorbeeld 12 voor jaarlijks.
+\
+for="extra_payment_start2_tip" data-tooltip="
+Eerste maand van de tweede extra aflossing.
+\
+for="extra_payment_value2_tip" data-tooltip="
+Waarde van de tweede extra periodieke aflossing.
+\
+for="extra_payment_topup_tip" data-tooltip="
+Minimale maandelijkse betalingen instellen. Verschil wordt toegevoegd als extra aflossing.
+\
+for="extra_payment_roi_tip" data-tooltip="
+ROI van extra aflossingen. Verschil in eindvermogen tussen normale en extra aflossingsscenario's.
+\
+for="deposit_rate_tip" data-tooltip="
+Rente op spaargeld (jaarlijks). Gebruikt in rendementsberekeningen.
+\
+for="house_market_rate_tip" data-tooltip="
+Jaarlijkse groei van de woningmarkt, verwachte stijging van de verkoopprijs.
+\
+for="stocks_rate_tip" data-tooltip="
+Jaarlijkse groei van aandelen. Gebruikt in rendementsberekeningen.
+\
+for="monthly_savings_tip" data-tooltip="
+Uw gemiddelde maandelijkse besparingen na alle kosten en huur. Gebruikt in rendementsberekeningen.
+\
+for="bonus_month_tip" data-tooltip="
+Maand waarin de jaarlijkse bonus wordt uitgekeerd.
+\
+for="bonus_cash_tip" data-tooltip="
+Contante gedeelte van de jaarlijkse bonus. Gebruikt in rendementsberekeningen.
+\
+for="bonus_stocks_tip" data-tooltip="
+Aandelen deel van de jaarlijkse bonus. Gebruikt in rendementsberekeningen.
+\
+for="current_stocks_assets_tip" data-tooltip="
+Aanvangsvermogen: waarde van aandelen.
+\
+for="current_cash_assets_tip" data-tooltip="
+Aanvangsvermogen: contant geld. Gebruikt voor rendementsberekeningen.
+\
+for="current_assets_tip" data-tooltip="
+Totaal aanvankelijke vermogen.
+\
+for="assets_to_downpayment_tip" data-tooltip="
+Deel van aanvankelijke vermogen gebruikt voor hypotheek (kosten + aanbetaling).
+\
+for="assets_left_tip" data-tooltip="
+Overgebleven vermogen na hypotheek. Idealiter minimaal driemaandelijkse uitgaven.
+\
+for="max_loan_tip" data-tooltip="
+Ruwe schatting van het maximale leningbedrag op basis van uw budget.
+\
+for="max_value_tip" data-tooltip="
+Ruwe schatting van het maximale budget voor een woning.
+\
+for="rent_tip" data-tooltip="
+Huidige maandelijkse huur (indien van toepassing). Gebruikt in rendementsberekeningen.
+\
+for="total_rent_actual_tip" data-tooltip="
+Totale huur tot het einde van de hypotheek als u blijft huren.
+\
+for="total_rent_tip" data-tooltip="
+Totale huur bij einde looptijd hypotheek als u blijft huren.
+\
+for="assets_renting_tip" data-tooltip="
+Verwacht vermogen aan het einde van de hypotheektermijn in het huurscenario.
+\
+for="ownership_pct_tip" data-tooltip="
+Belastingpercentage op woningbezit.
+\
+for="monthly_ownership_tax_tip" data-tooltip="
+Maandelijkse belasting op woningbezit.
+\
+for="assets_housing_tip" data-tooltip="
+Verwacht vermogen aan het einde van de hypotheektermijn in het koopscenario.
+\
+for="assets_delta_tip" data-tooltip="
+Verschil in vermogen tussen huur- en koopscenario.
+\
+for="assets_k_tip" data-tooltip="
+Verhouding tussen vermogen uit huur- en koopscenario.
+\
+for="housing_roi_tip" data-tooltip="
+ROI van de hypotheek. Verschil in eindvermogen t.o.v. netto betaalde rente.
+\
+for="months_to_even_tip" data-tooltip="
+Aantal maanden tot huur- en koopscenario's gelijkwaardig zijn in vermogen.
+\
+for="variable1_tip" data-tooltip="
+Eerste variabele om te testen en bereik van geteste waarden.
+\
+for="variable2_tip" data-tooltip="
+Tweede variabele om te testen. Alleen eerste metriek wordt weergegeven als ingesteld.
+\
+for="metrics_tip" data-tooltip="
+Lijst van meetwaarden voor hypotheekanalyse. Alleen eerste metriek gebruikt bij twee variabelen.
+\
+for="entry_probe_month_tip" data-tooltip="
+'Probeermoment' maand. Metrics geëxtraheerd uit een specifieke maand.
+\
+for="t_loan_tip" data-tooltip="
+Benodigd leningbedrag.
+\
+for="t_loan_term_actual_tip" data-tooltip="
+Werkelijke looptijd hypotheek, korter bij aflossingen.
+\
+for="t_total_loan_invested_tip" data-tooltip="
+Totaalbedrag besteed aan hypotheek.
+\
+for="payment_first_tip" data-tooltip="
+Eerste geplande betaling (exclusief extra aflossingen).
+\
+for="payment_base_first_tip" data-tooltip="
+Basiswaarde eerste betaling, alleen rente en schuld.
+\
+for="payment_first_extra_tip" data-tooltip="
+Verschil tussen eerste betaling en huur.
+\
+for="t_assets_delta_tip" data-tooltip="
+Verschil in vermogen tussen koop- en huurscenario.
+\
+for="t_housing_roi_tip" data-tooltip="
+ROI van hypotheek. Zie [rendementspagina].
+\
+for="_tip" data-tooltip="
+ROI van extra aflossingen. Zie [extra aflossingenpagina].
+\
