@@ -619,3 +619,45 @@ ROI van hypotheek. Zie [rendementspagina].
 for="_tip" data-tooltip="
 ROI van extra aflossingen. Zie [extra aflossingenpagina].
 \
+data-id="hlp-1"~
+Invoervelden stellen je in staat om eenvoudige formules in te voeren met behulp van rekenkundige expressies.<br>Voorbeeld van een geldige invoer: <b>(1+2*3)/4</b><br>De meeste invoerwaarden kunnen worden "afgestemd": beweeg de muis erover en scroll omhoog/omlaag terwijl je Shift ingedrukt houdt.<br>Wanneer je met de muis aanwijst - wordt de tooltip voor de invoerwaarden de naam van de veldvariabele weergegeven (gebruikt in andere formules).
+\
+data-id="hlp-2"~
+Uitgangswaarden worden automatisch berekend uit invoerwaarden (berekende velden zijn uitgeschakeld voor handmatige invoer)<br>Wanneer de muis wordt gericht op een veld, wordt de naam van de variabele van het veld en de berekeningsformule weergegeven in een tooltip.
+\
+data-id="hlp-3"~
+Maandlasten hypotheekplan<br><b>totaal_betaling</b> = basis_betaling + extra_betaling + extra_betaling2 + boete<br><b>basis_betaling</b> = kapitaal_betaling + rente_bedrag (kapitaalbetaling en rente bedragen zijn afhankelijk van het type hypotheek)<br><b>extra_betaling</b> - extra maandlasten, verhoogd zodat totaal_betaling >= extra_betaling_aanvulling<br><b>extra_betaling2</b> - extra periodieke betalingen.
+\
+data-id="hlp-4"~
+<b>extra_payment</b> waarden kunnen handmatig worden aangepast door op de waarde in de betalingsschema-cel te klikken. Aangepaste waarden blijven "live" totdat een van de andere leningparameters wordt gewijzigd en de lening opnieuw wordt berekend.
+\
+data-id="hlp-5"~
+Er zijn verschillende aflossingen die gemodelleerd kunnen worden:<br>• <b>Maandlasten</b>: vaste maandlasten voor elke maand van de hypotheek.<br>• <b>Flexibele periodieke aflossing</b>: flexibeler - periode, waarde en startmaand van de aflossing kunnen worden gekozen.<br>• Er kunnen ook 2 extra flexibele aflossingen worden ingesteld op het <b>[Extra aflossingen]</b> tabblad<br>• <b>extra_payment_topup</b>: elke maand wordt een extra aflossing automatisch "gemaakt" zodat de totale maandlasten <b>niet minder</b> zijn dan deze waarde.<br>
+\
+data-id="hlp-6"~
+Banken houden meestal niet van vervroegde aflossingen en stellen een limiet in voor hoeveel je jaarlijks kunt aflossen - alles wat je boven de limiet aflost, wordt bestraft.<br>• <b>Maximale extra aflossing per jaar, %</b> - stelt die drempel in (% van de oorspronkelijke hoofdsom).<br>• <b>Boete voor meer aflossen dan toegestaan</b> - stelt de waarde van de boete in - % van het betalingsbedrag. Als deze parameter op 100 wordt ingesteld, worden betalingen automatisch aangepast om de toegestane limiet niet te overschrijden.<br>
+\
+data-id="hlp-7"~
+Met de parameters uit het bijbehorende tabblad kun je de waarden van je inkomen, bonussen, uitgaven enz. instellen. Deze worden vervolgens gebruikt om verschillende hypotheekrendementmetrics te berekenen.<br>De resulterende metrics worden onmiddellijk weergegeven in de berekenbare velden, ook worden enkele andere metrics en hun dynamiek gedurende de looptijd van de hypotheek weergegeven in de bijbehorende grafieken hieronder.
+\
+data-id="hlp-01">
+Invoerwaarden
+\
+data-id="hlp-02">
+Uitvoervelden
+\
+data-id="hlp-03">
+Hypotheek aflossingsschema
+\
+data-id="hlp-04">
+Handmatige aanpassingen aan betalingsschema
+\
+data-id="hlp-05">
+Extra aflossingen
+\
+data-id="hlp-06">
+Boetes voor extra betalingen
+\
+data-id="hlp-07">
+Winstgevendheidsanalyse
+\
