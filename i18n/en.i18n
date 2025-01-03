@@ -619,3 +619,6 @@ ROI of getting the mortgage. See more on [profitability] page.
 for="_tip" data-tooltip="
 ROI of extra payments made. See more on [extra repayments] page.
 \
+<p data-id="hlp-1"~
+Input fields allow entering simple formulas using arithmetical espressions.<br>Example of a valid input: <b>(1+2*3)/4</b><br>Most of the input values can be "tuned": hover mouse over and scroll up/down with Shift pressed<br>When pointed with a mouse - tooltip for the input values will display the field's variable name (used in other formulas).
+\

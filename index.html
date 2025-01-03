@@ -604,82 +604,42 @@
             </div>
             -->
 
-
             <div data-block="help" class="block">
                 <div class="columns">
                     <div class="column">
+                        <hr><b data-id="hlp-01">Input values</b><hr>
+                        <p data-id="hlp-1">Input fields allow entering simple formulas using arithmetical espressions.<br>Example of a valid input: <b>(1+2*3)/4</b><br>Most of the input values can be "tuned": hover mouse over and scroll up/down with Shift pressed<br>When pointed with a mouse - tooltip for the input values will display the field's variable name (used in other formulas).</p><br>
 
-                            <hr><b>Input values</b><hr>
-                            <p>
-                                Input fields allow entering simple formulas using arithmetical espressions.<br>Example of a valid input: <b>(1+2*3)/4</b><br>Most of the input values can be "tuned": hover mouse over and scroll up/down with Shift pressed<br>When pointed with a mouse - tooltip for the input values will display the field's variable name (used in other formulas).
-                            </p><br>
+                        <hr><b data-id="hlp-02">Output values</b><hr>
+                        <p data-id="hlp-2">Output values calculated automatically from input values (calculated fields are disabled for manual input)<br>When pointed with a mouse - tooltip for the field will show the field's variable name and calculation formula.</p><br>
 
-                            <hr><b>Output values</b><hr>
-                            <p>
-                                Output values calculated automatically from input values (calculated fields are disabled for manual input)<br>When pointed with a mouse - tooltip for the field will show the field's variable name and calculation formula.
-                            </p><br>
+                        <hr><b data-id="hlp-03">Payments Schedule</b><hr>
+                        <p data-id="hlp-3">Monthly mortgage plan<br><b>total_payment</b> = base_payment + extra_payment + extra_payment2 + penalty<br><b>base_payment</b> = capital_payment + interest_amt (capital payment and interest amount values depend on the mortgage type)<br><b>extra_payment</b> - additional montlhy repayments, topped up so that total_payment >= extra_payment_topup<br><b>extra_payment2</b> - additional periodic repayments.</p><br>
 
-                            <hr><b>Payments Schedule</b><hr>
-                            <p>
-                                Calculated monthly mortgage repayment plan<br><b>total_payment</b> = base_payment + extra_payment + extra_payment2 + penalty<br><b>base_payment</b> = capital_payment + interest_amt (capital payment and interest amount values depend on the mortgage type)<br><b>extra_payment</b> - additional montlhy repayments, topped up so that total_payment >= extra_payment_topup<br><b>extra_payment2</b> - additional periodic repayments.
-                            </p><br>
+                        <hr><b data-id="hlp-04">Manual adjustments to payments Schedule</b><hr>
+                        <p data-id="hlp-4"><b>extra_payment</b> values can be manually adjusted by clicking on the value in the payment schedule cell. Adjusted values "live" until any other parameters of the loan gets changed and loan gets recalculated.</p><br>
 
-                            <hr><b>Manual adjustments to payments Schedule</b><hr>
-                            <p>
-                                <b>extra_payment</b> values can be manually adjusted by clicking on the value in the payment schedule cell. Adjusted values "live" until any other parameters of the loan gets changed and loan gets recalculated.
-                            </p><br>
-                            
-                            <hr><b>House price</b><hr>
-                            <p>
-                                sell price of the house.<br>for "home ownership tax" (eigenwoningforfait) and for assets calculation - <b>house value</b> is used
-                            </p><br>
+                        <hr><b data-id="hlp-05">Extra repayments</b><hr>
+                        <p data-id="hlp-5">There are several repayments that can be modelled:<br>&bull; <b>Monthly repayment</b>: fixed monthly extra repayment used for every month of the mortgage.<br>&bull; <b>Flexible periodic repayment</b>: more flexible - period, value and starting month of the repayment can be chosen.<br>&bull; there is also 2 additional flexible repayments can be set on <b>[Extra repayments]</b> tab<br>&bull; <b>extra_payment_topup</b>: every month an extra repayment will be "made" automatically such that total monthly payment is <b>not less</b> than this value.<br></p><br>
 
-                            <hr><b>Tax refund target</b><hr>
-                            <p>
-                                For Annuity and Linear types of mortgages - a portion of interest payed is tax deductible(hypotheekrenteaftrek)<br>tax refund target setting controls what happens to the tax benefit generated therefrom<br>0 - tax benefit is ignored as if it is not happening<br>1 - tax benefit is accrued as a "bonus" amount and summed up in "total tax refunded"<br>2 - tax benefit is used as an extra repayment towards principal debt (added to extra_payment)
-                            </p><br>
+                        <hr><b data-id="hlp-06">Extra repayment penalties</b><hr>
+                        <p data-id="hlp-6">Banks usually do not like early repayments and set a limit on how much you can repay (yearly) - everything you repay on top of the limit will be penalized.<br>&bull; <b>Max extra repayment per year, %</b> - sets that threshold (% from the original principal debt).<br>&bull; <b>Penalty for repaying more than allowed</b> - sets the value of the penalty  - % from the payment value. If this parameter set to 100 - payments will be automatically adjusted to never exceed the allowed threshold.<br></p><br>
 
-                            <hr><b>"net" amounts</b><hr>
-                            <p>
-                                if tax refund target = 1 "net" values calculated by substracting tax benefits (hypotheekrenteaftrek) from "gross" amounts
-                            </p><br>
+                        <hr><b data-id="hlp-07">Profitability analysis</b><hr>
+                        <p data-id="hlp-7">Using parameters from the corresponding tab you can set values of your income, bonuses expenses etc. These then will be used to calculate different mortgage effeciency metrics.<br>Resulting metrics will be immediately shown in the calculatable fields, also some other metrics and their dynamics during the mortgage lifetime will be plotted on the corresponding graphs section below.</p><br>
 
-                            <hr><b>Extra repayments</b><hr>
-                            <p>
-                                &bull; There are several repayments that can be modelled:<br>
-                                &bull; <b>[Mortgage] tab</b><br>
-                                &bull; Monthly repayment<br>
-                                &bull; Flexible periodic repayment: you can set period of the repayment (usually 12 months), first month of the repayment and repayment value<br>
-                                &bull; <b>[Extra repayments] tab</b><br>
-                                &bull; 2 additional flexible periodic repayments<br>
-                                &bull; extra_payment_topup: every month an extra repayment will be made such that total payment is not less than this value<br>
-                                &bull; <b>Settings</b><br>
-                                &bull; Max. allowed yearly repayment sum - % from the original debt<br>
-                                &bull; If total annual extra repayments amount surpass the max allowed threshold - surplus will be "taxed" by penalty %, and actual repayments made will be lower<br>
-                                &bull; If penalty % is set to 100 - all extra repayments will be capped in such a way that no penalties occur<br>
-                            </p><br>
-
-                            <hr><b>Profitability analysis</b><hr>
-                            <p>
-                                &bull; Final (up to the loan's term) assets status calculated for two scenarios:<br>
-                                &bull; Renting: monthly increment = salary - rent + yeary bonus (if the month is right), deposit rate is assumed for all current assets accumulated<br>
-                                &bull; Housing: montlhy increment = salary - house ownership tax - loan payment (net) + yeary bonus (if the month is right), deposit rate assumed for all current assets accumulated, housing market rate assumed for the current estate (fraction) owned <br>
-                                &bull; <b>Comparisons</b><br>
-                                &bull; Housing / Renting - ratio of final assets for "housing" and "renting" scenarios<br>
-                                &bull; Housing ROI = (housing - renting final assets) / (cost of mortgage : interest paid - tax refund) year-normalized<br>
-                            </p><br>
-
-                            <hr><b>Interest rates</b><hr>
-                            <p>
-                                &bull; <a style="color:red" href="https://www.hypotheekrente.nl/rente/10-jaar-rentevast/60/#overzicht">Overview</a><br>
-                                &bull; <a style="color:red" href="https://www.abnamro.nl/en/personal/mortgages/interest-rates/index.html">ABN Amro</a><br>
-                                &bull; <a style="color:red" href="https://www.ing.nl/particulier/hypotheek/actuele-hypotheekrente">ING</a><br>
-                                &bull; <a style="color:red" href="https://www.rabobank.nl/particulieren/hypotheek/hypotheekrente">Rabo Bank</a><br>
-                            </p>
-                            <hr>                            
+                        <hr><b>Interest rates</b><hr>
+                        <p>
+                            &bull; <a style="color:red" href="https://www.hypotheekrente.nl/rente/10-jaar-rentevast/60/#overzicht">Overview</a><br>
+                            &bull; <a style="color:red" href="https://www.abnamro.nl/en/personal/mortgages/interest-rates/index.html">ABN Amro</a><br>
+                            &bull; <a style="color:red" href="https://www.ing.nl/particulier/hypotheek/actuele-hypotheekrente">ING</a><br>
+                            &bull; <a style="color:red" href="https://www.rabobank.nl/particulieren/hypotheek/hypotheekrente">Rabo Bank</a><br>
+                        </p>
+                        <hr>
                     </div>
                 </div>
             </div>
+        
         </section>
 
         <section class="section"><h2 class="subtitle" data-id="h_4">Modelling results:</h2>
