@@ -661,3 +661,30 @@ Extra repayment penalties
 data-id="hlp-07">
 Profitability analysis
 \
+data-id="p-0"~
+Here you can "test" what would happen if some parameters of the mortgage would differ.<br>• <b>"Variable1"</b> and <b>"Variable2"</b> fields describe the range of variability for the parameters to be tested.<br>Range description format: <b>variable_name(start_value, end_value, steps)</b>
+\
+data-id="p-1"~
+• <b>"Metrics"</b> comma-separated list of variables or expressions (using variables) you would like to measure for each "tested" loan. In a simpliest case - it is just a parameter name of interest (e.g. <b>loan_term_actual</b>)<br>Outcomes of the modelling drawn on the <b>[What-if Graph]</b> section below.
+\
+data-id="p-2"~
+• If you "test" one parameter - you will get a 2D plot of Metrics required. IF you "test" two parameters - you will get a <b>3D</b> plot(surface) of the first metric (or expression) in the list.
+\
+data-id="p-3"~
+• You can use "original" mortgage parameter value in expressions using <b>_0</b> postfix (e.g. <b>loan_term_actual_0</b>).
+\
+data-id="p-4"~
+• Probing takes time (depends on the number of steps requested), probing process starts by <b>[Recalculate]</b> button.<br>
+\
+data-id="p-5"~
+Here you can model different "entry" months for opening the loan.<br>• Up to 30*12 months ahead will be tested and predefined set of metrics will be extracted from these "tested" mortgages (from specific month of their lifetime).<br>• Modelling will stop at the moment when no mortgage will be needed to buy the house (if that moment ever comes).<br>
+\
+data-id="p-6"~
+Hypothetic mortgages will have different "entry" parameters:<br>• assets increase will be calculated according to your cash accumulation settings / bonuses etc..<br>• savings used for the loan downpayment will be scaled proportionally to your assets.<br>• house price will be scaled according to the house market growth rate.<br>
+\
+data-id="p-7"~
+Outcomes of the modelling will appear on the <b>[Entrypoint Graphs]</b> section below.
+\
+data-id="p-8"~
+• Loan entry parameters will be plotted with <b>entry_</b> prefix.<br>• Loan final parameters will be plotted with <b>loan_</b> prefix.• Loan intermediate metrics will be plotted with <b>@</b> postfix.
+\

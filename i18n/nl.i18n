@@ -661,3 +661,30 @@ Boetes voor extra betalingen
 data-id="hlp-07">
 Winstgevendheidsanalyse
 \
+data-id="p-0"~
+Hier kunt u "testen" wat er zou gebeuren als enkele parameters van de hypotheek zouden verschillen.<br>• De velden <b>"Variable1"</b> en <b>"Variable2"</b> beschrijven het bereik van de variabiliteit van de te testen parameters.<br>Formaat voor bereikbeschrijving: <b>variabele_naam(start_waarde, eind_waarde, stappen)</b>
+\
+data-id="p-1"~
+• <b>"Metrics"</b> een door komma's gescheiden lijst van variabelen of uitdrukkingen (met behulp van variabelen) die u voor elke "geteste" lening wilt meten. In het eenvoudigste geval is het gewoon een parameternaam van belang (bijv. <b>leningstermijn_actueel</b>).<br>De resultaten van de modellering worden weergegeven in de sectie <b>[What-if Grafiek]</b> hieronder.
+\
+data-id="p-2"~
+• Als u één parameter "test", krijgt u een 2D-grafiek van de vereiste Metrics. Als u twee parameters "test", krijgt u een <b>3D</b>-grafiek (oppervlak) van de eerste metric (of uitdrukking) in de lijst.
+\
+data-id="p-3"~
+• U kunt de "originele" hypotheekparametervariabele in uitdrukkingen gebruiken met behulp van de <b>_0</b> achtervoegsel (bijv. <b>leningstermijn_actueel_0</b>).
+\
+data-id="p-4"~
+• Het testen neemt tijd in beslag (afhankelijk van het aantal gevraagde stappen). Het testproces start door op de knop <b>[Herberekenen]</b> te klikken.<br>
+\
+data-id="p-5"~
+Hier kunt u verschillende "ingangs"maanden voor het openen van de lening modelleren.<br>• Tot 30*12 maanden vooruit worden getest en een vooraf gedefinieerde set metrics wordt geëxtraheerd uit deze "geteste" hypotheken (vanaf een specifieke maand in hun looptijd).<br>• De modellering stopt op het moment dat er geen hypotheek meer nodig is om het huis te kopen (als dat moment ooit komt).<br>
+\
+data-id="p-6"~
+Hypothetische hypotheken zullen verschillende "ingangs"parameters hebben:<br>• Vermogensgroei wordt berekend volgens uw instellingen voor kapitaalopbouw/bonussen, enz.<br>• Besparingen die worden gebruikt voor de aanbetaling van de lening worden evenredig opgeschaald met uw vermogen.<br>• De huizenprijs wordt opgeschaald volgens het groeipercentage van de huizenmarkt.<br>
+\
+data-id="p-7"~
+De resultaten van de modellering verschijnen in de sectie <b>[Ingangspunt Grafieken]</b> hieronder.
+\
+data-id="p-8"~
+• Leningingangsparameters worden weergegeven met het voorvoegsel <b>entry_</b>.<br>• Leningeindparameters worden weergegeven met het voorvoegsel <b>loan_</b>.• Tussentijdse metrics van de lening worden weergegeven met het achtervoegsel <b>@</b>.
+\
