@@ -69,7 +69,8 @@ function get_parameters(formula) {
     let params = [];
     if (formula===undefined) return params;
 
-    const rg_fn=/([a-zA-Z_\.]+)\(([^\)]*)\)(\.[a-zA-Z_]+)*/g; // function().field call
+    // function().field call
+    const rg_fn=/([a-zA-Z_\.]+)\(([^\)]*)\)(\.[a-zA-Z_]+)*/g; 
     for (const match of formula.matchAll(rg_fn)) {
         const sub = match[0];
         get_parameters(match[2]).map((p)=>{
@@ -78,13 +79,20 @@ function get_parameters(formula) {
         formula = formula.replaceAll(sub," ");
     };
 
-    const rg_fld=/([a-zA-Z_][a-zA-Z0-9_]*)(\.[a-zA-Z_][a-zA-Z0-9_]*)+/g; // structure.field
+    // structure.field
+    const rg_fld=/([a-zA-Z_][a-zA-Z0-9_]*)(\.[a-zA-Z_][a-zA-Z0-9_]*)+/g; 
     for (const match of formula.matchAll(rg_fld)) {
         const sub = match[0];
         if (match[1]!="Math") {
             params.push(match[1]);
             formula = formula.replaceAll(sub," ");
         }
+    };
+
+    // string immediates
+    const str_imm=/'[^']*'/g; 
+    for (const match of formula.matchAll(str_imm)) {
+        formula = formula.replaceAll(match[0]," ");
     };
 
     formula
@@ -291,12 +299,13 @@ function get_field_value(id, path) {
     } else {
         try {
             value = evalInScope(fdesc.formula, calculation_context);
+            fdesc.value = value;
             if (fdesc.input===undefined) {
-                fdesc.value = value;
+            } else if (fdesc.type=='raw') {
+                fdesc.input.value = value;
             } else {
                 const xp = 10**fdesc.round;
                 fdesc.input.value = Math.round(xp * value)/xp;
-                fdesc.value = value;
             };
         } catch (ex) {
             if (fdesc.input!==undefined)
