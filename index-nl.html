@@ -140,6 +140,11 @@
                             <div class="control"><input id="tax_scheme" class="input" type="text" value="">
                             <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="tax_scheme_tip" data-tooltip="Wat er gebeurt met belastingteruggaven: 0 - uitgeschakeld, 1 - als inkomen opgenomen, 2 - (maandelijks) gebruikt voor extra aflossingen.">?</span></div>
                         </div>
+                        <div class="field" data-type="raw" data-formula="cost_nhg > 0 ? 'NHG' : Math.ceil(loan_rate/5)*5">
+                            <label for="loan_bracket">Loan risk bracket</label>
+                            <div class="control"><input id="loan_bracket" class="input" type="text" value="">
+                            <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="loan_bracket_tip" data-tooltip="Risk bracket class defines lowest mortgage interest rate accessible from the banks.">?</span></div>
+                        </div>
                     </div>
 
                     <div class="column">
