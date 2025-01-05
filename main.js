@@ -318,13 +318,7 @@ function get_field_value(id, path) {
     return value;
 }
 
-let recalc_tag = ["Recalculate"];
-let tick_state = [0,0];
 function recalculate_fields(direct, keep_overrides) {
-    Array.from(document.getElementsByClassName("recalc_button")).map((b)=>{
-        b.innerHTML = "..calculation error: check console..";
-    });
-
     if (!keep_overrides) {
         OVERRIDES = {};
     };
@@ -364,24 +358,10 @@ function recalculate_fields(direct, keep_overrides) {
     };
 
     if (!direct) {
-        Array.from(document.getElementsByClassName("recalc_button")).map((b)=>{
-            b.innerHTML = recalc_tag[0];
-        });        
-    };
-    
-    if (!direct) {
         let lt = ['A', 'L', 'I'][get_field_value("loan_type")*1-1];
         document.title = `${lt}:${get_field_value("house_price")}:${get_field_value("savings")}`;
         document.title += ` ${get_field_value("loan_term")}/${get_field_value("loan_term_actual")}`;
         document.title += ` ${Math.round(100 * get_field_value("housing_roi")) / 100}`;
-    } else {
-        document.title = "⏳";
-        tick_state[0]+=1;
-        if (tick_state[0]>10) {
-            tick_state[0]=0;
-            tick_state[1]+=1;
-        }
-        document.title += ['/','-','\\','|'][tick_state[1]%4];
     };
 }
 
@@ -565,6 +545,92 @@ function graph_assets(assets_result) {
     Plotly.newPlot("graph_assets_target", data, layout);
 }
 
+
+S = {};
+function _defer_cycle(callback) {
+    try {
+        if (callback(0)===false)
+            return callback(1);
+    } catch(ex) {
+        callback(-1);
+        throw ex;
+    };
+    S.count = (S.count||0) + 1;
+    document.getElementById("progress_bar").style['width'] = Math.round(1000 * S.count / S.total_count)/10 + "%";
+
+    if (S.value2!==undefined) {
+        S.stage2 += 1;
+        S.value2 += S.step2;
+    };
+    if ((S.value2==undefined)||(S.stage2 > S.range2[2])) {
+        if (S.value2!==undefined) {
+            S.stage2 = 1;
+            S.value2 = S.range2[0];
+        }
+        S.stage1 += 1;
+        S.value1 += S.step1;
+    };
+    if (S.stage1 > S.range1[2]) {
+        return callback(1);
+    } else {
+        setTimeout(
+            ((callback)=>{
+                return ()=>{_defer_cycle(callback)}
+            })(callback)
+            ,50
+        );
+    }
+}
+
+X = {};
+function save() {
+    X = {};
+    X.all_parameters = Array.from(Object.keys(FIELDS));
+    X.original_parameters = {};
+    
+    let tmp = gather_param_values(X.all_parameters, "").calculation_context;
+    Array.from(Object.keys(tmp)).map((key)=>{
+        X.original_parameters[key + "_0"] = structuredClone(tmp[key]);
+        X.original_parameters[key] = structuredClone(tmp[key]);
+    });
+    Array.from(document.getElementsByClassName("recalc_button")).map((b)=>{
+        b.innerHTML = "..calculation in progress..";
+    });
+    document.getElementById("progress_overlay").style['display'] = "block";
+}
+
+function restore(params) {
+    params.map((key)=>{
+        if (key!==undefined)
+            FIELDS[key].input.value = X.original_parameters[key];
+    });
+    recalculate_fields(true);
+
+    Array.from(document.getElementsByClassName("recalc_button")).map((b)=>{
+        b.innerHTML = recalc_tag[0];
+    });
+    document.getElementById("progress_overlay").style['display'] = "none";
+}
+
+function add(target, source) {
+    Array.from(Object.keys(source)).map((key)=>{
+        if (!(key in target))
+            target[key] = source[key]; 
+    });        
+}
+
+function get_metric_value(metric) {
+    return eval_if_needed(metric, ()=>{
+        let {calculation_context, error} = gather_param_values(X.all_parameters, "");
+        if (error) console.error("Error while calculating context:", error);
+        add(calculation_context, X.original_parameters);
+        return calculation_context;
+    }, (metric)=>{
+        return get_field_value(metric)
+    });
+}
+
+
 function graph_whatif() {
     function parse_variable(name) {
         let var_def = get_field_value(name).split("(");
@@ -575,216 +641,186 @@ function graph_whatif() {
         });
         var_def = var_def[0];
         let old_value = FIELDS[var_def].input.value;
-        return [var_def, range, old_value];
+        let step = (range[1]-range[0]) / (range[2]-1);
+        return [var_def, range, old_value, step];
     }
 
-    function add(target, source) {
-        Array.from(Object.keys(source)).map((key)=>{
-            target[key] = source[key]; 
-        });        
-    }
-
-    let all_parameters = Array.from(Object.keys(FIELDS));
-    let original_parameters = {};
-    
-    let tmp = gather_param_values(all_parameters, "").calculation_context;
-    Array.from(Object.keys(tmp)).map((key)=>{
-        original_parameters[key + "_0"] = structuredClone(tmp[key]);
-    });
-
-    function get_metric_value(metric) {
-        return eval_if_needed(metric, ()=>{
-            let {calculation_context, error} = gather_param_values(all_parameters, "");
-            if (error) console.error("Error while calculating context:", error);
-            add(calculation_context, original_parameters);
-            return calculation_context;
-        }, (metric)=>{
-            return get_field_value(metric)
-        });
-    }
-
-    let [variable1, range1, old_value1] = parse_variable("variable1");
-    let [variable2, range2, old_value2] = parse_variable("variable2");
-
-    let results = [];
-    for(let value1 = range1[0]*1; value1 <= range1[1]*1; value1 += (range1[1]*1 - range1[0]*1) / (range1[2]*1 - 1)) {
-        FIELDS[variable1].input.value = value1;
-
-        if (variable2==undefined) { // 2d plot, many metrics
+    function calc_result() {
+        FIELDS[S.variable1].input.value = S.value1;
+        if (S.variable2==undefined) { // 2d plot, many metrics
             let result = {};
-            result[variable1] = value1;
+            result[S.variable1] = S.value1;
+
             recalculate_fields(true);
             get_field_value("metrics").split(",").map((metric)=>{
                 const metric0 = metric.trim();
                 result[metric0] = get_metric_value(metric0);
             });
-            results.push(result);
-
+            S.results.push(result);
+        
         } else { // 3d surface plot - two parameters, one metric
-            let result = [];
-            for(let value2 = range2[0]*1; value2 <= range2[1]*1; value2+=(range2[1]*1 - range2[0]*1) / (range2[2]*1 - 1)) {
-                FIELDS[variable2].input.value = value2;
-                let xyz = {};
-                xyz[variable1] = value1;
-                xyz[variable2] = value2;
-                recalculate_fields(true);
+            FIELDS[S.variable2].input.value = S.value2;
+            if (S.result===undefined)
+                S.result=[];
+            S.xyz={};
+            S.xyz[variable1] = S.value1;
+            S.xyz[variable2] = S.value2;
 
-                const metric0 = get_field_value("metrics").split(",")[0].trim(); // take first metric
-                xyz[metric0] = get_metric_value(metric0);
-                result.push(xyz);
-            };
-            results.push(result);
+            recalculate_fields(true);
+            const metric0 = get_field_value("metrics").split(",")[0].trim(); // take first metric
+            S.xyz[metric0] = get_metric_value(metric0);
+            S.result.push(S.xyz);
+            if (S.stage2 == S.range2[2]) {
+                S.results.push(S.result);
+                S.result=[];
+            }
         }
-    };
+    }
 
-    // restore original parameters
-    FIELDS[variable1].input.value = old_value1;
-    if (variable2!==undefined) 
-        FIELDS[variable2].input.value = old_value2;
-    recalculate_fields(true);
+    function plot_results() {
+        let data = null;
+        let layout = null;
 
-    let data = null;
-    let layout = null;
-
-    if (variable2==undefined) {
-        let xs = results.map((record)=>{
-            return record[variable1];
-        });
-    
-        data =  Object
-        .keys(results[0])
-        .filter((v)=>{return v!=variable1})
-        .map((key)=>{
-            return {
-                x : xs,
-                y : results.map((record)=>{
-                    return record[key]
-                }),
-                type: 'scatter',
-                mode: 'lines+markers',
-                name: key,
-                //visible: key=="debt" ? 'legendonly' : undefined
-            }
-        });
-    
-        layout = {
-            title:'What-if modelling : ' + variable1,
-            xaxis: {
-                title: results
-            },
-            yaxis: {
-                title: 'metrics'
-            }
-        };
-
-    } else {
-        const key = get_field_value("metrics").split(",")[0].trim();
-        data = [{
-            z: results.map((a)=>{return a.map((r)=>{return r[key]})}),
-            x: results[0].map((r)=>{return r[variable2]}),
-            y: results.map((a)=>{return a[0][variable1]}),
-            type: 'surface',
-            contours: {
-              z: {
-                show:true,
-                usecolormap: true,
-                highlightcolor:"#42f462",
-                project:{z: true}
-              }
-            }
-        }];
-        layout = {
-            title: {
-                text: 'What-if modelling: ' + key + ", x=" + variable2 + ', y=' + variable1 + "",
-            },
-            scene: {camera: {eye: {x: 1.87, y: 0.88, z: 0.84}}},
-            width: 700,
-            height: 700,
-            xaxis: {
-                title: {
-                    text: variable1,
-                },
-            },
-            yaxis: {
-                title: {
-                    text: variable2,
+        if (S.variable2==undefined) {
+            let xs = S.results.map((record)=>{
+                return record[S.variable1];
+            });
+        
+            data =  Object
+            .keys(S.results[0])
+            .filter((v)=>{return v!=S.variable1})
+            .map((key)=>{
+                return {
+                    x : xs,
+                    y : S.results.map((record)=>{
+                        return record[key]
+                    }),
+                    type: 'scatter',
+                    mode: 'lines+markers',
+                    name: key,
+                    //visible: key=="debt" ? 'legendonly' : undefined
                 }
-            }            
-        };
-    };
+            });
+        
+            layout = {
+                title:'What-if modelling : ' + S.variable1,
+                xaxis: {
+                    title: S.results
+                },
+                yaxis: {
+                    title: 'metrics'
+                }
+            };
 
-    let div_whatif = document.getElementById("graph_whatif_target");
-    div_whatif.innerHTML = "";
-    Plotly.newPlot("graph_whatif_target", data, layout);
+        } else {
+            const key = get_field_value("metrics").split(",")[0].trim();
+            data = [{
+                z: S.results.map((a)=>{return a.map((r)=>{return r[key]})}),
+                x: S.results[0].map((r)=>{return r[S.variable2]}),
+                y: S.results.map((a)=>{return a[0][S.variable1]}),
+                type: 'surface',
+                contours: {
+                    z: {
+                        show:true,
+                        usecolormap: true,
+                        highlightcolor:"#42f462",
+                        project:{z: true}
+                    }
+                }
+            }];
+            layout = {
+                title: {
+                    text: 'What-if modelling: ' + key + ", x=" + S.variable2 + ', y=' + S.variable1 + "",
+                },
+                scene: {camera: {eye: {x: 1.87, y: 0.88, z: 0.84}}},
+                width: 700,
+                height: 700,
+                xaxis: {
+                    title: {
+                        text: S.variable1,
+                    },
+                },
+                yaxis: {
+                    title: {
+                        text: S.variable2,
+                    }
+                }            
+            };
+        };
+
+        let div_whatif = document.getElementById("graph_whatif_target");
+        div_whatif.innerHTML = "";
+        Plotly.newPlot("graph_whatif_target", data, layout);        
+    }
+
+    save();
+
+    let [variable1, range1, old_value1, step1] = parse_variable("variable1");
+    let [variable2, range2, old_value2, step2] = parse_variable("variable2");
+    let results = [];
+
+    S = {
+        variable1, range1, old_value1, step1,
+        variable2, range2, old_value2, step2,
+        results
+    };
+    S.value1 = range1[0];
+    S.stage1 = 1;
+    S.value2 = (variable2==undefined) ? undefined : range2[0];
+    S.stage2 = (variable2==undefined) ? undefined : 1;
+    S.total_count = range1[2] * (range2||[1,1,1])[2];
+
+    _defer_cycle((final)=>{
+        if (final==-1) {
+            alert("Some error encountered, check console for details.");
+            restore([S.variable1,S.variable2]);
+        } else if (final==1) {
+            plot_results();
+            restore([S.variable1, S.variable2]);
+        } else if (final==0) {
+            return calc_result();
+        }
+    });
 }
 
 function graph_entry() {
-    function add(target, source) {
-        Array.from(Object.keys(source)).map((key)=>{
-            target[key] = source[key]; 
-        });        
-    }
-
-    let all_parameters = Array.from(Object.keys(FIELDS));
-    let original_parameters = {};
-    let tmp = gather_param_values(all_parameters, "").calculation_context;
-    Array.from(Object.keys(tmp)).map((key)=>{
-        original_parameters[key + "_0"] = structuredClone(tmp[key]);
-        original_parameters[key] = structuredClone(tmp[key]);
-    });
-
-    function get_metric_value(metric) {
-        return eval_if_needed(metric, ()=>{
-            let {calculation_context, error} = gather_param_values(all_parameters, "");
-            if (error) console.error("Error while calculating context:", error);
-            add(calculation_context, original_parameters);
-            return calculation_context;
-        }, (metric)=>{
-            return get_field_value(metric)
-        });
-    }
-
-    let house_rate = original_parameters.house_market_rate / (100 * 12);
-    let downpayment_pct = original_parameters.assets_to_downpayment / 100;
-    let new_params = {};
-    let probe_month = get_metric_value("entry_probe_month");
-
-    let results = [];
-    for(let delay = 0; delay < original_parameters.loan_term; delay += 1) {
+    function calc_result() {
+        let OP = X.original_parameters;
         let result = {};
-        result["delay"] = delay+1;
+        let delay = S.value1;
+        result["delay"] = delay + 1;
 
-        new_params.house_price = original_parameters.house_price * Math.pow(1.0+house_rate, delay+1);
-        new_params.savings = original_parameters.assets_result.renting.monthly[delay].total_assets * downpayment_pct;
+        S.new_params.house_price = OP.house_price * Math.pow(1.0 + S.house_rate, delay+1);
+        S.new_params.savings = OP.assets_result.renting.monthly[delay].total_assets * S.downpayment_pct;
 
-        [new_params.current_cash_assets, new_params.current_stocks_assets] = original_parameters.assets_result.metrics.monthly[delay]._assets;
-        if (new_params.current_cash_assets >= new_params.house_price) {
-            results.push(result);
-            break;
+        [S.new_params.current_cash_assets, S.new_params.current_stocks_assets] = OP.assets_result.metrics.monthly[delay]._assets;
+        if (S.new_params.current_cash_assets >= S.new_params.house_price) {
+            S.results.push(result);
+            return false;
         };
 
-        new_params.bonus_month = (original_parameters.bonus_month) - (delay + 1);
-        while (new_params.bonus_month<=0) new_params.bonus_month += 12;
+        S.new_params.bonus_month = (OP.bonus_month) - (delay + 1);
+        while (S.new_params.bonus_month<=0) S.new_params.bonus_month += 12;
 
-        new_params.extra_payment_start = (original_parameters.extra_payment_start) - (delay + 1);
-        if (original_parameters.extra_payment_period>0)
-            while (new_params.extra_payment_start<=0) new_params.extra_payment_start += original_parameters.extra_payment_period;
+        S.new_params.extra_payment_start = (OP.extra_payment_start) - (delay + 1);
+        if (OP.extra_payment_period>0)
+            while (S.new_params.extra_payment_start<=0) S.new_params.extra_payment_start += OP.extra_payment_period;
 
-        Array.from(Object.keys(new_params)).map((key)=>{
-            FIELDS[key].input.value = new_params[key];
+        Array.from(Object.keys(S.new_params)).map((key)=>{
+            FIELDS[key].input.value = S.new_params[key];
         });
         recalculate_fields(true);
 
-        let state = gather_param_values(all_parameters, "").calculation_context;
-        if (state.loan <= new_params.savings * 0.05) {
-            results.push(result);
-            break;
+        let state = gather_param_values(X.all_parameters, "").calculation_context;
+        if (state.loan <= S.new_params.savings * 0.05) {
+            S.results.push(result);
+            return false;
         };
 
         // entry parameters
-        result["entry_total_assets"] = original_parameters.assets_result.renting.monthly[delay].total_assets;
-        result["entry_savings"] = new_params.savings;
-        result["entry_house_price"] = new_params.house_price;
+        result["entry_total_assets"] = OP.assets_result.renting.monthly[delay].total_assets;
+        result["entry_savings"] = S.new_params.savings;
+        result["entry_house_price"] = S.new_params.house_price;
 
         // loan exit parameters
         [
@@ -799,66 +835,88 @@ function graph_entry() {
         [
             "total_assets"
         ].map((metric)=>{
-            let r = state.assets_result.housing.monthly[probe_month - delay - 2];
+            let r = state.assets_result.housing.monthly[S.probe_month - delay - 2];
             if (r!==undefined)
-                result["housing_" + metric + "@" + probe_month] = r[metric];
+                result["housing_" + metric + "@" + S.probe_month] = r[metric];
         });
 
         // loan internal parameters, metrics
         [
             "housing_roi", "assets_k", "assets_delta" 
         ].map((metric)=>{
-            let r = state.assets_result.metrics.monthly[probe_month - delay - 2];
+            let r = state.assets_result.metrics.monthly[S.probe_month - delay - 2];
             if (r!==undefined)
-                result[metric + "@" + probe_month] = r[metric];
+                result[metric + "@" + S.probe_month] = r[metric];
         });
 
-        results.push(result);
+        S.results.push(result);
+    }
+
+    function plot_results() {
+        let data = null;
+        let layout = null;
+    
+        let xs = S.results.map((record)=>{
+            return record["delay"];
+        });
+    
+        data =  Object
+        .keys(S.results[0])
+        .filter((v)=>{return v!="delay"})
+        .map((key)=>{
+            return {
+                x : xs,
+                y : S.results.map((record)=>{
+                    return record[key]
+                }),
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: key,
+                //visible: key=="debt" ? 'legendonly' : undefined
+            }
+        });
+    
+        layout = {
+            title:'Entrypoint ananlysis',
+            xaxis: {
+                title: S.results
+            },
+            yaxis: {
+                title: 'metrics'
+            }
+        };
+
+        let div_entry = document.getElementById("graph_entry_target");
+        div_entry.innerHTML = "";
+        Plotly.newPlot("graph_entry_target", data, layout);        
+    }
+
+    save();
+
+    S = {
+        value1: 0,
+        stage1: 1,
+        step1: 1,
+        range1: [0, X.original_parameters.loan_term-1, X.original_parameters.loan_term],
+        results : [],
+        new_params : {},
+        house_rate : X.original_parameters.house_market_rate / (100 * 12),
+        downpayment_pct : X.original_parameters.assets_to_downpayment / 100,
+        probe_month : get_metric_value("entry_probe_month")
     };
+    S.total_count = X.original_parameters.loan_term;
 
-    // restore original parameters
-    Array.from(Object.keys(new_params)).map((key)=>{
-        FIELDS[key].input.value = original_parameters[key];
-    });    
-    recalculate_fields(true);
-
-    let data = null;
-    let layout = null;
-
-    let xs = results.map((record)=>{
-        return record["delay"];
-    });
-
-    data =  Object
-    .keys(results[0])
-    .filter((v)=>{return v!="delay"})
-    .map((key)=>{
-        return {
-            x : xs,
-            y : results.map((record)=>{
-                return record[key]
-            }),
-            type: 'scatter',
-            mode: 'lines+markers',
-            name: key,
-            //visible: key=="debt" ? 'legendonly' : undefined
+    _defer_cycle((final)=>{
+        if (final==-1) {
+            alert("Some error encountered, check console for details.");
+            restore(Array.from(Object.keys(S.new_params)));
+        } else if (final==1) {
+            plot_results();
+            restore(Array.from(Object.keys(S.new_params)));
+        } else if (final==0) {
+            return calc_result();
         }
     });
-
-    layout = {
-        title:'Entrypoint ananlysis',
-        xaxis: {
-            title: results
-        },
-        yaxis: {
-            title: 'metrics'
-        }
-    };
-
-
-    let div_entry = document.getElementById("graph_entry_target");
-    div_entry.innerHTML = "";
-    Plotly.newPlot("graph_entry_target", data, layout);
 }
 
 
@@ -1004,6 +1062,7 @@ function calc_assets_no_repayments(asset_params, loan_params) {
     return calc_assets(asset_params_no_repayments);
 }
 
+let recalc_tag = ["Recalculate"];
 document.addEventListener('DOMContentLoaded', function() {
     recalc_tag[0] = document.getElementsByClassName("recalc_button")[0].innerHTML;
     init_tabs();
