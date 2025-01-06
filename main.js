@@ -3,21 +3,21 @@ function throw_error(text) {
     throw text;
 }
 
+function activate_tab(tab, index) {
+    Object.keys(TABS[index].blocks).map((block)=>{
+        TABS[index].blocks[block].classList.remove("is-visible");
+    });
+    TABS[index].blocks[tab].classList.add("is-visible");
+
+    Object.keys(TABS[index].tabs).map((tab)=>{
+        TABS[index].tabs[tab].classList.remove("is-active");
+    });
+    TABS[index].tabs[tab].classList.add("is-active");
+    TABS[index]['activated'] = tab;
+};
+
 let TABS = {};
 function init_tabs() {
-    function activate_tab(tab, index) {
-        Object.keys(TABS[index].blocks).map((block)=>{
-            TABS[index].blocks[block].classList.remove("is-visible");
-        });
-        TABS[index].blocks[tab].classList.add("is-visible");
-
-        Object.keys(TABS[index].tabs).map((tab)=>{
-            TABS[index].tabs[tab].classList.remove("is-active");
-        });
-        TABS[index].tabs[tab].classList.add("is-active");
-        TABS[index]['activated'] = tab;
-    };
-
     let saved_state = loadState();
     let base = window.location.pathname;
 
@@ -350,11 +350,13 @@ function recalculate_fields(direct, keep_overrides) {
     let section = document.querySelectorAll("div[data-block='whatif']")[0];
     if (section.classList.contains("is-visible") && (!direct)) {
         graph_whatif();
+        activate_tab("graph_whatif", 1);        
     };
 
     section = document.querySelectorAll("div[data-block='entry']")[0];
     if (section.classList.contains("is-visible") && (!direct)) {
         graph_entry();
+        activate_tab("graph_entry", 1);
     };
 
     if (!direct) {
