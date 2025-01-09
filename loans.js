@@ -20,6 +20,24 @@ function calculate_loan_payments(loan_params, ICB) {
 
   let monthly = [];
   
+  if (debt <= 0) {
+    monthly.push({
+      month: 1,
+      debt:debt,
+      base_payment: debt,
+      capital_payment:debt,
+      interest_amt:0,
+      extra_payment:0,
+      extra_payment2:0,
+      tax_return:(lp.tax_scheme>0)?lp.purchase_deductible_cost:0,
+      net_payment: debt-((lp.tax_scheme>0)?lp.purchase_deductible_cost:0),
+      penalty:0,
+      total_payment:debt-((lp.tax_scheme>0)?lp.purchase_deductible_cost:0),
+    });
+    return monthly;    
+  }
+
+
   for(let i=0; i<lp.loan_term; i++) {
     if (i%12==0)
       actual_extra_payments = 0;

@@ -481,6 +481,25 @@ function graph_payments(loan_result) {
 }
 
 function graph_assets(assets_result) {
+    function plot(data, rows, xs, postfix) {
+        let d = (data===undefined)?[]:data;
+        Object
+        .keys(rows[0])
+        .filter((v)=>{return (v!='month')&&(!v.startsWith("_"))})
+        .map((key)=>{
+            d.push({
+                x : xs,
+                y : rows.map((record)=>{
+                    return record[key]
+                }),
+                type: 'scatter',
+                name: key+postfix,
+                visible: key=="debt" ? 'legendonly' : undefined
+            });
+        });
+        return d;
+    }
+
     let result_renting = assets_result.renting;
     let result_housing = assets_result.housing;
     let result_metrics = assets_result.metrics;
@@ -489,50 +508,9 @@ function graph_assets(assets_result) {
         return Math.round(100*record["month"])/100
     });
 
-    let data =  Object
-    .keys(result_metrics.monthly[0])
-    .filter((v)=>{return (v!='month')&&(!v.startsWith("_"))})
-    .map((key)=>{
-        return {
-            x : months,
-            y : result_metrics.monthly.map((record)=>{
-                return record[key]
-            }),
-            type: 'scatter',
-            name: key+"",
-            visible: key=="debt" ? 'legendonly' : undefined
-        }
-    });
-
-    Object
-    .keys(result_renting.monthly[0])
-    .filter((v)=>{return v!='month'})    
-    .map((key)=>{
-        data.push({
-            x : months,
-            y : result_housing.monthly.map((record)=>{
-                return record[key]
-            }),
-            type: 'scatter',
-            name: key+"_renting",
-            visible: key=="debt" ? 'legendonly' : undefined
-        })
-    });
-
-    Object
-    .keys(result_housing.monthly[0])
-    .filter((v)=>{return v!='month'})    
-    .map((key)=>{
-        data.push({
-            x : months,
-            y : result_housing.monthly.map((record)=>{
-                return record[key]
-            }),
-            type: 'scatter',
-            name: key+"_housing",
-            visible: key=="debt" ? 'legendonly' : undefined
-        })
-    });
+    let data = plot(undefined, result_metrics.monthly, months, "");
+    plot(data, result_renting.monthly, months, "_renting");
+    plot(data, result_housing.monthly, months, "_housing");
 
     let layout = {
         title:'Assets dynamics',
