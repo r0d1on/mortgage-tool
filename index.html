@@ -517,7 +517,7 @@
                             <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="assets_k_tip" data-tooltip="Ratio of final equities estimated for 'renting' and 'buying' scenarios.">?</span></div>
                         </div>
 
-                        <div class="field" data-round="3" data-formula="(30*12) * (assets_housing - assets_renting) / (loan_term * (total_paid_interest - total_tax_returned))">
+                        <div class="field" data-round="3" data-formula="(30*12) * (assets_housing - assets_renting) / (loan_term * Math.max(0, total_paid_interest - total_tax_returned))">
                             <label for="housing_roi">Housing ROI</label>
                             <div class="control"><input id="housing_roi" class="input" type="text" value="">
                             <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="housing_roi_tip" data-tooltip="ROI of getting the mortgage. Difference in final equities over net interest paid. (Normalized for 30 years mortgage term).">?</span></div>
