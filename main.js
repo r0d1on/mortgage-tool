@@ -447,7 +447,21 @@ function loan_schedule(loan_result) {
     // console.log(loan_result);
 }
 
+function get_visibility(pltly_dom_id) {
+    let visibility={}
+    plot = document.getElementById(pltly_dom_id);
+    (plot.data||[]).map((s)=>{
+        if (s.visible!==undefined)
+            visibility[s.name] = s.visible;
+    });
+    return visibility;
+}
+
 function graph_payments(loan_result) {
+    let visibility = get_visibility("graph_payments_target");
+    if (visibility['debt']==undefined)
+        visibility['debt']='legendonly';
+
     let months = loan_result.monthly.map((record)=>{
         return Math.round(100*record["month"])/100
     });
@@ -463,7 +477,7 @@ function graph_payments(loan_result) {
             }),
             type: 'scatter',
             name: key,
-            visible: key=="debt" ? 'legendonly' : undefined
+            visible: visibility[key]
         }
     });
 
@@ -481,7 +495,7 @@ function graph_payments(loan_result) {
 }
 
 function graph_assets(assets_result) {
-    function plot(data, rows, xs, postfix) {
+    function plot(data, rows, xs, postfix, visibility) {
         let d = (data===undefined)?[]:data;
         Object
         .keys(rows[0])
@@ -494,11 +508,13 @@ function graph_assets(assets_result) {
                 }),
                 type: 'scatter',
                 name: key+postfix,
-                visible: key=="debt" ? 'legendonly' : undefined
+                visible: visibility[key+postfix]
             });
         });
         return d;
     }
+
+    let visibility = get_visibility("graph_assets_target");
 
     let result_renting = assets_result.renting;
     let result_housing = assets_result.housing;
@@ -508,9 +524,9 @@ function graph_assets(assets_result) {
         return Math.round(100*record["month"])/100
     });
 
-    let data = plot(undefined, result_metrics.monthly, months, "");
-    plot(data, result_renting.monthly, months, "_renting");
-    plot(data, result_housing.monthly, months, "_housing");
+    let data = plot(undefined, result_metrics.monthly, months, "", visibility);
+    plot(data, result_renting.monthly, months, "_renting", visibility);
+    plot(data, result_housing.monthly, months, "_housing", visibility);
 
     let layout = {
         title:'Assets dynamics',
@@ -950,7 +966,7 @@ function calc_assets({current_cash_assets, current_stocks_assets, deposit_rate, 
     let months_to_even = loan_term;
 
     for(let i=0; i<loan_term; i++) {
-        let payment = (i < loan_term_actual) ? loan_result.monthly[i] : {total_payment:0, tax_return:0, capital_payment:0, interest_amt:0};
+        let payment = (i < loan_term_actual) ? loan_result.monthly[i] : {net_payment:0, tax_return:0, capital_payment:0, interest_amt:0};
         total_tax_returned += payment.tax_return;
         total_paid_interest += payment.interest_amt;
 
@@ -974,7 +990,7 @@ function calc_assets({current_cash_assets, current_stocks_assets, deposit_rate, 
             total_assets: sum(assets_renting),
         });
 
-        increment_housing = monthly_savings + rent - monthly_ownership_tax + payment.tax_return - payment.total_payment;
+        increment_housing = monthly_savings + rent - monthly_ownership_tax - payment.net_payment;
         assets_housing[0] += increment_housing + m_bonus_cash;
         assets_housing[1] += m_bonus_stocks;
         increment_housing += m_bonus_cash + m_bonus_stocks;
