@@ -42,8 +42,8 @@ Allowes bi-parametric modelling.
 ---
 # hosted on github pages:
 
- * English: [Mortgage calculator tool (Netherlands)](https://r0d1on.github.io/mortgage-tool/)
- * Dutch: [Hypotheek berekenen](https://r0d1on.github.io/mortgage-tool/index-nl.html)
+ * English: [Mortgage calculator tool (Netherlands)](https://hypotheek-bereken.com/)
+ * Dutch: [Hypotheek berekenen](https://hypotheek-bereken.com/index-nl.html)
 
 ---
 # Local development / testing:
