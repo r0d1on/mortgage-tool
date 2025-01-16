@@ -20,7 +20,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="theme-color" content="#000000">
     <meta name="description" content="Mortgage payments calculator, Dutch">
-    <meta name="keywords" content="Mortgage calculator netherlands, dutch mortgage calculator, annuity mortgage, linear mortgage, interest only mortgage, mortgage planning tool, mortgage repayment, monthly mortgage breakdown">
+    <meta name="keywords" content="Mortgage calculator netherlands, dutch mortgage calculator, compare mortgages, annuity mortgage, linear mortgage, interest only mortgage, mortgage planning tool, mortgage repayment, monthly mortgage breakdown">
 
     <title>Mortgage payments calculator (for Netherlands)</title>
 
@@ -126,9 +126,9 @@
                             <span class="icon"><i>%</i></span><span class="tooltip" data-for="interest_tip" data-tooltip="Annual loan (mortgage) insterest rate.">?</span></div>
                         </div>
                         <div class="field" data-default="36.93" data-tune="0.01">
-                            <label for="deduction">Loan interest tax deductible (hypotheekrenteaftrek):</label>
-                            <div class="control"><input id="deduction" class="input" type="text" value="36.93">
-                            <span class="icon"><i>%</i></span><span class="tooltip" data-for="deduction_tip" data-tooltip="Defines tax (box-1) deductible percentage of interest amount repayed.">?</span></div>
+                            <label for="tax_rate">Loan interest tax deductible (hypotheekrenteaftrek):</label>
+                            <div class="control"><input id="tax_rate" class="input" type="text" value="36.93">
+                            <span class="icon"><i>%</i></span><span class="tooltip" data-for="tax_rate_tip" data-tooltip="Defines tax (box-1) deductible percentage of interest amount repayed.">?</span></div>
                         </div>
                         <div class="field" data-default="1" data-tune="1">
                             <label for="loan_type">Loan type: 1 - Annuity, 2 - Linear, 3 - Interest only</label>
@@ -495,7 +495,7 @@
                             <div class="control"><input id="ownership_pct" class="input" type="text" value="">
                             <span class="icon"><i>%</i></span><span class="tooltip" data-for="ownership_pct_tip" data-tooltip="House ownership tax rate.">?</span></div>
                         </div>
-                        <div class="field" data-formula="house_value * ( ownership_pct / 100 ) / 12">
+                        <div class="field" data-formula="house_value * ownership_pct * (1/(100*12)) * tax_rate * (1/100)">
                             <label for="monthly_ownership_tax">monthly house ownership tax (eigenwoningforfait)</label>
                             <div class="control"><input id="monthly_ownership_tax" class="input" type="text" value="">
                             <span class="icon"><i>€</i></span><span class="tooltip" data-for="monthly_ownership_tax_tip" data-tooltip="Monthly value of the house ownership tax to be paid.">?</span></div>
@@ -632,7 +632,20 @@
                             &bull; <a style="color:red" href="https://www.abnamro.nl/en/personal/mortgages/interest-rates/index.html">ABN Amro</a><br>
                             &bull; <a style="color:red" href="https://www.ing.nl/particulier/hypotheek/actuele-hypotheekrente">ING</a><br>
                             &bull; <a style="color:red" href="https://www.rabobank.nl/particulieren/hypotheek/hypotheekrente">Rabo Bank</a><br>
+
+                            &bull; <a style="color:red" href="https://www.rijksoverheid.nl/onderwerpen/huis-kopen/vraag-en-antwoord/checklist-woning-kopen">Rijksoverheid : checklist-woning-kopen (NL)</a><br>
+                            &bull; <a style="color:red" href="https://www.rijksoverheid.nl/onderwerpen/huis-kopen/vraag-en-antwoord/hypotheek-aanvragen-wat-moet-ik-regelen">Rijksoverheid : hypotheek aanvragen (NL)</a><br>
+                            &bull; <a style="color:red" href="https://www.rijksoverheid.nl/onderwerpen/huis-kopen/documenten/brochures/2017/11/30/brochure-voordat-u-een-appartement-koopt-2017">Rijksoverheid : Voordat u een appartament koopt</a><br>
+                            &bull; <a style="color:red" href="https://www.wijzeringeldzaken.nl/rekenhulpen/rekenhulp-maximale-hypotheek-op-basis-van-maandlasten/">Wijzer: maximale hypotheek op basis van je maandlasten (NL)</a><br>
+                        </p><br>
+
+                        <hr><b>Supporting links</b><hr>
+                            &bull; <a style="color:red" href="https://www.rijksoverheid.nl/onderwerpen/huis-kopen/vraag-en-antwoord/checklist-woning-kopen">Rijksoverheid : checklist-woning-kopen (NL)</a><br>
+                            &bull; <a style="color:red" href="https://www.rijksoverheid.nl/onderwerpen/huis-kopen/vraag-en-antwoord/hypotheek-aanvragen-wat-moet-ik-regelen">Rijksoverheid : hypotheek aanvragen (NL)</a><br>
+                            &bull; <a style="color:red" href="https://www.rijksoverheid.nl/onderwerpen/huis-kopen/documenten/brochures/2017/11/30/brochure-voordat-u-een-appartement-koopt-2017">Rijksoverheid : Voordat u een appartament koopt</a><br>
+                            &bull; <a style="color:red" href="https://www.wijzeringeldzaken.nl/rekenhulpen/rekenhulp-maximale-hypotheek-op-basis-van-maandlasten/">Wijzer: maximale hypotheek op basis van je maandlasten (NL)</a><br>
                         </p>
+
                         <hr>
                     </div>
                 </div>
@@ -654,7 +667,7 @@
             <div data-block="schedule-hidden" class="block">
                 <div class="columns">
                     <div class="column">
-                        <div class="field" id="loan_params" data-formula="gather_param_values(['loan_type', 'loan_term', 'interest', 'deduction', 'loan','monthly_ownership_tax', 'purchase_deductible_cost', 'tax_scheme','extra_payment_monthly', 'extra_payment_period', 'extra_payment_start','extra_payment_value', 'extra_payment_period1', 'extra_payment_start1','extra_payment_value1', 'extra_payment_period2', 'extra_payment_start2', 'extra_payment_value2', 'max_extra_payment_per_year', 'overpayment_penalty', 'extra_payment_topup'],'').calculation_context">
+                        <div class="field" id="loan_params" data-formula="gather_param_values(['loan_type', 'loan_term', 'interest', 'tax_rate', 'loan','monthly_ownership_tax', 'purchase_deductible_cost', 'tax_scheme','extra_payment_monthly', 'extra_payment_period', 'extra_payment_start','extra_payment_value', 'extra_payment_period1', 'extra_payment_start1','extra_payment_value1', 'extra_payment_period2', 'extra_payment_start2', 'extra_payment_value2', 'max_extra_payment_per_year', 'overpayment_penalty', 'extra_payment_topup'],'').calculation_context">
                             <label>Hidden cell to collect loan parameters structure</label>
                             <div class="control"></div>
                         </div>

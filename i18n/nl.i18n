@@ -5,7 +5,7 @@ nl
 Hypotheekbetaling Calculator, hypotheek berekenen
 \
 "keywords" content="
-Hypotheek betalings calculator, extra aflossen hypotheek, hypotheek berekenen, bruto netto hypotheek, hypotheek aflossen berekenen, annuïteitenhypotheek, lineaire hypotheek, hypotheek maandlasten berekenen
+Hypotheek betalings calculator, extra aflossen hypotheek, hypotheek berekenen, hypotheken vergelijken, bruto netto hypotheek, hypotheek aflossen berekenen, annuïteitenhypotheek, lineaire hypotheek, hypotheek maandlasten berekenen
 \
 data-id="language" href="
 .
@@ -97,7 +97,7 @@ Vermindering van de looptijd van de lening (maanden)
 for="interest">
 Leningrente
 \
-for="deduction">
+for="tax_rate">
 Hypotheekrenteaftrek:
 \
 for="loan_type">
@@ -382,7 +382,7 @@ Aantal maanden verminderd van de looptijd door extra aflossingen.
 for="interest_tip" data-tooltip="
 Jaarlijkse rentevoet van de lening (hypotheek).
 \
-for="deduction_tip" data-tooltip="
+for="tax_rate_tip" data-tooltip="
 Bepaalt het fiscaal aftrekbare percentage (box-1) van de betaalde rente.
 \
 for="loan_type_tip" data-tooltip="

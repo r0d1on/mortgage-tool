@@ -21,7 +21,7 @@ function calculate_loan_payments(loan_params, ICB) {
   let monthly = [];
   
   if (debt <= 0) {
-    const tax = ((lp.tax_scheme>0)?lp.purchase_deductible_cost:0) * (lp.deduction  / 100.0);
+    const tax = ((lp.tax_scheme>0)?lp.purchase_deductible_cost:0) * (lp.tax_rate  / 100.0);
     monthly.push({
       month: 1,
       debt: debt*1,
@@ -50,7 +50,7 @@ function calculate_loan_payments(loan_params, ICB) {
     
     let tax_return = 0;
     if (lp.tax_scheme > 0) {
-      tax_return = (interest_amt) * (lp.deduction  / 100.0);
+      tax_return = (interest_amt) * (lp.tax_rate  / 100.0);
       if (lp.tax_scheme==2) {
         extra_payment += tax_return;
         tax_return = 0;
@@ -58,7 +58,7 @@ function calculate_loan_payments(loan_params, ICB) {
   
       if (i<12) {
         // spread deductible purchase costs refund throughout the first year
-        tax_return += (lp.purchase_deductible_cost) * (lp.deduction  / 100.0) / 12;
+        tax_return += (lp.purchase_deductible_cost) * (lp.tax_rate  / 100.0) / 12;
         if (lp.tax_scheme==2) {
           extra_payment2 += tax_return;
           tax_return = 0;

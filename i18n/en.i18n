@@ -5,7 +5,7 @@ en
 Mortgage payments calculator, Dutch
 \
 "keywords" content="
-Mortgage calculator netherlands, dutch mortgage calculator, annuity mortgage, linear mortgage, interest only mortgage, mortgage planning tool, mortgage repayment, monthly mortgage breakdown
+Mortgage calculator netherlands, dutch mortgage calculator, compare mortgages, annuity mortgage, linear mortgage, interest only mortgage, mortgage planning tool, mortgage repayment, monthly mortgage breakdown
 \
 data-id="language" href="
 index-nl.html
@@ -97,7 +97,7 @@ Loan term reduction (months)
 for="interest">
 Loan Interest
 \
-for="deduction">
+for="tax_rate">
 Loan interest tax deductible (hypotheekrenteaftrek):
 \
 for="loan_type">
@@ -382,7 +382,7 @@ If you use extra repayments during the loan - this shows the number of months fr
 for="interest_tip" data-tooltip="
 Annual loan (mortgage) insterest rate.
 \
-for="deduction_tip" data-tooltip="
+for="tax_rate_tip" data-tooltip="
 Defines tax (box-1) deductible percentage of interest amount repayed.
 \
 for="loan_type_tip" data-tooltip="
