@@ -2,7 +2,7 @@ html lang="
 en
 \
 "description" content="
-Mortgage payments calculator, Dutch
+Mortgage analysis tool: calculate monthly payments schedule with extra repayments. Mortgage vs renting profitability analysis.
 \
 "keywords" content="
 Mortgage calculator netherlands, dutch mortgage calculator, compare mortgages, annuity mortgage, linear mortgage, interest only mortgage, mortgage planning tool, mortgage repayment, monthly mortgage breakdown
@@ -21,6 +21,12 @@ Mortgage payments calculator (for Netherlands)
 \
 data-id="h_1">
 Mortgage analysis tool
+\
+<button id="btn_copy" title="
+Share this calculation
+\
+title="Share this calculation">
+Share
 \
 data-id="h_2">
 Mortgage calculator and analysis tool (Netherlands) for anuity, linear, interest-only loans

@@ -2,7 +2,7 @@ html lang="
 nl
 \
 "description" content="
-Hypotheekbetaling Calculator, hypotheek berekenen
+Hypotheekanalyse tool: bereken een maandelijkse betalingen schema met extra aflossingen. Winstgevendheidsanalyse: hypotheek versus huren.
 \
 "keywords" content="
 Hypotheek betalings calculator, extra aflossen hypotheek, hypotheek berekenen, hypotheken vergelijken, bruto netto hypotheek, hypotheek aflossen berekenen, annuïteitenhypotheek, lineaire hypotheek, hypotheek maandlasten berekenen
@@ -21,6 +21,12 @@ Hypotheekbetaling Calculator
 \
 data-id="h_1">
 Hypotheek tool
+\
+<button id="btn_copy" title="
+Deel het bereken
+\
+title="Deel het bereken">
+Deel
 \
 data-id="h_2">
 Hypotheekberekenaar en analysehulpmiddel voor annuïteit, lineaire en interest-only hypotheken

@@ -300,3 +300,14 @@ table tbody tr:nth-child(even) {
     background-color: green;
     width: 50%;    
 }
+
+#btn_copy {
+    position: absolute;
+    top: 110px;
+    right: 100px;
+    background-color: #77F;
+    color: #FFF;
+    border-radius: 7px;
+    font-size: 1.2em;
+    font-weight: 600;
+}
