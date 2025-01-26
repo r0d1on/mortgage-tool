@@ -3,6 +3,51 @@ function throw_error(text) {
     throw text;
 }
 
+function get_tabs_state(max_index) {
+    let tab_state = "";
+    Object.keys(TABS).map((index)=>{
+        if (index >= max_index) return;
+        if (TABS[index]['activated']!=['mortgage', 'graph_payments'][index]) {
+            tab_state += (tab_state=="") ? "?" : "&";
+            tab_state += `t_${index}=${TABS[index]['activated']}`;
+        };
+    });
+    return tab_state;
+}
+
+function get_mortgage_state() {
+    let str_state = "";
+    Object.keys(FIELDS).map((id)=>{
+        let fdesc = FIELDS[id];
+        if (fdesc.input!==undefined) {
+            if ( (!fdesc.input.disabled) && (fdesc.input.value != fdesc.field.dataset['default']) ) {
+                str_state += (str_state=="") ? "?" : "&";
+                str_state += `${id.replaceAll("_","-")}=${fdesc.input.value}`;
+            };
+        }
+    });    
+    return str_state;
+}
+
+function refresh_canonical() {
+    let link = document.querySelectorAll("link[rel=canonical]")[0];
+    let base = link.href.split("?")[0];
+    link.href = base + get_tabs_state(1);
+}
+
+function refresh_title(params) {
+    let title = document.title.split(":")[0].replace("(for Netherlands)", "").replace(" payments ", " ");
+    title += " : " + TABS[0].tabs[TABS[0].activated].textContent;
+    if (params && (get_mortgage_state() != "")) {
+        title += " ("
+        title += ["", "annuity", "linear", "interest"][get_field_value("loan_type")] + " - ";
+        title += get_field_value("house_price");
+        title += "/" + get_field_value("savings");
+        title += ")";
+    };
+    document.title = title;
+}
+
 function activate_tab(tab, index) {
     Object.keys(TABS[index].blocks).map((block)=>{
         TABS[index].blocks[block].classList.remove("is-visible");
@@ -14,11 +59,10 @@ function activate_tab(tab, index) {
     });
     TABS[index].tabs[tab].classList.add("is-active");
     TABS[index]['activated'] = tab;
-};
+}
 
 let TABS = {};
-function init_tabs() {
-    let saved_state = loadState();
+function init_tabs(saved_state) {
     let base = window.location.pathname;
 
     TABS = {};
@@ -47,8 +91,11 @@ function init_tabs() {
         Object.keys(tabs).map((name)=>{
             tabs[name].addEventListener("click", ((theblock, index)=>{
                 return (e)=>{
+                    e.preventDefault();
                     activate_tab(theblock, index);
                     saveState();
+                    refresh_canonical();
+                    refresh_title(true);
                 };
             })(
                 name, ix
@@ -63,7 +110,24 @@ function init_tabs() {
             activate_tab(saved_state[`t_${ix}`], ix);
         };
     });
+
+    document.getElementById("btn_copy").addEventListener("click",()=>{
+        const url = window.location.href;
+        if (navigator.share !== undefined) {
+            navigator.share({url:url, title:"mortgage calculation"}).then(() => {            
+            }).catch(err => {
+                alert('Failed to share URL: ', err);
+            });
+        } else {
+            navigator.clipboard.writeText(url).then(() => {
+                alert('URL to this calculation copied to clipboard');
+            }).catch(err => {
+                alert('Failed to copy URL: ', err);
+            });
+        }
+    });
 }
+
 
 function get_parameters(formula) {
     let params = [];
@@ -107,27 +171,9 @@ function get_parameters(formula) {
 
 let FIELDS = {};
 function saveState() {
-    let str_state = "";
-
-    Object.keys(TABS).map((index)=>{
-        if (TABS[index]['activated']!=['mortgage', 'graph_payments'][index]) {
-            str_state += (str_state=="") ? "?" : "&";
-            str_state += `t_${index}=${TABS[index]['activated']}`;
-        };
-    });
-
-    Object.keys(FIELDS).map((id)=>{
-        let fdesc = FIELDS[id];
-        if (fdesc.input!==undefined) {
-            if ( (!fdesc.input.disabled) && (fdesc.input.value != fdesc.field.dataset['default']) ) {
-                str_state += (str_state=="") ? "?" : "&";
-                str_state += `${id}=${fdesc.input.value}`;
-            };
-        }
-    });    
-
+    let str_state = get_tabs_state() + get_mortgage_state();
     const url = window.location.pathname.split('/').pop() + str_state;
-    window.history.pushState({page: url}, "", url);
+    window.history.pushState({}, window.title, url);
 }
 
 function loadState() {
@@ -136,17 +182,14 @@ function loadState() {
         window.location.search.split("?")[1].split("&").map((kv)=>{
             let kkv = kv.split("=");
             if (kkv[1]!="")
-                values[kkv[0]] = kkv[1];
+                values[kkv[0].replaceAll("-","_")] = kkv[1];
         })
     }
     return values;
 }
 
-function init_fields() {
+function init_fields(saved_state) {
     FIELDS = {};
-
-    let saved_state = loadState();
-
     Array.from(document.getElementsByClassName("field")).map((field)=>{
         const input = field.getElementsByTagName("input")[0];
         const id = field.id||input.id;
@@ -359,12 +402,8 @@ function recalculate_fields(direct, keep_overrides) {
         activate_tab("graph_entry", 1);
     };
 
-    if (!direct) {
-        let lt = ['A', 'L', 'I'][get_field_value("loan_type")*1-1];
-        document.title = `${lt}:${get_field_value("house_price")}:${get_field_value("savings")}`;
-        document.title += ` ${get_field_value("loan_term")}/${get_field_value("loan_term_actual")}`;
-        document.title += ` ${Math.round(100 * get_field_value("housing_roi")) / 100}`;
-    };
+    if (!direct)
+        refresh_title(true);
 }
 
 OVERRIDES = {};
@@ -1059,10 +1098,14 @@ function calc_assets_no_repayments(asset_params, loan_params) {
 }
 
 let recalc_tag = ["Recalculate"];
+let saved_state = loadState();
+
 document.addEventListener('DOMContentLoaded', function() {
     recalc_tag[0] = document.getElementsByClassName("recalc_button")[0].innerHTML;
-    init_tabs();
-    init_fields();
+    init_tabs(saved_state);
+    refresh_canonical();
+    refresh_title();
+    init_fields(saved_state);
 
     let plotly_waiter = ()=>{
         if (window.Plotly===undefined) {
