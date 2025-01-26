@@ -179,7 +179,7 @@ let FIELDS = {};
 function saveState() {
     let str_state = get_tabs_state() + get_mortgage_state();
     const url = window.location.pathname.split('/').pop() + str_state;
-    window.history.pushState({}, window.title, url);
+    window.history.pushState({}, window.title, (url||"/"));
 }
 
 function loadState() {
