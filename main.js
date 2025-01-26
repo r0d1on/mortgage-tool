@@ -114,7 +114,13 @@ function init_tabs(saved_state) {
     document.getElementById("btn_copy").addEventListener("click",()=>{
         const url = window.location.href;
         if (navigator.share !== undefined) {
-            navigator.share({url:url, title:"mortgage calculation"}).then(() => {            
+            let title = "Mortgage calculation";
+            title += "\n\r" + ["", "annuity", "linear", "interest"][get_field_value("loan_type")];
+            title += ": " + get_field_value("house_price") + " - " + get_field_value("savings");
+            title += "\n\r ROI:" + get_field_value("housing_roi");
+            title += "\n\r";
+
+            navigator.share({url:url, title:title}).then(() => {
             }).catch(err => {
                 alert('Failed to share URL: ', err);
             });
