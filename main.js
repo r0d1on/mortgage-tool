@@ -6,10 +6,11 @@ function throw_error(text) {
 function get_tabs_state(max_index) {
     let tab_state = "";
     Object.keys(TABS).map((index)=>{
+        let pagekey = ["page", "details"][index];
         if (index >= max_index) return;
         if (TABS[index]['activated']!=['mortgage', 'graph_payments'][index]) {
             tab_state += (tab_state=="") ? "?" : "&";
-            tab_state += `t_${index}=${TABS[index]['activated']}`;
+            tab_state += `${pagekey}=${TABS[index]['activated']}`;
         };
     });
     return tab_state;
@@ -67,6 +68,8 @@ function init_tabs(saved_state) {
 
     TABS = {};
     Array.from(document.getElementsByClassName("tabs")).map((div, ix)=>{
+        let pagekey = ["page", "details"][ix];
+
         var blocks = (
             Array.from(div.parentElement.getElementsByClassName("block"))
             .reduce((a, v)=>{
@@ -80,7 +83,7 @@ function init_tabs(saved_state) {
                 a[v.dataset["block"]]=v;
                 if (((ix==0)&&(v.dataset["block"]=='mortgage'))||((ix==1)&&(v.dataset["block"]=='graph_payments'))) {
                 } else {
-                    v.getElementsByTagName("a")[0].href = `${base}?t_${ix}=${v.dataset["block"]}`;
+                    v.getElementsByTagName("a")[0].href = `${base}?${pagekey}=${v.dataset["block"]}`;
                     v.getElementsByTagName("a")[0].onclick=()=>{return false;};
                 }
                 return a;
@@ -106,8 +109,8 @@ function init_tabs(saved_state) {
             }
         });
 
-        if (`t_${ix}` in saved_state) {
-            activate_tab(saved_state[`t_${ix}`], ix);
+        if (`${pagekey}` in saved_state) {
+            activate_tab(saved_state[`${pagekey}`], ix);
         };
     });
 
