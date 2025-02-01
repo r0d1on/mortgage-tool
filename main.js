@@ -16,14 +16,14 @@ function get_tabs_state(max_index) {
     return tab_state;
 }
 
-function get_mortgage_state() {
-    let str_state = "";
+function get_mortgage_state(str_state) {
+    str_state = (str_state!==undefined)?str_state:"";
     Object.keys(FIELDS).map((id)=>{
         let fdesc = FIELDS[id];
         if (fdesc.input!==undefined) {
             if ( (!fdesc.input.disabled) && (fdesc.input.value != fdesc.field.dataset['default']) ) {
                 str_state += (str_state=="") ? "?" : "&";
-                str_state += `${id.replaceAll("_","-")}=${fdesc.input.value}`;
+                str_state += `${id.replaceAll("_", "-")}=${fdesc.input.value}`;
             };
         }
     });    
@@ -180,7 +180,7 @@ function get_parameters(formula) {
 
 let FIELDS = {};
 function saveState() {
-    let str_state = get_tabs_state() + get_mortgage_state();
+    let str_state = get_mortgage_state(strget_tabs_state());
     const url = window.location.pathname.split('/').pop() + str_state;
     window.history.pushState({}, window.title, (url||"/"));
 }
@@ -436,7 +436,7 @@ function loan_schedule(loan_result) {
     let tr = document.createElement("tr");
     Object.keys(loan_result.monthly[0]).map((key)=>{
         let th = document.createElement("th");
-        th.textContent=key;
+        th.textContent={"extra_payment":"✏️extra_payment"}[key]||key;
         tr.appendChild(th);
     });
     thead.appendChild(tr);
