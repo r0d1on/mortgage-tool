@@ -35,22 +35,22 @@ Allowes for mortgage modelling as a function of a parameter(s).
 ![what-if analysis, 2d](images/screenshot-whatif.png)
 
 Allowes bi-parametric modelling.
-* With two parameters being "tested" - target metric drawn on a 3-D surface plot (e.g. Housing assets ROI).
+* With two parameters being "tested" - target metric drawn on a 3-D surface plot (e.g. actual mortgage term as a function of both extra monthly repayment and initial downpayment).
 
 ![what-if analysis, 3d](images/screenshot-whatif2.png)
 
 ---
 # hosted on github pages:
 
- * English: [Mortgage calculator tool (Netherlands)](https://hypotheek-bereken.com/)
- * Dutch: [Hypotheek berekenen](https://hypotheek-bereken.com/index-nl.html)
+ * English: [Mortgage calculator tool (Netherlands)](https://hypotheek-bereken.com/en/mortgage-calculator.html)
+ * Dutch: [Hypotheek berekenen](https://hypotheek-bereken.com/nl/rekenmachine.html)
 
 ---
 # Local development / testing:
 
 1. clone the repo: `git clone https://github.com/r0d1on/mortgage-tool`
 2. make changes
-3. open `index.html` in your browser
+3. open `./en/mortgage-calculator.html` in your browser
 
 
 ---
