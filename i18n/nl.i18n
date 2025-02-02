@@ -40,6 +40,15 @@ Hypotheekparameters:
 data-id="h_6">
 Kerncijfers:
 \
+data-id="b_simple">
+🔨 Modus: Basis
+\
+data-id="b_advanced">
+⚙️ Modus: Geavanceerd
+\
+data-id="b_help">
+❓ Hulp / Instructies
+\
 data-id="b_mortgage">
 🏠 Hypotheek
 \
@@ -57,9 +66,6 @@ data-id="b_whatif">
 \
 data-id="b_entry">
 ✨ Startmaand
-\
-data-id="b_help">
-❓ Hulp / Instructies
 \
 for="house_price">
 Verkoopprijs huis
@@ -224,7 +230,7 @@ for="extra_payment_value2">
 Extra periodieke betaling #2
 \
 for="extra_payment_topup">
-Extra aflossing, maandelijks bij de minimale betaling optellen
+Minimale maandelijks betaling
 \
 for="deposit_rate">
 Depositorente

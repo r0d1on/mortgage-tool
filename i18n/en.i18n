@@ -40,6 +40,15 @@ Mortgage parameters:
 data-id="h_6">
 Key figures:
 \
+data-id="b_simple">
+🔨 Mode: Basic
+\
+data-id="b_advanced">
+⚙️ Mode: Advanced
+\
+data-id="b_help">
+❓ Help / Instructions
+\
 data-id="b_mortgage">
 🏠 Mortgage
 \
@@ -57,9 +66,6 @@ data-id="b_whatif">
 \
 data-id="b_entry">
 ✨ Entrypoint
-\
-data-id="b_help">
-❓ Help / Instructions
 \
 for="house_price">
 House sell price
@@ -224,7 +230,7 @@ for="extra_payment_value2">
 Extra periodic payment#2
 \
 for="extra_payment_topup">
-Extra repayment, add up monthly to minimal payment
+Minimal monthly payment
 \
 for="deposit_rate">
 Deposit rate
