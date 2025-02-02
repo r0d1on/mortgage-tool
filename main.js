@@ -52,7 +52,7 @@ function refresh_title(params) {
     title += " : " + TABS[0].tabs[TABS[0].activated].textContent;
     if (TABS[0].activated=="advanced")
         title += " : " + TABS[1].tabs[TABS[1].activated].textContent;
-    
+
     if (params && (get_mortgage_state() != "")) {
         title += " ("
         title += ["", "annuity", "linear", "interest"][get_field_value("loan_type")] + " - ";
@@ -135,7 +135,9 @@ function init_tabs(saved_state) {
             let title = "Mortgage calculation";
             title += "\n\r" + ["", "annuity", "linear", "interest"][get_field_value("loan_type")];
             title += ": " + get_field_value("house_price") + " - " + get_field_value("savings");
-            title += "\n\r ROI:" + get_field_value("housing_roi");
+            title += "\n\r Term: " + get_field_value("loan_term_actual");
+            title += "\n\r ROI: " + Math.round(100*get_field_value("housing_roi"))/100;
+            title += "\n\r housing-renting: " + get_field_value("assets_delta");
             title += "\n\r";
 
             navigator.share({url:url, title:title}).then(() => {
