@@ -3,12 +3,21 @@ function throw_error(text) {
     throw text;
 }
 
-function get_tabs_state(max_index) {
+
+let TABS = {};
+let TAB_DEFAULTS = {
+    "mode": "basic",
+    "page": "mortgage",
+    "details": "graph_payments"
+};
+TAB_LIST = Array.from(Object.keys(TAB_DEFAULTS));
+
+function get_tabs_state(skip_tab) {
     let tab_state = "";
     Object.keys(TABS).map((index)=>{
-        let pagekey = ["page", "details"][index];
-        if (index >= max_index) return;
-        if (TABS[index]['activated']!=['mortgage', 'graph_payments'][index]) {
+        let pagekey = TAB_LIST[index];
+        if (pagekey == skip_tab) return;
+        if (TABS[index]['activated']!=TAB_DEFAULTS[TAB_LIST[index]]) {
             tab_state += (tab_state=="") ? "?" : "&";
             tab_state += `${pagekey}=${TABS[index]['activated']}`;
         };
@@ -20,25 +29,30 @@ function get_mortgage_state(str_state) {
     str_state = (str_state!==undefined)?str_state:"";
     Object.keys(FIELDS).map((id)=>{
         let fdesc = FIELDS[id];
-        if (fdesc.input!==undefined) {
+        if (fdesc.input==undefined) {
+        } else if (fdesc.target!==undefined) {
+        } else {
             if ( (!fdesc.input.disabled) && (fdesc.input.value != fdesc.field.dataset['default']) ) {
                 str_state += (str_state=="") ? "?" : "&";
                 str_state += `${id.replaceAll("_", "-")}=${fdesc.input.value}`;
             };
         }
-    });    
+    });
     return str_state;
 }
 
 function refresh_canonical() {
     let link = document.querySelectorAll("link[rel=canonical]")[0];
     let base = link.href.split("?")[0];
-    link.href = base + get_tabs_state(1);
+    link.href = base + get_tabs_state("details");
 }
 
 function refresh_title(params) {
     let title = document.title.split(":")[0].replace("(for Netherlands)", "").replace(" payments ", " ");
     title += " : " + TABS[0].tabs[TABS[0].activated].textContent;
+    if (TABS[0].activated=="advanced")
+        title += " : " + TABS[1].tabs[TABS[1].activated].textContent;
+    
     if (params && (get_mortgage_state() != "")) {
         title += " ("
         title += ["", "annuity", "linear", "interest"][get_field_value("loan_type")] + " - ";
@@ -62,26 +76,27 @@ function activate_tab(tab, index) {
     TABS[index]['activated'] = tab;
 }
 
-let TABS = {};
 function init_tabs(saved_state) {
     let base = window.location.pathname;
 
     TABS = {};
     Array.from(document.getElementsByClassName("tabs")).map((div, ix)=>{
-        let pagekey = ["page", "details"][ix];
+        let pagekey = TAB_LIST[ix];
 
         var blocks = (
             Array.from(div.parentElement.getElementsByClassName("block"))
+            .filter((element)=>{ return div.parentElement==element.parentElement})
             .reduce((a, v)=>{
                 a[v.dataset["block"]]=v;
                 return a
             }, {})
         );
+
         var tabs = (
             Array.from(div.getElementsByTagName("li"))
             .reduce((a, v)=>{
                 a[v.dataset["block"]]=v;
-                if (((ix==0)&&(v.dataset["block"]=='mortgage'))||((ix==1)&&(v.dataset["block"]=='graph_payments'))) {
+                if (TAB_DEFAULTS[pagekey]==v.dataset["block"]) {
                 } else {
                     v.getElementsByTagName("a")[0].href = `${base}?${pagekey}=${v.dataset["block"]}`;
                     v.getElementsByTagName("a")[0].onclick=()=>{return false;};
@@ -180,7 +195,7 @@ function get_parameters(formula) {
 
 let FIELDS = {};
 function saveState() {
-    let str_state = get_mortgage_state(strget_tabs_state());
+    let str_state = get_mortgage_state(get_tabs_state());
     const url = window.location.pathname.split('/').pop() + str_state;
     window.history.pushState({}, window.title, (url||"/"));
 }
@@ -210,8 +225,10 @@ function init_fields(saved_state) {
             throw_error(`duplicate field id ${id}`)
 
         if (input!==undefined) {
-            if (field.dataset["formula"]!==undefined) {
+            if (field.dataset["formula"]!==undefined) { // calculated field
                 input.disabled = true;
+            //} else if (field.dataset["target"]!==undefined) { // hybrid field
+                // input.disabled = true;
             } else {
                 if (saved_state[id]!==undefined) {
                     input.value = saved_state[id];
@@ -231,12 +248,19 @@ function init_fields(saved_state) {
                                 e.target.value = value + 1.0*tune;
                             };
                             e.preventDefault();
+                            if (FIELDS[id].target!==undefined) { // hybrid field sets the target value
+                                FIELDS[FIELDS[id].target].input.value =  e.target.value;
+                            };
                             saveState();
                             recalculate_fields();
                             return true;
                         };
                     });
-                    input.addEventListener("change", ()=>{
+                    input.addEventListener("change", (e)=>{
+                        let id = e.target.parentNode.parentNode.id || e.target.id;
+                        if (FIELDS[id].target!==undefined) { // hybrid field sets the target value
+                            FIELDS[FIELDS[id].target].input.value =  e.target.value;
+                        };
                         saveState();
                         recalculate_fields();
                     });
@@ -254,6 +278,7 @@ function init_fields(saved_state) {
             "field" : field,
             "input" : input,
             "formula" : field.dataset["formula"],
+            "target" : field.dataset["target"],
             "type" : field.dataset["type"],
             "round" : field.dataset["round"]||2,
             "params" : get_parameters(field.dataset["formula"])
@@ -378,15 +403,14 @@ function recalculate_fields(direct, keep_overrides) {
     // cleanup
     Object.keys(FIELDS).map((id)=>{
         let fdesc = FIELDS[id];
-        if (fdesc.input===undefined) {
-            // direct invisible field
+        if (fdesc.input===undefined) { // direct invisible field
             fdesc.value = undefined;
-        } else {
-            if (fdesc.input.disabled) {
-                // formula field
-                fdesc.input.value = "";
-                fdesc.value = undefined;
-            }
+        } else if (fdesc.input.disabled) { // formula field
+            fdesc.input.value = "";
+            fdesc.value = undefined;
+        } else if (fdesc.target!==undefined) { // hybrid field
+            fdesc.input.value = "";
+            fdesc.value = undefined;
         };
     });
 
@@ -394,21 +418,24 @@ function recalculate_fields(direct, keep_overrides) {
     Object.keys(FIELDS).map((id)=>{
         let fdesc = FIELDS[id];
         if (fdesc.input!==undefined) {
-            if (fdesc.input.disabled) 
+            if (fdesc.input.disabled) {
                 get_field_value(id, "");
+            } else if (fdesc.target!==undefined) {
+                fdesc.input.value = get_field_value(fdesc.target, "");
             };
+        };
     });
 
     let section = document.querySelectorAll("div[data-block='whatif']")[0];
     if (section.classList.contains("is-visible") && (!direct)) {
         graph_whatif();
-        activate_tab("graph_whatif", 1);        
+        activate_tab("graph_whatif", 2);        
     };
 
     section = document.querySelectorAll("div[data-block='entry']")[0];
     if (section.classList.contains("is-visible") && (!direct)) {
         graph_entry();
-        activate_tab("graph_entry", 1);
+        activate_tab("graph_entry", 2);
     };
 
     if (!direct)

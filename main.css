@@ -66,7 +66,8 @@ body {
 }
 
 .section {
-    padding:3rem
+    padding:3rem;
+    overflow-x: clip;
 }
 
 .title {
@@ -119,10 +120,17 @@ ul {
     flex-grow: 1;
     flex-shrink: 0;
     justify-content: flex-start;
+    padding-left: 40px;
+    padding-right: 40px;    
 }
 
 .tabs li {
     display: block;
+}
+
+
+.tabs li.is-active {
+    background-color: #f3f9ff;    
 }
 
 .tabs li.is-active a {
@@ -310,4 +318,16 @@ table tbody tr:nth-child(even) {
     border-radius: 7px;
     font-size: 1.2em;
     font-weight: 600;
+}
+
+.tab_selector {
+    display: block;
+    flex-basis: 0;
+    flex-grow: 1;
+    flex-shrink: 1;
+    background-color: #EEF;    
+}
+
+.tab_big {
+    font-size: 1.5em;
 }
