@@ -45,7 +45,7 @@
             <ul>
                 <li class="tab_selector tab_big is-active" data-block="basic"><a role=button data-id="b_simple">🔨 Mode: Basic</a></li>
                 <li class="tab_selector tab_big" data-block="advanced"><a role=button data-id="b_advanced">⚙️ Mode: Advanced</a></li>
-                <!-- <li class="tab_selector tab_big" data-block="llm"><a role=button data-id="b_llm">🤖 LLM mortgage advisor</a></li> -->
+                <!-- <li class="tab_selector tab_big" data-block="llm"><a role=button data-id="b_llm">🤖 Mode: AI mortgage assistant</a></li> -->
                 <li class="tab_selector tab_big" data-block="help"><a role=button data-id="b_help">❓ Help / Instructions</a></li>
             </ul>
         </div>
@@ -613,7 +613,7 @@
         </div>
 
         <div data-block="llm" class="block">
-            <section class="section"><h2 data-id="h_7">LLM powered, robo-adviser:</h2>
+            <section class="section"><h2 data-id="h_7">LLM-based mortgage calculation and analysis assistant:</h2>
                 <div class="columns">
                     <div class="column">
                         <p data-id="p-20">If you are completely lost in setting the parameters and do not know where to start, you can try this experimental LLM-powered automatic mortgage advisor. </p>
@@ -891,6 +891,10 @@
     </div>
 
     <script>
+        window.coi = {
+            shouldRegister : (window.location.search.includes("mode=llm"))&&(!window.sessionStorage.getItem("coiReloadedBySelf"))
+        }
+
         document.addEventListener("DOMContentLoaded", function(event){
             const gh_pages_host = "r0d1on.github.io"; //"127.0.0.1:5000";
             let show_ribbon = (window.location.href).split(/\/\//)[1].split(/\//)[0]==gh_pages_host;
