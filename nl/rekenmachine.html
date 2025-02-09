@@ -43,7 +43,7 @@
             <ul>
                 <li class="tab_selector tab_big is-active" data-block="basic"><a role=button data-id="b_simple">🔨 Modus: Basis</a></li>
                 <li class="tab_selector tab_big" data-block="advanced"><a role=button data-id="b_advanced">⚙️ Modus: Geavanceerd</a></li>
-                <!-- <li class="tab_selector" data-block="llm"><a role=button data-id="b_llm">LLM mortgage advisor</a></li> --> 
+                <!-- <li class="tab_selector tab_big" data-block="llm"><a role=button data-id="b_llm">🤖 LLM mortgage advisor</a></li> -->
                 <li class="tab_selector tab_big" data-block="help"><a role=button data-id="b_help">❓ Hulp / Instructies</a></li>
             </ul>
         </div>
@@ -610,6 +610,23 @@
             </section>
         </div>
 
+        <div data-block="llm" class="block">
+            <section class="section"><h2 data-id="h_7">LLM powered, robo-adviser:</h2>
+                <div class="columns">
+                    <div class="column">
+                        <p data-id="p-20">If you are completely lost in setting the parameters and do not know where to start, you can try this experimental LLM-powered automatic mortgage advisor. </p>
+                        <p data-id="p-21">It has instructions to use the tool on your behalf (so it will fill in the parameters based on the conversations) and provide you with the results and explain them. </p>
+                        <hr>
+                        <p data-id="p-22">After the model binary downloaded (once) the whole thing can work completely autonomously, without access to internet. </p>
+                        <p data-id="p-23"> - your conversations are private to you and your browser. </p>
+                        <hr>
+                        <button class="recalc_button" onclick="start_llm()">Start</button>
+                        <iframe id="ifr_llm" src=""></iframe>
+                    </div>
+                </div>
+            </section>
+        </div>
+
         <div data-block="help" class="block">
             <section class="section"><h2 data-id="h_7">Help</h2>
                 <div class="columns">
@@ -655,9 +672,6 @@
                     </div>
                 </div>
             </section>
-        </div>
-
-        <div data-block="llm" class="block">
         </div>
 
         <section class="section"><h2 class="subtitle" data-id="h_4">Resultaten van modellering</h2>
