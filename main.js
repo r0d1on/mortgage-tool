@@ -72,8 +72,10 @@ function activate_tab(tab, index) {
     Object.keys(TABS[index].tabs).map((tab)=>{
         TABS[index].tabs[tab].classList.remove("is-active");
     });
-    TABS[index].tabs[tab].classList.add("is-active");
-    TABS[index]['activated'] = tab;
+    if (tab in TABS[index].tabs) {
+        TABS[index].tabs[tab].classList.add("is-active");
+        TABS[index]['activated'] = tab;
+    };
 }
 
 function init_tabs(saved_state) {
@@ -137,7 +139,7 @@ function init_tabs(saved_state) {
             title += ": " + get_field_value("house_price") + " - " + get_field_value("savings");
             title += "\n\r Term: " + get_field_value("loan_term_actual");
             title += "\n\r ROI: " + Math.round(100*get_field_value("housing_roi"))/100;
-            title += "\n\r housing-renting: " + get_field_value("assets_delta");
+            title += "\n\r housing-renting: " + Math.round(get_field_value("assets_delta"));
             title += "\n\r";
 
             navigator.share({url:url, title:title}).then(() => {
@@ -1133,6 +1135,11 @@ function calc_assets_no_repayments(asset_params, loan_params) {
     let asset_params_no_repayments = structuredClone(asset_params);
     asset_params_no_repayments.loan_result = loan_result_no_repayments;
     return calc_assets(asset_params_no_repayments);
+}
+
+function start_llm() {
+    let server = prompt("server",document.cookie.split(";").reduce((a,v)=>{let t = v.split("=");a[t[0].trim()]=t[1];return a;},{})["server"]);
+    document.getElementById("ifr_llm").src = `https://${server}/llm.html`;
 }
 
 let recalc_tag = ["Recalculate"];
