@@ -110,8 +110,12 @@ if (typeof window === 'undefined') {
 
         // If we're already coi: do nothing. Perhaps it's due to this script doing its job, or COOP/COEP are
         // already set from the origin server. Also if the browser has no notion of crossOriginIsolated, just give up here.
-        if (window.crossOriginIsolated !== false || !coi.shouldRegister()) {
-            console.log("coi - skip registartion");
+        if (window.crossOriginIsolated !== false) {
+            console.log("coi - skip registartion, crossOriginIsolated already");
+            return;
+        }
+        if (!coi.shouldRegister()) {
+            console.log("coi - skip registartion, not allowed to register");
             return;
         }
 
