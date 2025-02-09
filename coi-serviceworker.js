@@ -73,7 +73,8 @@ if (typeof window === 'undefined') {
             coepCredentialless: () => true,
             coepDegrade: () => true,
             doReload: () => window.location.reload(),
-            quiet: false
+            quiet: false,
+            ...window.coi
         };
 
         const n = navigator;
