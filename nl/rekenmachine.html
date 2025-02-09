@@ -2,6 +2,14 @@
 <html lang="nl">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script>
+        window.coi = {
+            shouldRegister : (
+                (window.location.search.includes("mode=llm"))&&
+                (!window.sessionStorage.getItem("coiReloadedBySelf"))
+            )
+        }
+    </script>
     <script src="../coi-serviceworker.js"></script>
 
     <link rel="icon" href="https://hypotheek-bereken.com/favicon.ico">
@@ -891,10 +899,6 @@
     </div>
 
     <script>
-        window.coi = {
-            shouldRegister : (window.location.search.includes("mode=llm"))&&(!window.sessionStorage.getItem("coiReloadedBySelf"))
-        }
-
         document.addEventListener("DOMContentLoaded", function(event){
             const gh_pages_host = "r0d1on.github.io"; //"127.0.0.1:5000";
             let show_ribbon = (window.location.href).split(/\/\//)[1].split(/\//)[0]==gh_pages_host;
