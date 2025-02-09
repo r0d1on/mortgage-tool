@@ -1160,4 +1160,5 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     };
     plotly_waiter();
+    console.log("co-isolation:",window.location.hostname,window.crossOriginIsolated)
 });
