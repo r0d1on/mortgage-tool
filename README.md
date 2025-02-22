@@ -21,6 +21,8 @@
     - to test different loan parameters and to find the most convenient/profitable mortgage configuration.
 * Entrypoint modelling:
     - comparison of financial outcomes for "buy now" vs "buy X months later" scenarios.
+* LLM assistant:
+    - a small language model integrated with calculator. Works directly in the browser and can set mortgage calculation parameters, interpret calculation results and answer general mortgage-related questions.
 * Mortgage / financial context fine-tuning:
     - approximately 30 parameters available to describe the financial context.
 ![Advanced parameters](images/screenshot2.png)
@@ -40,6 +42,12 @@ Allows bi-parametric mortgage modelling.
 * With two parameters being "tested" - target metric drawn on a 3-D surface plot (e.g. actual mortgage term as a function of both extra monthly repayment and initial downpayment).
 
 ![what-if analysis, 3d](images/screenshot-whatif2.png)
+
+
+---
+# AI assistant:
+
+![LLM AI mortgage calculation assistant](images/screenshot-llm.png)
 
 
 ---
