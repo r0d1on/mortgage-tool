@@ -141,8 +141,8 @@ let CHAT = {
             });
         }
     },
-    initiate: () => {
-        const introduction = `
+    initiate: (mt) => {
+        let introduction = `
         Hi,
         <br><br>
         To begin the process - start with explaining your current situation, more details you can provide - the better.
@@ -156,6 +156,11 @@ let CHAT = {
         &bull; what is mortgage interest rate available to you <br>
         etc..        
         `.split("<br><br>");
+
+        if (!mt) {
+            introduction.push("<b style='color:red'>Warning: LLM is working in a single-threaded mode. Answer generation will be very slow.</b>");
+            introduction.push("Reloading the page might resolve the issue.");
+        };
 
         CHAT.log("", "ai");
 
@@ -194,7 +199,7 @@ let CHAT = {
             } else if (m.value == "ready") {
                 if (CHAT.state === undefined) {
                     CHAT.LAST_MESSAGE.remove();
-                    CHAT.initiate();
+                    CHAT.initiate(m.mt);
 
                 } else if (CHAT.state === "ROUTE") {
                     const intent = CHAT.LAST_AI_RESPONSE;
