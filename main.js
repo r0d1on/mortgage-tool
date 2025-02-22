@@ -3,21 +3,27 @@ function throw_error(text) {
     throw text;
 }
 
-
 let TABS = {};
-let TAB_DEFAULTS = {
-    "mode": "basic",
-    "page": "mortgage",
-    "details": "graph_payments"
+let TAB_SETTINGS = {
+    "mode": {default : "basic"},
+    "page": {default : "mortgage"},
+    "details": {
+        default : "graph_payments",
+        events: {
+            "graph_payments": "graph_p",
+            "graph_assets": "graph_a"
+        }
+    }
 };
-TAB_LIST = Array.from(Object.keys(TAB_DEFAULTS));
+TAB_LIST = Array.from(Object.keys(TAB_SETTINGS));
+
 
 function get_tabs_state(skip_tab) {
     let tab_state = "";
     Object.keys(TABS).map((index)=>{
         let pagekey = TAB_LIST[index];
         if (pagekey == skip_tab) return;
-        if (TABS[index]['activated']!=TAB_DEFAULTS[TAB_LIST[index]]) {
+        if (TABS[index]['activated']!=TAB_SETTINGS[TAB_LIST[index]].default) {
             tab_state += (tab_state=="") ? "?" : "&";
             tab_state += `${pagekey}=${TABS[index]['activated']}`;
         };
@@ -57,7 +63,7 @@ function refresh_title(params) {
         title += " ("
         title += ["", "annuity", "linear", "interest"][get_field_value("loan_type")] + " - ";
         title += get_field_value("house_price");
-        title += "/" + get_field_value("savings");
+        title += "/" + get_field_value("downpayment");
         title += ")";
     };
     document.title = title;
@@ -75,6 +81,8 @@ function activate_tab(tab, index) {
     if (tab in TABS[index].tabs) {
         TABS[index].tabs[tab].classList.add("is-active");
         TABS[index]['activated'] = tab;
+        let events = TAB_SETTINGS[TAB_LIST[index]].events;
+        (events)&&(events[tab])&&(FIELDS[events[tab]])&&(get_field_value(events[tab], "", true));
     };
 }
 
@@ -98,7 +106,7 @@ function init_tabs(saved_state) {
             Array.from(div.getElementsByTagName("li"))
             .reduce((a, v)=>{
                 a[v.dataset["block"]]=v;
-                if (TAB_DEFAULTS[pagekey]==v.dataset["block"]) {
+                if (TAB_SETTINGS[pagekey].default==v.dataset["block"]) {
                 } else {
                     v.getElementsByTagName("a")[0].href = `${base}?${pagekey}=${v.dataset["block"]}`;
                     v.getElementsByTagName("a")[0].onclick=()=>{return false;};
@@ -136,7 +144,7 @@ function init_tabs(saved_state) {
         if (navigator.share !== undefined) {
             let title = "Mortgage calculation";
             title += "\n\r" + ["", "annuity", "linear", "interest"][get_field_value("loan_type")];
-            title += ": " + get_field_value("house_price") + " - " + get_field_value("savings");
+            title += ": " + get_field_value("house_price") + " - " + get_field_value("downpayment");
             title += "\n\r Term: " + get_field_value("loan_term_actual");
             title += "\n\r ROI: " + Math.round(100*get_field_value("housing_roi"))/100;
             title += "\n\r housing-renting: " + Math.round(get_field_value("assets_delta"));
@@ -220,7 +228,11 @@ function init_fields(saved_state) {
     FIELDS = {};
     Array.from(document.getElementsByClassName("field")).map((field)=>{
         const input = field.getElementsByTagName("input")[0];
+        const label = field.getElementsByTagName("label")[0];
+        const tooltip = field.querySelectorAll("span.tooltip")[0];
         const id = field.id||input.id;
+
+        let type = "input";
 
         if (id === undefined) 
             throw_error(`undefined id for field: ${field}`)
@@ -230,6 +242,7 @@ function init_fields(saved_state) {
 
         if (input!==undefined) {
             if (field.dataset["formula"]!==undefined) { // calculated field
+                type = "formula";
                 input.disabled = true;
             //} else if (field.dataset["target"]!==undefined) { // hybrid field
                 // input.disabled = true;
@@ -269,6 +282,7 @@ function init_fields(saved_state) {
                         recalculate_fields();
                     });
                 } else {
+                    type = "raw";
                     input.addEventListener("change", ()=>{
                         saveState();
                     });
@@ -285,7 +299,10 @@ function init_fields(saved_state) {
             "target" : field.dataset["target"],
             "type" : field.dataset["type"],
             "round" : field.dataset["round"]||2,
-            "params" : get_parameters(field.dataset["formula"])
+            "params" : get_parameters(field.dataset["formula"]),
+            "label" : label.innerHTML,
+            "tip" : (tooltip===undefined)?"":tooltip.dataset['tooltip'],
+            "kind" : type
         }
     });
 
@@ -350,22 +367,22 @@ function gather_param_values(params, path) {
     }
 }
 
-function get_field_value(id, path) {
+function get_field_value(id, path, force_refresh) {
     const fdesc = FIELDS[id];
     if (fdesc===undefined) throw_error(`undefined parameter ${id} requested from path ${path}`);
 
     let value = (fdesc.input===undefined) ? fdesc.value : fdesc.value||fdesc.input.value;
 
-    if (fdesc.input!==undefined) { // user input field
-        if (!fdesc.input.disabled) { // mannual input field
-            if (fdesc.type=='raw') {
-                return value;
-            } else if (value=="") {
-                console.log(`field ${id} value must be specified`);
-                return undefined;
-            };
-            return 1.0*eval_if_needed(value);
-        }
+    if ((fdesc.input!==undefined)&&(!fdesc.input.disabled)) { // user input field
+        if (fdesc.type=='raw') {
+            return value;
+        } else if (value=="") {
+            console.log(`field ${id} value must be specified`);
+            return undefined;
+        };
+        return 1.0*eval_if_needed(value);
+    } else if (force_refresh) {
+        value = undefined;
     };
     
     // calculatable field
@@ -430,14 +447,12 @@ function recalculate_fields(direct, keep_overrides) {
         };
     });
 
-    let section = document.querySelectorAll("div[data-block='whatif']")[0];
-    if (section.classList.contains("is-visible") && (!direct)) {
+    if ((TABS[0].activated == "advanced") && (TABS[1].activated == "whatif") && (!direct)) {
         graph_whatif();
         activate_tab("graph_whatif", 2);        
     };
 
-    section = document.querySelectorAll("div[data-block='entry']")[0];
-    if (section.classList.contains("is-visible") && (!direct)) {
+    if ((TABS[0].activated == "advanced") && (TABS[1].activated == "entry") && (!direct)) {
         graph_entry();
         activate_tab("graph_entry", 2);
     };
@@ -445,6 +460,30 @@ function recalculate_fields(direct, keep_overrides) {
     if (!direct)
         refresh_title(true);
 }
+
+function monthly_payment_diagnose(monthly_payment_loan, monthly_payment_rent, monthly_savings) {
+    let outcome = "";
+    let budget = monthly_savings + monthly_payment_rent;
+
+    if (monthly_payment_loan > monthly_payment_rent) {
+        outcome = "monthly loan payment is HIGHER than monthly rent payment";
+    } else if (monthly_payment_loan < monthly_payment_rent) {
+        outcome = "monthly loan payment is LOWER than monthly rent payment";
+    } else {
+        outcome = "monthly loan payment is the SAME as monthly rent payment";
+    };
+
+    if (monthly_payment_loan > budget) {
+        outcome += ` and HIGHER than available monthly budget (${budget})`;
+    } else if (monthly_payment_loan < budget) {
+        outcome += ` and LOWER than available monthly budget (${budget})`;
+    } else {
+        outcome += ` and the SAME as available monthly budget (${budget})`;
+    };
+
+    return outcome;
+}
+
 
 OVERRIDES = {};
 function loan_schedule(loan_result) {
@@ -477,11 +516,13 @@ function loan_schedule(loan_result) {
 
     let month = 0;
     let annual = {};
+    let total = {};
     let debt = 0;
     loan_result.monthly.map((record)=>{
         month+=1;
         if (month==1) debt = record["debt"];
 
+        // annual totals
         if ((month%12==1)&&(month>1)) {
             tr = document.createElement("tr");
             Object.keys(record).map((key)=>{
@@ -498,6 +539,11 @@ function loan_schedule(loan_result) {
             });
             tbody.appendChild(tr);
         };
+
+        // global totals
+        Object.keys(record).map((key)=>{
+            total[key] = (total[key]||0) + record[key];
+        });
 
         tr = document.createElement("tr");
         Object.keys(record).map((key)=>{
@@ -520,6 +566,21 @@ function loan_schedule(loan_result) {
         });
         tbody.appendChild(tr);
     });
+
+    tr = document.createElement("tr");
+    Object.keys(loan_result.monthly[0]).map((key)=>{
+        let td = document.createElement("td");
+        let content = Math.round(100*total[key])/100;
+        if (key=="debt") {
+            content = "-";
+        } else if (key=="month") {
+            content = "total: ";
+        };
+        td.innerHTML = `<b style="color:#00F">${content}</b>`;
+        tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+
     table.appendChild(tbody);
 
     schedule_dom.appendChild(table);
@@ -586,8 +647,8 @@ function graph_assets(assets_result) {
                     return record[key]
                 }),
                 type: 'scatter',
-                name: key+postfix,
-                visible: visibility[key+postfix]
+                name: key + postfix,
+                visible: visibility[key + postfix]
             });
         });
         return d;
@@ -668,9 +729,6 @@ function save() {
         X.original_parameters[key + "_0"] = structuredClone(tmp[key]);
         X.original_parameters[key] = structuredClone(tmp[key]);
     });
-    Array.from(document.getElementsByClassName("recalc_button")).map((b)=>{
-        b.innerHTML = "..calculation in progress..";
-    });
     document.getElementById("progress_overlay").style['display'] = "block";
 }
 
@@ -680,10 +738,6 @@ function restore(params) {
             FIELDS[key].input.value = X.original_parameters[key];
     });
     recalculate_fields(true);
-
-    Array.from(document.getElementsByClassName("recalc_button")).map((b)=>{
-        b.innerHTML = recalc_tag[0];
-    });
     document.getElementById("progress_overlay").style['display'] = "none";
 }
 
@@ -866,10 +920,10 @@ function graph_entry() {
         result["delay"] = delay + 1;
 
         S.new_params.house_price = OP.house_price * Math.pow(1.0 + S.house_rate, delay+1);
-        S.new_params.savings = OP.assets_result.renting.monthly[delay].total_assets * S.downpayment_pct;
+        S.new_params.downpayment = OP.assets_result.renting.monthly[delay].total_assets * S.downpayment_pct;
 
-        [S.new_params.current_cash_assets, S.new_params.current_stocks_assets] = OP.assets_result.metrics.monthly[delay]._assets;
-        if (S.new_params.current_cash_assets >= S.new_params.house_price) {
+        [S.new_params.total_cash_savings, S.new_params.total_stocks_savings] = OP.assets_result.metrics.monthly[delay]._assets;
+        if (S.new_params.total_cash_savings >= S.new_params.house_price) {
             S.results.push(result);
             return false;
         };
@@ -887,20 +941,20 @@ function graph_entry() {
         recalculate_fields(true);
 
         let state = gather_param_values(X.all_parameters, "").calculation_context;
-        if (state.loan <= S.new_params.savings * 0.05) {
+        if (state.loan <= S.new_params.downpayment * 0.05) {
             S.results.push(result);
             return false;
         };
 
         // entry parameters
         result["entry_total_assets"] = OP.assets_result.renting.monthly[delay].total_assets;
-        result["entry_savings"] = S.new_params.savings;
+        result["entry_downpayment"] = S.new_params.downpayment;
         result["entry_house_price"] = S.new_params.house_price;
 
         // loan exit parameters
         [
-            "loan", "loan_term_actual", "total_paid_net_monthly",
-            "payment_first", "payment_base_first", 
+            "loan", "loan_term_actual", "monthly_avg_loan_invested",
+            "monthly_payment_loan", "payment_base_first",
             "extra_payment_roi", "months_to_even"
         ].map((metric)=>{
             result["loan_" + metric] = (state[metric]<0)?null:state[metric];
@@ -976,7 +1030,7 @@ function graph_entry() {
         results : [],
         new_params : {},
         house_rate : X.original_parameters.house_market_rate / (100 * 12),
-        downpayment_pct : X.original_parameters.assets_to_downpayment / 100,
+        downpayment_pct : X.original_parameters.downpayment_to_savings / 100,
         probe_month : get_metric_value("entry_probe_month")
     };
     S.total_count = X.original_parameters.loan_term;
@@ -1016,7 +1070,7 @@ function sum(a) {
     return a.reduce((a,s)=>{return a+s}, 0);
 }
 
-function calc_assets({current_cash_assets, current_stocks_assets, deposit_rate, stocks_rate, monthly_savings, loan_result, loan_term, savings, bonus_month, bonus_cash, bonus_stocks, rent, monthly_ownership_tax, loan, house_value, house_market_rate}) {
+function calc_assets({total_cash_savings, total_stocks_savings, deposit_rate, stocks_rate, monthly_savings, loan_result, loan_term, downpayment, bonus_month, bonus_cash, bonus_stocks, monthly_payment_rent, monthly_ownership_tax, loan, house_value, house_market_rate}) {
     let deposit_rate_m = deposit_rate/(100*12);
     let stocks_rate_m = stocks_rate/(100*12);
     let loan_term_actual = loan_result.monthly.length;
@@ -1028,11 +1082,11 @@ function calc_assets({current_cash_assets, current_stocks_assets, deposit_rate, 
     let monthly_housing = [];
     let monthly_metrics = [];
 
-    let assets_renting = [current_cash_assets, current_stocks_assets];
-    let stocks_taken = (current_cash_assets >= savings) ? 0 : (savings - current_cash_assets);
+    let assets_renting = [total_cash_savings, total_stocks_savings];
+    let stocks_taken = (total_cash_savings >= downpayment) ? 0 : (downpayment - total_cash_savings);
     let assets_housing = [
-        current_cash_assets - (savings - stocks_taken),
-        current_stocks_assets - stocks_taken
+        total_cash_savings - (downpayment - stocks_taken),
+        total_stocks_savings - stocks_taken
     ];
 
     let house_rate = house_market_rate / (100*12);
@@ -1069,7 +1123,7 @@ function calc_assets({current_cash_assets, current_stocks_assets, deposit_rate, 
             total_assets: sum(assets_renting),
         });
 
-        increment_housing = monthly_savings + rent - monthly_ownership_tax - payment.net_payment;
+        increment_housing = monthly_savings + monthly_payment_rent - monthly_ownership_tax - payment.net_payment;
         assets_housing[0] += increment_housing + m_bonus_cash;
         assets_housing[1] += m_bonus_stocks;
         increment_housing += m_bonus_cash + m_bonus_stocks;
@@ -1137,16 +1191,9 @@ function calc_assets_no_repayments(asset_params, loan_params) {
     return calc_assets(asset_params_no_repayments);
 }
 
-function start_llm() {
-    let server = prompt("server",document.cookie.split(";").reduce((a,v)=>{let t = v.split("=");a[t[0].trim()]=t[1];return a;},{})["server"]);
-    document.getElementById("ifr_llm").src = `https://${server}/llm.html`;
-}
-
-let recalc_tag = ["Recalculate"];
 let saved_state = loadState();
 
 document.addEventListener('DOMContentLoaded', function() {
-    recalc_tag[0] = document.getElementsByClassName("recalc_button")[0].innerHTML;
     init_tabs(saved_state);
     refresh_canonical();
     refresh_title();
@@ -1160,5 +1207,4 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     };
     plotly_waiter();
-    console.log("co-isolation:",window.location.hostname,window.crossOriginIsolated)
 });

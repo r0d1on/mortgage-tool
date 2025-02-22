@@ -8,9 +8,9 @@ Hypotheekanalyse tool: bereken een maandelijkse betalingen schema met extra aflo
 Hypotheek betalings calculator, extra aflossen hypotheek, hypotheek berekenen, hypotheken vergelijken, bruto netto hypotheek, hypotheek aflossen berekenen, annuïteitenhypotheek, lineaire hypotheek, hypotheek maandlasten berekenen
 \
 data-id="language" href="
-/en/mortgage-calculator.html
+https://hypotheek-bereken.com/
 \
-data-id="language" href="/en/mortgage-calculator.html">
+data-id="language" href="https://hypotheek-bereken.com/">
 🇬🇧 click here for English version
 \
 <link rel="canonical" href="
@@ -44,10 +44,10 @@ data-id="h_6">
 Kerncijfers:
 \
 data-id="b_simple">
-🔨 Modus: Basis
+🔨 Basisparameters
 \
 data-id="b_advanced">
-⚙️ Modus: Geavanceerd
+⚙️ Geavanceerde parameters
 \
 data-id="b_help">
 ❓ Hulp / Instructies
@@ -79,13 +79,13 @@ Verkoopprijs huis / woningwaarde
 for="house_value">
 Woningwaarde
 \
-for="savings">
+for="downpayment">
 Spaargeld voor de aanbetaling
 \
 for="cost">
 Aankoopkosten (zonder NHG)
 \
-for="downpayment">
+for="actual_downpayment">
 Aanbetaling
 \
 for="loan">
@@ -94,7 +94,7 @@ Vereiste leningbedrag
 for="t_loan">
 Vereiste leningbedrag
 \
-for="loan_rate">
+for="loan_to_value">
 Leningbedrag / Woningwaarde (Loan-to-Value)
 \
 for="loan_term">
@@ -109,7 +109,7 @@ Werkelijke leningtermijn (maanden)
 for="loan_term_reduction">
 Vermindering van de looptijd van de lening (maanden)
 \
-for="interest">
+for="interest_rate">
 Leningrente
 \
 for="tax_rate">
@@ -124,8 +124,11 @@ Doel belastingteruggave: 0 - geen, 1 - voordeel, 2 - hoofdschuld
 for="total_tax_returned">
 Totale belastingteruggave (hypotheekrenteaftrek)
 \
-for="loan_interest_rate">
-Totaal betaalde rente / Leningbedrag
+for="total_interest_percentage">
+Totaal betaalde rente percentage (TIP)
+\
+for="total_interest_percentage_tip" data-tooltip="
+percentage van het totale bedrag aan betaalde rente van het werkelijk geleende bedrag
 \
 for="extra_payment_monthly">
 Extra aflossing, maandelijks
@@ -160,8 +163,8 @@ Totaal betaalde boetes
 for="total_paid_interest">
 Totaal betaalde rente
 \
-for="total_paid_net_monthly">
-Totaal geïnvesteerde lening, maandgemiddelde
+for="monthly_avg_loan_invested">
+Totaal maandgemiddelde geïnvesteerde lening
 \
 for="cost_advisor">
 Financieel adviseur
@@ -242,21 +245,18 @@ for="house_market_rate">
 Waardestijging van de woning
 \
 for="monthly_savings">
-Maandelijkse besparingen (salaris - uitgaven - huur)
+Maandelijkse besparingen
 \
 for="bonus_month">
 Jaarbonus, opbouwmaand
 \
-for="bonus">
-Jaarbonus
+for="bonus_cash">
+Jaarbonus (geld)
 \
-for="current_assets">
-Huidige totale activa
+for="total_savings">
+Huidige totale besparingen
 \
-for="assets_to_downpayment">
-Activa gebruikt voor de aanbetaling
-\
-for="assets_left">
+for="savings_left">
 Activa na de aanbetaling
 \
 for="max_loan">
@@ -265,8 +265,8 @@ Ongeveer het maximale leningbedrag
 for="max_value">
 Ongeveer het maximale woningwaarde
 \
-for="rent">
-Maandhuur
+for="monthly_payment_rent">
+Maandelijks huurbetaling
 \
 for="total_rent_actual">
 Totaal betaalde huur (tijdens de werkelijke leningtermijn)
@@ -331,17 +331,11 @@ data-id="b_g_whatif">
 data-id="b_g_entry">
 📈 Startmaand grafieken
 \
-for="payment_first">
-Eerste hypotheekbetaling (zonder periodieke extra aflossing)
+for="monthly_payment_loan">
+Maandelijks hypotheekbetaling
 \
-for="payment_last">
-Laatste hypotheekbetaling (zonder periodieke extra aflossing)
-\
-for="payment_first_extra">
-Eerste hypotheekbetaling - Maandhuur
-\
-for="payment_last_extra">
-Laatste betaling - Maandhuur
+for="monthly_payment_difference">
+Verschil tussen maandelijkse betalingen voor 'kopen' en 'huren'
 \
 data-id="h_4">
 Resultaten van modellering
@@ -354,6 +348,9 @@ Extra aflossing ROI
 \
 for="t_extra_payment_roi">
 Extra aflossing ROI
+\
+for="t_extra_payment_roi_tip" data-tooltip="
+ROI van extra betalingen. Zie meer op de pagina [extra terugbetalingen].
 \
 entry_probe_month">
 Maand om leningstatistieken te nemen @:
@@ -368,21 +365,21 @@ for="value_discount_tip" data-tooltip="
 Coefficient die de werkelijke woningwaarde bepaalt (relatief aan de vraagprijs).
 \
 for="house_value_tip" data-tooltip="
-Werkelijke woningwaarde (WOZ).
+Woningwaarde (WOZ).
 \
-for="savings_tip" data-tooltip="
-Geld dat u wilt besteden aan het kopen van de woning (aanbetaling lening + transactiekosten).
+for="downpayment_tip" data-tooltip="
+Geld dat u wilt besteden aan het kopen van de woning (aanbetaling lening en transactiekosten).
 \
 for="cost_tip" data-tooltip="
 Eenmalige kosten voor de aankoop van het pand (belastingen, honoraria, enz.).
 \
-for="downpayment_tip" data-tooltip="
+for="actual_downpayment_tip" data-tooltip="
 Beschikbaar bedrag voor de lening na aftrek van transactiekosten.
 \
 for="loan_tip" data-tooltip="
 Leningbedrag of hoofdsom: het bedrag dat u van de bank moet lenen.
 \
-for="loan_rate_tip" data-tooltip="
+for="loan_to_value_tip" data-tooltip="
 Deel eigen vermogen in de deal ten opzichte van het geleende bedrag. Hoe kleiner dit is, hoe lager de beschikbare hypotheekrente.
 \
 for="loan_term_tip" data-tooltip="
@@ -392,13 +389,13 @@ for="loan_term_actual_tip" data-tooltip="
 Werkelijke looptijd van de lening. Kan korter zijn dan de afgesproken looptijd bij extra aflossingen.
 \
 for="loan_term_reduction_tip" data-tooltip="
-Aantal maanden verminderd van de looptijd door extra aflossingen.
+Verkorting van de looptijd van de lening door extra aflossingen.
 \
-for="interest_tip" data-tooltip="
+for="interest_rate_tip" data-tooltip="
 Jaarlijkse rentevoet van de lening (hypotheek).
 \
 for="tax_rate_tip" data-tooltip="
-Bepaalt het fiscaal aftrekbare percentage (box-1) van de betaalde rente.
+Fiscaal aftrekbaar percentage (box 1) van het terugbetaalde rentebedrag.
 \
 for="loan_type_tip" data-tooltip="
 Definieert het type lening. De eerste twee zijn fiscaal aftrekbaar; aflossingsvrij niet (box-1).
@@ -407,13 +404,13 @@ for="tax_scheme_tip" data-tooltip="
 Wat er gebeurt met belastingteruggaven: 0 - uitgeschakeld, 1 - als inkomen opgenomen, 2 - (maandelijks) gebruikt voor extra aflossingen.
 \
 for="total_tax_returned_tip" data-tooltip="
-Totale belastingteruggave. Wordt 0 als de lening niet aftrekbaar is of als teruggaven zijn uitgeschakeld of gebruikt.
+Totaalbedrag aan terugbetaalde belasting (dit is 0 als de lening niet terugbetaalbaar is, als terugbetalingen zijn uitgeschakeld of als terugbetalingen zijn gebruikt voor terugbetalingen).
 \
-for="loan_interest_rate_tip" data-tooltip="
+for="interest_rate_tip" data-tooltip="
 Rentepercentage ten opzichte van de leningwaarde.
 \
 for="extra_payment_monthly_tip" data-tooltip="
-Waarde van de gewenste maandelijkse extra aflossing.
+Vaste maandelijkse extra hypotheekaflossing.
 \
 for="extra_payment_period_tip" data-tooltip="
 Periodieke extra aflossingstermijn (in maanden). Bijvoorbeeld 12 voor jaarlijkse betalingen.
@@ -425,7 +422,7 @@ for="extra_payment_value_tip" data-tooltip="
 Waarde van de extra aflossing.
 \
 for="total_loan_invested_tip" data-tooltip="
-Totaal besteed bedrag aan de hypotheek (spaargeld + betalingen).
+Totaalbedrag gebruikt tijdens de hypotheek (aanbetaling + alle maandelijkse betalingen)
 \
 for="total_paid_extra_tip" data-tooltip="
 Totale extra aflossingen gedaan (indien van toepassing).
@@ -442,8 +439,8 @@ Totale boete betaald voor over-aflossingen (meer dan toegestaan door de bank).
 for="total_paid_interest_tip" data-tooltip="
 Totaal aan rente betaald gedurende de looptijd van de lening.
 \
-for="total_paid_net_monthly_tip" data-tooltip="
-Totaal betaalde hypotheek + spaargeld / werkelijke looptijd.
+for="monthly_avg_loan_invested_tip" data-tooltip="
+totale leninginvestering gedurende de werkelijke looptijd van de lening.
 \
 for="cost_advisor_tip" data-tooltip="
 Kosten van financieel advies.
@@ -515,7 +512,7 @@ for="extra_payment_value2_tip" data-tooltip="
 Waarde van de tweede extra periodieke aflossing.
 \
 for="extra_payment_topup_tip" data-tooltip="
-Minimale maandelijkse betalingen instellen. Verschil wordt toegevoegd als extra aflossing.
+Als de standaard berekende maandelijkse betaling lager is dan dit getal, wordt het verschil toegevoegd als een extra aflossing. Handig voor 'lineaire' hypotheken als u min of meer constante betalingen wilt hebben.
 \
 for="extra_payment_roi_tip" data-tooltip="
 ROI van extra aflossingen. Verschil in eindvermogen tussen normale en extra aflossingsscenario's.
@@ -526,11 +523,14 @@ Rente op spaargeld (jaarlijks). Gebruikt in rendementsberekeningen.
 for="house_market_rate_tip" data-tooltip="
 Jaarlijkse groei van de woningmarkt, verwachte stijging van de verkoopprijs.
 \
+for="stocks_rate">
+Groeipercentage van aandelen
+\
 for="stocks_rate_tip" data-tooltip="
 Jaarlijkse groei van aandelen. Gebruikt in rendementsberekeningen.
 \
 for="monthly_savings_tip" data-tooltip="
-Uw gemiddelde maandelijkse besparingen na alle kosten en huur. Gebruikt in rendementsberekeningen.
+maandelijkse besparing in het scenario 'huur' (salaris - uitgaven - huur).
 \
 for="bonus_month_tip" data-tooltip="
 Maand waarin de jaarlijkse bonus wordt uitgekeerd.
@@ -538,23 +538,41 @@ Maand waarin de jaarlijkse bonus wordt uitgekeerd.
 for="bonus_cash_tip" data-tooltip="
 Contante gedeelte van de jaarlijkse bonus. Gebruikt in rendementsberekeningen.
 \
+for="bonus_stocks">
+Jaarlijkse aandelenbonus, bedrag
+\
 for="bonus_stocks_tip" data-tooltip="
 Aandelen deel van de jaarlijkse bonus. Gebruikt in rendementsberekeningen.
 \
-for="current_stocks_assets_tip" data-tooltip="
+for="total_stocks_savings">
+Beschikbare voorraden, waarde
+\
+for="total_stocks_savings_tip" data-tooltip="
 Aanvangsvermogen: waarde van aandelen.
 \
-for="current_cash_assets_tip" data-tooltip="
-Aanvangsvermogen: contant geld. Gebruikt voor rendementsberekeningen.
+for="loan_bracket">
+Risicoklasse van de lening
 \
-for="current_assets_tip" data-tooltip="
-Totaal aanvankelijke vermogen.
+for="loan_bracket_tip" data-tooltip="
+De risicoklasse bepaalt de laagste hypotheekrente die banken aanbieden.
 \
-for="assets_to_downpayment_tip" data-tooltip="
-Deel van aanvankelijke vermogen gebruikt voor hypotheek (kosten + aanbetaling).
+for="total_cash_savings">
+Beschikbare spaargelden
 \
-for="assets_left_tip" data-tooltip="
-Overgebleven vermogen na hypotheek. Idealiter minimaal driemaandelijkse uitgaven.
+for="total_cash_savings_tip" data-tooltip="
+Spaargeld beschikbaar op het moment dat u de hypotheek opent.
+\
+for="total_savings_tip" data-tooltip="
+Totale activa die beschikbaar zijn vóór het openen van de hypotheek.
+\
+for="downpayment_to_savings">
+Fractie van activa gebruikt voor aanbetaling
+\
+for="downpayment_to_savings_tip" data-tooltip="
+Fractie van de totale activa die wordt gebruikt om de hypotheek te openen.
+\
+for="savings_left_tip" data-tooltip="
+Totale liquide activa die direct na het openen van de hypotheek overblijven. Dit mag niet minder zijn dan drie keer uw maandelijkse uitgaven.
 \
 for="max_loan_tip" data-tooltip="
 Ruwe schatting van het maximale leningbedrag op basis van uw budget.
@@ -562,17 +580,17 @@ Ruwe schatting van het maximale leningbedrag op basis van uw budget.
 for="max_value_tip" data-tooltip="
 Ruwe schatting van het maximale budget voor een woning.
 \
-for="rent_tip" data-tooltip="
-Huidige maandelijkse huur (indien van toepassing). Gebruikt in rendementsberekeningen.
+for="monthly_payment_rent_tip" data-tooltip="
+maandelijkse huurbetaling onder het 'huur'-scenario.
 \
 for="total_rent_actual_tip" data-tooltip="
-Totale huur tot het einde van de hypotheek als u blijft huren.
+Als u blijft huren in de plaats van kopen, betaalt u de volledige huur gedurende de feitelijke van de hypotheek.
 \
 for="total_rent_tip" data-tooltip="
-Totale huur bij einde looptijd hypotheek als u blijft huren.
+Als u blijft huren in plaats van kopen, betaalt u de volledige huur gedurende de looptijd van de hypotheek.
 \
 for="assets_renting_tip" data-tooltip="
-Verwacht vermogen aan het einde van de hypotheektermijn in het huurscenario.
+Verwachte eindwaarde opgebouwd tijdens de looptijd van de hypotheek met alle inkomsten en uitgaven, rekening houdend met de groeipercentages van de markt. Voor het 'blijf huren'-scenario.
 \
 for="ownership_pct_tip" data-tooltip="
 Belastingpercentage op woningbezit.
@@ -581,19 +599,19 @@ for="monthly_ownership_tax_tip" data-tooltip="
 Maandelijkse belasting op woningbezit.
 \
 for="assets_housing_tip" data-tooltip="
-Verwacht vermogen aan het einde van de hypotheektermijn in het koopscenario.
+Verwachte eindwaarde opgebouwd tijdens de looptijd van de hypotheek, rekening houdend met alle inkomsten, uitgaven, huizenwaarde en marktgroeipercentages. Voor het 'koop'-scenario.
 \
 for="assets_delta_tip" data-tooltip="
-Verschil in vermogen tussen huur- en koopscenario.
+Verschil in opgebouwde uiteindelijke waarde aan het einde van de hypotheektermijn voor de scenario's 'huren' en 'kopen'.
 \
 for="assets_k_tip" data-tooltip="
-Verhouding tussen vermogen uit huur- en koopscenario.
+Verhouding van de uiteindelijke geschatte aandelen voor de scenario's 'huur' en 'koop'.
 \
 for="housing_roi_tip" data-tooltip="
-ROI van de hypotheek. Verschil in eindvermogen t.o.v. netto betaalde rente.
+ROI van de hypotheek. Verschil in uiteindelijke eigen vermogens voor 'huur'- en 'koop'-scenario's over netto betaalde rente (genormaliseerd voor standaard hypotheektermijn - 30 jaar).
 \
 for="months_to_even_tip" data-tooltip="
-Aantal maanden tot huur- en koopscenario's gelijkwaardig zijn in vermogen.
+Hoeveel maanden in de hypotheek totdat de opgebouwde vermogens voor 'koop' en 'huur' scenario's gelijk worden. Na die maand wordt het 'koop' scenario winstgevend vergeleken met 'huur'.
 \
 for="variable1_tip" data-tooltip="
 Eerste variabele om te testen en bereik van geteste waarden.
@@ -616,23 +634,26 @@ Werkelijke looptijd hypotheek, korter bij aflossingen.
 for="t_total_loan_invested_tip" data-tooltip="
 Totaalbedrag besteed aan hypotheek.
 \
-for="payment_first_tip" data-tooltip="
-Eerste geplande betaling (exclusief extra aflossingen).
+for="monthly_payment_loan_tip" data-tooltip="
+Berekende normale maandelijkse hypotheekbetaling
+\
+for="payment_base_first">
+Eerste basisbetaling (hoofdsom + rente)
 \
 for="payment_base_first_tip" data-tooltip="
 Basiswaarde eerste betaling, alleen rente en schuld.
 \
-for="payment_first_extra_tip" data-tooltip="
-Verschil tussen eerste betaling en huur.
+for="monthly_payment_difference_tip" data-tooltip="
+Verschil tussen maandelijkse hypotheekbetaling ('koop'-scenario) en maandelijkse huurbetaling ('huur'-scenario), indien negatief - maandelijkse betaling voor 'koop'-scenario is lager dan maandelijkse 'huur'-betaling.
 \
 for="t_assets_delta_tip" data-tooltip="
 Verschil in vermogen tussen koop- en huurscenario.
 \
 for="t_housing_roi_tip" data-tooltip="
-ROI van hypotheek. Zie [rendementspagina].
+ROI van hypotheek. Zie [Winstgevendheid pagina].
 \
-for="_tip" data-tooltip="
-ROI van extra aflossingen. Zie [extra aflossingenpagina].
+for="monthly_payment_comparison">
+Resultaat van vergelijking van maandelijkse betalingen in 'koop'- en 'huur'-scenario's
 \
 data-id="hlp-1"~
 Invoervelden stellen je in staat om eenvoudige formules in te voeren met behulp van rekenkundige expressies.<br>Voorbeeld van een geldige invoer: <b>(1+2*3)/4</b><br>De meeste invoerwaarden kunnen worden "afgestemd": beweeg de muis erover en scroll omhoog/omlaag terwijl je Shift ingedrukt houdt.<br>Wanneer je met de muis aanwijst - wordt de tooltip voor de invoerwaarden de naam van de veldvariabele weergegeven (gebruikt in andere formules).

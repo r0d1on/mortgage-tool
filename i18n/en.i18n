@@ -14,7 +14,7 @@ data-id="language" href="/nl/rekenmachine.html">
 🇳🇱 toets hier voor Nederlands
 \
 <link rel="canonical" href="
-https://hypotheek-bereken.com/en/mortgage-calculator.html
+https://hypotheek-bereken.com/
 \
 <title>
 Mortgage payments calculator (for Netherlands)
@@ -44,10 +44,10 @@ data-id="h_6">
 Key figures:
 \
 data-id="b_simple">
-🔨 Mode: Basic
+🔨 Basic parameters
 \
 data-id="b_advanced">
-⚙️ Mode: Advanced
+⚙️ Advanced parameters
 \
 data-id="b_help">
 ❓ Help / Instructions
@@ -71,22 +71,22 @@ data-id="b_entry">
 ✨ Entrypoint
 \
 for="house_price">
-House sell price
+House price
 \
 for="value_discount">
-House sell price / House value
+House price / House value
 \
 for="house_value">
 House value
 \
-for="savings">
+for="downpayment">
 Savings used for downpayment
 \
 for="cost">
 Purchase cost (without NHG fee)
 \
-for="downpayment">
-Downpayment
+for="actual_downpayment">
+Loan downpayment
 \
 for="loan">
 Required loan amount
@@ -94,8 +94,8 @@ Required loan amount
 for="t_loan">
 Required loan amount
 \
-for="loan_rate">
-Loan amount / House value AKA Loan-to-Value
+for="loan_to_value">
+Loan to Value (LTV)
 \
 for="loan_term">
 Loan term (months)
@@ -109,7 +109,7 @@ Loan term, actual (months)
 for="loan_term_reduction">
 Loan term reduction (months)
 \
-for="interest">
+for="interest_rate">
 Loan Interest
 \
 for="tax_rate">
@@ -124,8 +124,11 @@ Tax refund target: 0 - none, 1 - benefit, 2 - principal
 for="total_tax_returned">
 Total tax returned (hypotheekrenteaftrek):
 \
-for="loan_interest_rate">
-Total interest paid / Loan amount
+for="total_interest_percentage">
+Total interest percentage (TIP)
+\
+for="total_interest_percentage_tip" data-tooltip="
+percentage of the total amount of interest paid from the actual amount borrowed
 \
 for="extra_payment_monthly">
 Extra repayment, monthly
@@ -160,8 +163,8 @@ Total paid penalties
 for="total_paid_interest">
 Total interest paid
 \
-for="total_paid_net_monthly">
-Total loan invested, monthly average
+for="monthly_avg_loan_invested">
+Average montlhy loan investment
 \
 for="cost_advisor">
 Financial advisor
@@ -242,21 +245,18 @@ for="house_market_rate">
 House appreciation rate
 \
 for="monthly_savings">
-Monthly savings (salary - expenses - rent)
+Monthly savings
 \
 for="bonus_month">
 Annual bonus, accrual month
 \
-for="bonus">
-Annual bonus, amount
+for="bonus_cash">
+Annual cash bonus, amount
 \
-for="current_assets">
-Current total assets
+for="total_savings">
+Total available savings
 \
-for="assets_to_downpayment">
-Assets used for downpayment
-\
-for="assets_left">
+for="savings_left">
 Assets left after downpayment
 \
 for="max_loan">
@@ -265,8 +265,8 @@ Approx. maximum loan
 for="max_value">
 Approx. maximum house value
 \
-for="rent">
-Monthly rent
+for="monthly_payment_rent">
+Monthly rent payment
 \
 for="total_rent_actual">
 Total rent paid (would be, during actual term)
@@ -302,7 +302,7 @@ for="t_housing_roi">
 Housing ROI
 \
 for="months_to_even">
-Months to even housing vs renting
+Months to even buy vs rent
 \
 for="variable1">
 Variable#1
@@ -331,17 +331,11 @@ data-id="b_g_whatif">
 data-id="b_g_entry">
 📈 Entrypoint Graphs
 \
-for="payment_first">
-First payment (without periodic repayment)
+for="monthly_payment_loan">
+Monthly mortgage payment
 \
-for="payment_last">
-Last payment (without periodic repayment)
-\
-for="payment_first_extra">
-First payment - monthly rent
-\
-for="payment_last_extra">
-Last payment - monthly rent
+for="monthly_payment_difference">
+Difference between 'buy' and 'rent' monthly payments
 \
 data-id="h_4">
 Modelling results:
@@ -355,6 +349,9 @@ Extra repayment ROI
 for="t_extra_payment_roi">
 Extra repayment ROI
 \
+for="t_extra_payment_roi_tip" data-tooltip="
+ROI of extra payments made. See more on [extra repayments] page.
+\
 entry_probe_month">
 Month to take loan metrics @:
 \
@@ -362,58 +359,58 @@ graph_entry_target">
 This graph updated when you run "Recalculate" from "Entrypoint" section above.
 \
 for="house_price_tip" data-tooltip="
-List price of the property you're buying
+Price of the property under consideration
 \
 for="value_discount_tip" data-tooltip="
-Coefficient determining real house value (relative to asked price)
+Coefficient determining real house value (relative to asked price).
 \
 for="house_value_tip" data-tooltip="
-Real property value (WOZ)
-\
-for="savings_tip" data-tooltip="
-Money you wish to spend on buying the house (loan downpayment + transaction expenses)
-\
-for="cost_tip" data-tooltip="
-One-off cost of aquiring the property (taxes, fees etc..)
+Property value (WOZ)
 \
 for="downpayment_tip" data-tooltip="
-Actual downpayment amount available for the loan (left from transactional costs)
+Amount to be spent on buying the house (loan downpayment and transactional purchase expenses).
+\
+for="cost_tip" data-tooltip="
+One-off costs of aquiring the property (transfer taxe, fees etc..)
+\
+for="actual_downpayment_tip" data-tooltip="
+Actual downpayment amount to be used for the loan (total downpayment decreased by purchase transactional costs)
 \
 for="loan_tip" data-tooltip="
 Loan amount aka principal debt: amount you need to lend from a bank
 \
-for="loan_rate_tip" data-tooltip="
-Fraction of your own money in the deal over the lended amount. Smaller it is - lower will be the mortgage interest rate available to you.
+for="loan_to_value_tip" data-tooltip="
+Value of the mortgage loan in relation to the value of the home. Smaller it is - lower will be the mortgage interest rate available.
 \
 for="loan_term_tip" data-tooltip="
 Loan maturity aka loan term. Agreed loan lifetime.
 \
 for="loan_term_actual_tip" data-tooltip="
-Actual loan lifetime. Might be smaller than actual loan term if you use extra repayments.
+Actual loan lifetime. Might be smaller than actual loan term if extra repayments being made.
 \
 for="loan_term_reduction_tip" data-tooltip="
-If you use extra repayments during the loan - this shows the number of months from the loan term reduced.
+Decrease in the loan term caused by extra repayments made.
 \
-for="interest_tip" data-tooltip="
+for="interest_rate_tip" data-tooltip="
 Annual loan (mortgage) insterest rate.
 \
 for="tax_rate_tip" data-tooltip="
-Defines tax (box-1) deductible percentage of interest amount repayed.
+Tax (box-1) deductible percentage of interest amount repaid.
 \
 for="loan_type_tip" data-tooltip="
-Defines the loan type. First two tax deductible, interest-only is not (box-1) tax deductible.
+Defines the loan type. Interest-only mortgages are not tax (box-1) deductible.
 \
 for="tax_scheme_tip" data-tooltip="
 what happens with tax refunds: 0 - turned off, 1 - accrued as an income, 2 - used (monthly) for extra repayments.
 \
 for="total_tax_returned_tip" data-tooltip="
-Total amount of tax refunded, will be 0 if loan is not refundable or refunds turned off, or refunds used in repayments.
+Total amount of tax refunded (it will be 0 if loan is not refundable or refunds turned off or refunds used for repayments).
 \
-for="loan_interest_rate_tip" data-tooltip="
+for="interest_rate_tip" data-tooltip="
 ratio of interest paid over loan value
 \
 for="extra_payment_monthly_tip" data-tooltip="
-you can set a value of desired monthly extra repayment here.
+Fixed monthly additional mortgage extra repayment.
 \
 for="extra_payment_period_tip" data-tooltip="
 you can set a peridocity of additional repayment here (in months). It could be 12 for once in a year payment (yearly bonus), for example.
@@ -425,7 +422,7 @@ for="extra_payment_value_tip" data-tooltip="
 Value of the extra repayment.
 \
 for="total_loan_invested_tip" data-tooltip="
-Total amount used for the mortgage (savings + all payments)
+Total amount used during the mortgage (downpayment + all monthly payments)
 \
 for="total_paid_extra_tip" data-tooltip="
 Total amount of extra repayments made (if any).
@@ -442,8 +439,8 @@ Total amount of penalties paid for over-repayments (repaying more than allowed b
 for="total_paid_interest_tip" data-tooltip="
 Total amount of interest paid during the loan.
 \
-for="total_paid_net_monthly_tip" data-tooltip="
-Total payments for the mortgage + savings used / Actual loan term
+for="monthly_avg_loan_invested_tip" data-tooltip="
+total loan investment over the actual loan term.
 \
 for="cost_advisor_tip" data-tooltip="
 Costs of getting financial advice.
@@ -515,7 +512,7 @@ for="extra_payment_value2_tip" data-tooltip="
 Additional periodit repayment: value of the repayment.
 \
 for="extra_payment_topup_tip" data-tooltip="
-Allowes to set up minimal monthly payments. If calculated payment will be less than this number - difference will be 'added' to the payment as an extra repayment. Useful for 'linear' mortgages if you want to have keep more or less constant payments throuhgout.
+If standard calculated monthly payment is less than this number - difference will be added as an extra repayment. Useful for 'linear' mortgages if you want to have keep more or less constant payments throuhgout.
 \
 for="extra_payment_roi_tip" data-tooltip="
 ROI of extra repayments. Calculated as a difference in the final assets you would have in the end of 'normal' and 'extra repayed' mortagegs over actual total value of extra payments made. 0.2 would mean that every extra euro spent will get you additional 0.2 euro of equity in the end.
@@ -526,11 +523,14 @@ Interest paid on the deposits (annual). Used in profitability calculations.
 for="house_market_rate_tip" data-tooltip="
 Annual housing market growth, expected annual sell-price change. Used in profitability calculations.
 \
+for="stocks_rate">
+Stocks growth rate
+\
 for="stocks_rate_tip" data-tooltip="
 Annual stocks growth rate. Used in profitability calculations.
 \
 for="monthly_savings_tip" data-tooltip="
-your avreage monthly savings. What is left from salary when all bills and rent (if you're renting) is payed. Used in profitability calculations.
+monthly savings under 'rent' scenario (salary - expenses - rent).
 \
 for="bonus_month_tip" data-tooltip="
 Month (in the lifetime of the mortgage) when annual bonus is paid.
@@ -538,23 +538,41 @@ Month (in the lifetime of the mortgage) when annual bonus is paid.
 for="bonus_cash_tip" data-tooltip="
 Annual bonus cash portion. Used in profitability calculations.
 \
+for="bonus_stocks">
+Annual stocks bonus, amount
+\
 for="bonus_stocks_tip" data-tooltip="
 Annual bonus sticks portion. Used in profitability calculations.
 \
-for="current_stocks_assets_tip" data-tooltip="
+for="total_stocks_savings">
+Available stocks value
+\
+for="total_stocks_savings_tip" data-tooltip="
 Initial assets: stocks value.
 \
-for="current_cash_assets_tip" data-tooltip="
-Initial assets: cash. Used for profitabiltity calculations. Downpayment structure will be assumed to be from cash-first assets.
+for="loan_bracket">
+Loan risk bracket
 \
-for="current_assets_tip" data-tooltip="
-Initial total assets.
+for="loan_bracket_tip" data-tooltip="
+Risk bracket class defines lowest mortgage interest rate accessible from the banks.
 \
-for="assets_to_downpayment_tip" data-tooltip="
-Fraction of initial assets used for getting the mortgage (costs + downpayment).
+for="total_cash_savings">
+Available cash savings
 \
-for="assets_left_tip" data-tooltip="
-Assets right left after getting mortgage. This ideally should not be less than triple of your monthly expenses.
+for="total_cash_savings_tip" data-tooltip="
+Cash savings available at the moment of opening the mortgage.
+\
+for="total_savings_tip" data-tooltip="
+Total assets available before opening the mortgage.
+\
+for="downpayment_to_savings">
+Fraction of assets used for downpayment
+\
+for="downpayment_to_savings_tip" data-tooltip="
+Fraction of total assets being used to open the mortgage.
+\
+for="savings_left_tip" data-tooltip="
+Total liquid assets left right after opening the mortgage. This should not be less than triple of your monthly expenses.
 \
 for="max_loan_tip" data-tooltip="
 A very rough estimation of maximal amount you can count on getting with your monthly budget (depends on the loan type).
@@ -562,17 +580,17 @@ A very rough estimation of maximal amount you can count on getting with your mon
 for="max_value_tip" data-tooltip="
 A very rough estimation of the max. budget you might have to by a property.
 \
-for="rent_tip" data-tooltip="
-Current monthly rent (if renting). Used for profitability calculations.
+for="monthly_payment_rent_tip" data-tooltip="
+monthly rent payment under 'rent' scenario.
 \
 for="total_rent_actual_tip" data-tooltip="
-Total rent would be paid by the actual end of the mortgage if you would continue renting instead of buying.
+Total rent would be paid during the actual mortgage term if you would continue renting instead of buying.
 \
 for="total_rent_tip" data-tooltip="
-Total rent would be paid by the end of the mortgage term if you would continue renting instead of buying.
+Total rent would be paid during the mortgage term if you would continue renting instead of buying.
 \
 for="assets_renting_tip" data-tooltip="
-Final expected equity accumulated by the end of the mortgage term with all incomes expenses, markets growth rates etc. taken into account. For the 'keep renting' scenario.
+Final expected equity accumulated during the mortgage term with all incomes expenses, markets growth rates taken into account. For the 'keep renting' scenario.
 \
 for="ownership_pct_tip" data-tooltip="
 House ownership tax rate.
@@ -581,19 +599,19 @@ for="monthly_ownership_tax_tip" data-tooltip="
 Monthly value of the house ownership tax to be paid.
 \
 for="assets_housing_tip" data-tooltip="
-Final expected equity accumulated by the end of the mortgage term with all incomes expenses, house value, markets growth rates etc. taken into account. For the 'buy a house' scenario.
+Final expected equity accumulated during the mortgage term with all incomes expenses, house value, markets growth rates taken into account. For the 'buy' scenario.
 \
 for="assets_delta_tip" data-tooltip="
-Difference in final equity for 'renting' and 'buying' scenarios.
+Difference in final equity accumulated by the end of the mortgage term for 'rent' and 'buy' scenarios.
 \
 for="assets_k_tip" data-tooltip="
-Ratio of final equities estimated for 'renting' and 'buying' scenarios.
+Ratio of final equities estimated for 'rent' and 'buy' scenarios.
 \
 for="housing_roi_tip" data-tooltip="
-ROI of getting the mortgage. Difference in final equities over net interest paid. (Normalized for 30 years mortgage term).
+ROI of the mortgage. Difference in final equities for 'rent' and 'buy' scenarios over net interest paid (normalized for standard mortgage term - 30 years).
 \
 for="months_to_even_tip" data-tooltip="
-How many months into the mortgage until 'buy a house' and 'keep renting' scenarios equities are equal. After that month 'buy a house' scenario becomes profitable compared to 'keep renting'.
+How many months into the mortgage until equities accumulated for 'buy' and 'rent' scenarios become equal. After that month 'buy' scenario becomes profitable compared to 'rent'.
 \
 for="variable1_tip" data-tooltip="
 First variable to 'test' and tested values range.
@@ -616,14 +634,17 @@ Actual mortgage lifetime, can be shorter than loan term if repayments are made.
 for="t_total_loan_invested_tip" data-tooltip="
 Total amount spend on mortgage.
 \
-for="payment_first_tip" data-tooltip="
-First scheduled payment (without any extra repayments)
+for="monthly_payment_loan_tip" data-tooltip="
+Calculated normal monthly mortgage payment
+\
+for="payment_base_first">
+First base payment (principal + interest)
 \
 for="payment_base_first_tip" data-tooltip="
 First schedules payment base value, i.e. only (interest + debt) parts of the payment.
 \
-for="payment_first_extra_tip" data-tooltip="
-Difference between first payment and monthly rent.
+for="monthly_payment_difference_tip" data-tooltip="
+Difference between monthly mortgage payment ('buy' scenario) and monthly rent payment ('rent' scenario), if negative - monthly payment for 'buy' scenario is lower than monthly 'rent' payment.
 \
 for="t_assets_delta_tip" data-tooltip="
 Difference in final equity for 'buy a house' and 'keep renting' scenarios.
@@ -631,8 +652,8 @@ Difference in final equity for 'buy a house' and 'keep renting' scenarios.
 for="t_housing_roi_tip" data-tooltip="
 ROI of getting the mortgage. See more on [profitability] page.
 \
-for="_tip" data-tooltip="
-ROI of extra payments made. See more on [extra repayments] page.
+for="monthly_payment_comparison">
+Outcome of comparison of monthly payments in 'buy' and 'rent' scenarios
 \
 data-id="hlp-1"~
 Input fields allow entering simple formulas using arithmetical espressions.<br>Example of a valid input: <b>(1+2*3)/4</b><br>Most of the input values can be "tuned": hover mouse over and scroll up/down with Shift pressed<br>When pointed with a mouse - tooltip for the input values will display the field's variable name (used in other formulas).
