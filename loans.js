@@ -135,9 +135,9 @@ function calculate_loan(loan_params) {
     let monthly = [];
     if (loan_params.loan_type==1) { // annuity
         monthly = calculate_loan_payments(loan_params, (lp, debt, i)=>{
-          // let base_payment = -PMT(lp.interest / (12 * 100), lp.loan_term, lp.loan);
-          let base_payment = -PMT(lp.interest / (12 * 100), lp.loan_term - i, debt);
-          let interest_amt = -IPMT(debt, base_payment, lp.interest / (12 * 100), 1);
+          // let base_payment = -PMT(lp.interest_rate / (12 * 100), lp.loan_term, lp.loan);
+          let base_payment = -PMT(lp.interest_rate / (12 * 100), lp.loan_term - i, debt);
+          let interest_amt = -IPMT(debt, base_payment, lp.interest_rate / (12 * 100), 1);
           let capital_payment = base_payment - interest_amt;
           return {base_payment, capital_payment, interest_amt} 
         });
@@ -145,7 +145,7 @@ function calculate_loan(loan_params) {
     } else if (loan_params.loan_type==2) { // linear
         monthly = calculate_loan_payments(loan_params, (lp, debt, i)=>{
         let capital_payment = lp.loan / lp.loan_term;
-        let interest_amt = debt * lp.interest / (12 * 100);
+        let interest_amt = debt * lp.interest_rate / (12 * 100);
         let base_payment = capital_payment + interest_amt;
         if (capital_payment > debt) {
           capital_payment = debt;
@@ -158,7 +158,7 @@ function calculate_loan(loan_params) {
         loan_params.tax_scheme = 0; // interest-only loans do not grant tax returns
         monthly = calculate_loan_payments(loan_params, (lp, debt, i)=>{
           let capital_payment = (i==lp.loan_term-1) ? lp.loan : 0;
-          let interest_amt = debt * lp.interest / (12 * 100);
+          let interest_amt = debt * lp.interest_rate / (12 * 100);
           let base_payment = capital_payment + interest_amt;
           if (capital_payment > debt) {
             capital_payment = debt;

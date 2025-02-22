@@ -73,6 +73,9 @@ All contributions you make are **highly appreciated**.
 
  * uses https://github.com/plotly/plotly.js for visualisation
  * inspired by https://github.com/santiago-pan/mortgage-calculator
+ * COOP/COEP workaround for Github pages: https://github.com/gzuidhof/coi-serviceworker
+ * wllama - Wasm binding for llama.cpp: https://github.com/ngxson/wllama
+ * Phi-3-mini LLM model: https://huggingface.co/microsoft/Phi-3-mini-128k-instruct [MIT  license](https://huggingface.co/microsoft/Phi-3-mini-128k-instruct/resolve/main/LICENSE)
 
 
 ---

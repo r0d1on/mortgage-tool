@@ -17,3 +17,4 @@ https://hypotheek-bereken.com/nl/rekenmachine.html?mode=advanced&page=assets
 https://hypotheek-bereken.com/nl/rekenmachine.html?mode=advanced&page=whatif
 https://hypotheek-bereken.com/nl/rekenmachine.html?mode=advanced&page=entry
 https://hypotheek-bereken.com/nl/rekenmachine.html?mode=help
+https://hypotheek-bereken.com/favicon.ico
