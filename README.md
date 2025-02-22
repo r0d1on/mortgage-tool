@@ -6,44 +6,48 @@
 # features:
 
 * Minimalistic design:
-    - virtually no dependencies
-    - no need to install anything for local testing / development
-* Superflexible, yet to get started you only need to provide a handful of figures:
-    - House sell price
-    - Savings used for downpayment
-    - Loan Interest
-    - Loan type
-* Supports 3 most popular mortgage types in Netherlands: "Annuity", "Linear" and "Interest-only"
+    - virtually no dependencies.
+    - no need to install anything for local testing / development.
+* Superflexible, yet to get started you only need to provide a handful of figures.
+* Supports 3 most popular mortgage types in Netherlands: "Annuity", "Linear" and "Interest-only".
 * Adjustable additional periodic extra repayment schedules, monthly, flexible periodic repayments:
-    - you can "program" a monthly additional repayment
-    - you can add 3 additional periodic repayments with any periodicity and starting month
-* Adjustable in-place payments (click on any cell in "extra_payment" column in the "Payments schedule"):
-    - for already calculated payment schedule you can "change" any payment in-place and schedule will be recalculated from that month onward.
+    - ability to "program" a monthly additional repayment.
+    - 3 additional periodic repayments with any periodicity and starting month.
+* Adjustable in-place extra repayments (click on any cell in "extra_payment" column in the "Payments schedule"):
+    - for already calculated payment schedule you can "change" any extra repayment in-place and the schedule will be recalculated from that month onward.
 * Renting, income parameters for assets ROI modelling:
-    - takes into account deposit rate, house market growth rate, salary and renting information to calculate monthly total assets state and final "ROI" figures
+    - takes into account deposit rate, house market growth rate, salary and renting information to calculate monthly total assets state and final "ROI" figures.
 * What-if modellig provides uni- and bi-parameter mortgage modelling functionality:
-    - to test different loan parameters and to find the most convenient/profitable mortgage configuration
+    - to test different loan parameters and to find the most convenient/profitable mortgage configuration.
+* Entrypoint modelling:
+    - comparison of financial outcomes for "buy now" vs "buy X months later" scenarios.
+* Mortgage / financial context fine-tuning:
+    - approximately 30 parameters available to describe the financial context.
+![Advanced parameters](images/screenshot2.png)
+
 
 ---
 # "What-if" modelling:
 
-Allowes for mortgage modelling as a function of a parameter(s).
+Allows to model the mortgage as a function of a parameter(s).
 * Any adjustable mortgage parameter can be "probed" on a range of values (e.g. extra monthly repayment).
     - you'll see the parameter variable name when you hover mouse over the input field for it
 * Resulting output parameters of the mortgage then plotted on the graph (e.g. actual mortgage term).
 
 ![what-if analysis, 2d](images/screenshot-whatif.png)
 
-Allowes bi-parametric modelling.
+Allows bi-parametric mortgage modelling.
 * With two parameters being "tested" - target metric drawn on a 3-D surface plot (e.g. actual mortgage term as a function of both extra monthly repayment and initial downpayment).
 
 ![what-if analysis, 3d](images/screenshot-whatif2.png)
 
+
 ---
 # hosted on github pages:
 
- * English: [Mortgage calculator tool (Netherlands)](https://hypotheek-bereken.com/en/mortgage-calculator.html)
+ * English: [Mortgage calculator tool (Netherlands)](https://hypotheek-bereken.com/)
  * Dutch: [Hypotheek berekenen](https://hypotheek-bereken.com/nl/rekenmachine.html)
+
 
 ---
 # Local development / testing:
@@ -75,7 +79,7 @@ All contributions you make are **highly appreciated**.
  * inspired by https://github.com/santiago-pan/mortgage-calculator
  * COOP/COEP workaround for Github pages: https://github.com/gzuidhof/coi-serviceworker
  * wllama - Wasm binding for llama.cpp: https://github.com/ngxson/wllama
- * Phi-3-mini LLM model: https://huggingface.co/microsoft/Phi-3-mini-128k-instruct [MIT  license](https://huggingface.co/microsoft/Phi-3-mini-128k-instruct/resolve/main/LICENSE)
+ * Phi-3-mini LLM model: https://huggingface.co/microsoft/Phi-3-mini-128k-instruct ([MIT  license](https://huggingface.co/microsoft/Phi-3-mini-128k-instruct/resolve/main/LICENSE))
 
 
 ---

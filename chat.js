@@ -189,7 +189,7 @@ let CHAT = {
                 CHAT.llm_exec({type: "init"});
 
             } else if (m.value=="downloading") {
-                CHAT.log(m.value, "status");
+                CHAT.log(m.value + `[${m.progress}%]`, "status");
 
             } else if (m.value == "ready") {
                 if (CHAT.state === undefined) {
