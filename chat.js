@@ -341,7 +341,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     CHAT.btn_start.addEventListener("click", ()=>{
         CHAT.d_log.innerHTML = "";
         CHAT.route({data:{type:"status", "value":"loading"}});
-        CHAT['llm'].src = "https://vmi1460258.contaboserver.net/llm.html";
+        CHAT['llm'].src = "https://kiryukhin.info/llm.html";
     });
 
     CHAT.btn_stop = document.getElementById("chat_stop");
