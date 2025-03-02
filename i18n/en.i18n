@@ -113,7 +113,7 @@ for="downpayment">
 Savings used for downpayment
 \
 for="cost">
-Purchase cost (without NHG fee)
+Purchase cost
 \
 for="actual_downpayment">
 Loan downpayment
@@ -246,9 +246,6 @@ Purchase costs + NHG fee:
 \
 for="purchase_deductible_cost">
 Tax deductible purchase costs (hypotheekrenteaftrek):
-\
-for="purchase_deductible_cost_pct">
-Tax deductible purchase costs % from all costs:
 \
 for="max_extra_payments_per_year_pct">
 Max extra repayment per year, %
@@ -522,9 +519,6 @@ Purchase costs with NHG fees included.
 \
 for="purchase_deductible_cost_tip" data-tooltip="
 Portion of purchase costs which is tax deductible: advisor + notary + survey + valuation + nhg costs.
-\
-for="purchase_deductible_cost_pct_tip" data-tooltip="
-% of tax deductible purchase costs from all purchase costs.
 \
 for="max_extra_payments_per_year_pct_tip" data-tooltip="
 Max. total annual extra repayment allowed by bank (usually 10%) % from initial principal debt.

@@ -113,7 +113,7 @@ for="downpayment">
 Spaargeld voor de aanbetaling
 \
 for="cost">
-Aankoopkosten (zonder NHG)
+Aankoopkosten
 \
 for="actual_downpayment">
 Aanbetaling
@@ -246,9 +246,6 @@ Huis aankoopkosten + NHG-kosten:
 \
 for="purchase_deductible_cost">
 Fiscaal aftrekbare aankoopkosten (hypotheekrenteaftrek)
-\
-for="purchase_deductible_cost_pct">
-% belastingaftrekbare aankoopkosten van de totale kosten
 \
 for="max_extra_payments_per_year_pct">
 Maximale extra aflossing per jaar, %
@@ -522,9 +519,6 @@ Aankoopkosten inclusief NHG-kosten.
 \
 for="purchase_deductible_cost_tip" data-tooltip="
 Aftrekbare aankoopkosten: adviseur, notaris, keuring, taxatie en NHG-kosten.
-\
-for="purchase_deductible_cost_pct_tip" data-tooltip="
-% van de aftrekbare kosten ten opzichte van de totale aankoopkosten.
 \
 for="max_extra_payments_per_year_pct_tip" data-tooltip="
 Maximale jaarlijkse extra aflossing toegestaan door de bank (% van de oorspronkelijke hoofdsom).
