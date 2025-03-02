@@ -143,19 +143,19 @@
                                 <span class="icon"><i>€</i></span><span class="tooltip" data-for="house_value_tip" data-tooltip="Woningwaarde (WOZ).">?</span></div>
                             </div>
 
-                            <div class="field" data-formula="purchase_cost">
-                                <label for="cost">Aankoopkosten (zonder NHG)</label>
+                            <div class="field" data-round="0" data-formula="total_purchase_cost">
+                                <label for="cost">Aankoopkosten</label>
                                 <div class="control"><input id="cost" class="input" type="text" value="">
                                 <span class="icon"><i>€</i></span><span class="tooltip" data-for="cost_tip" data-tooltip="Eenmalige kosten voor de aankoop van het pand (belastingen, honoraria, enz.).">?</span></div>
                             </div>
 
-                            <div class="field" data-formula="downpayment - cost">
+                            <div class="field" data-round="0" data-formula="downpayment - cost">
                                 <label for="actual_downpayment">Aanbetaling</label>
                                 <div class="control"><input id="actual_downpayment" class="input" type="text" value="">
                                 <span class="icon"><i>€</i></span><span class="tooltip" data-for="actual_downpayment_tip" data-tooltip="Beschikbaar bedrag voor de lening na aftrek van transactiekosten.">?</span></div>
                             </div>
 
-                            <div class="field" data-formula="house_price - actual_downpayment">
+                            <div class="field" data-round="0" data-formula="house_price - actual_downpayment">
                                 <label for="loan">Vereiste leningbedrag</label>
                                 <div class="control"><input id="loan" class="input" type="text" value="">
                                 <span class="icon"><i>€</i></span><span class="tooltip" data-for="loan_tip" data-tooltip="Leningbedrag of hoofdsom: het bedrag dat u van de bank moet lenen.">?</span></div>
@@ -298,6 +298,7 @@
 
                 <div data-block="costs" class="block">
                     <div class="columns">
+
                         <div class="column">
                             <div class="field" data-default="2500">
                                 <label for="cost_advisor">Financieel adviseur</label>
@@ -358,7 +359,7 @@
                                 <div class="control"><input id="cost_nhg" class="input" type="text" value="">
                                 <span class="icon"><i>€</i></span><span class="tooltip" data-for="cost_nhg_tip" data-tooltip="NHG-kosten, indien de lening NHG-gerechtigd is.">?</span></div>
                             </div>
-                            <div class="field" data-formula="purchase_cost + 1*cost_nhg">
+                            <div class="field" data-round="0" data-formula="purchase_cost + 1*cost_nhg">
                                 <label for="total_purchase_cost">Huis aankoopkosten + NHG-kosten:</label>
                                 <div class="control"><input id="total_purchase_cost" class="input" type="text" value="">
                                 <span class="icon"><i>€</i></span><span class="tooltip" data-for="total_purchase_cost_tip" data-tooltip="Aankoopkosten inclusief NHG-kosten.">?</span></div>
@@ -368,12 +369,8 @@
                                 <div class="control"><input id="purchase_deductible_cost" class="input" type="text" value="">
                                 <span class="icon"><i>€</i></span><span class="tooltip" data-for="purchase_deductible_cost_tip" data-tooltip="Aftrekbare aankoopkosten: adviseur, notaris, keuring, taxatie en NHG-kosten.">?</span></div>
                             </div>
-                            <div class="field" data-formula="Math.round(1000*(purchase_deductible_cost / total_purchase_cost))/10">
-                                <label for="purchase_deductible_cost_pct">% belastingaftrekbare aankoopkosten van de totale kosten</label>
-                                <div class="control"><input id="purchase_deductible_cost_pct" class="input" type="text" value="">
-                                <span class="icon"><i>%</i></span><span class="tooltip" data-for="purchase_deductible_cost_pct_tip" data-tooltip="% van de aftrekbare kosten ten opzichte van de totale aankoopkosten.">?</span></div>
-                            </div>
                         </div>
+
                     </div>
                 </div>
 
@@ -539,6 +536,18 @@
                                 <label for="months_to_even">Maanden om huis kopen vs huren gelijk te maken</label>
                                 <div class="control"><input id="months_to_even" class="input" type="text" value="">
                                 <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="months_to_even_tip" data-tooltip="Hoeveel maanden in de hypotheek totdat de opgebouwde vermogens voor 'koop' en 'huur' scenario's gelijk worden. Na die maand wordt het 'koop' scenario winstgevend vergeleken met 'huur'.">?</span></div>
+                            </div>
+
+                            <div class="field" data-formula="assets_result.warnings_housing[0]">
+                                <label for="months_with_negative_increment">Months with negative monthly cash increment</label>
+                                <div class="control"><input id="months_with_negative_increment" class="input" type="text" value="">
+                                <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="months_with_negative_increment_tip" data-tooltip="Expected number of months where total monthly costs will be higher than monthly income.">?</span></div>
+                            </div>
+
+                            <div class="field" data-formula="assets_result.warnings_housing[1]">
+                                <label for="months_with_negative_balance">Months with negative cash balance</label>
+                                <div class="control"><input id="months_with_negative_balance" class="input" type="text" value="">
+                                <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="months_with_negative_balance_tip" data-tooltip="Expected number of months where total cash balance will be negative (debt default condition).">?</span></div>
                             </div>
 
                         </div>
@@ -893,7 +902,7 @@
                 </div>
             </div>
 
-            <div class="field" data-type="raw" data-formula="monthly_payment_diagnose(monthly_payment_loan, monthly_payment_rent, monthly_savings)">
+            <div class="field" data-type="raw" data-formula="monthly_payment_diagnose(monthly_payment_loan, monthly_payment_rent, monthly_savings, months_with_negative_increment, months_with_negative_balance)">
                 <label for="monthly_payment_comparison">Resultaat van vergelijking van maandelijkse betalingen in 'koop'- en 'huur'-scenario's</label>
                 <div class="control"><input id="monthly_payment_comparison" class="input" type="text" value="">
                 <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="monthly_payment_comparison_tip" data-tooltip="">?</span></div>

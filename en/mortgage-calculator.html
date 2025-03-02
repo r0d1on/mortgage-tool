@@ -143,19 +143,19 @@
                                 <span class="icon"><i>€</i></span><span class="tooltip" data-for="house_value_tip" data-tooltip="Property value (WOZ)">?</span></div>
                             </div>
 
-                            <div class="field" data-formula="purchase_cost">
-                                <label for="cost">Purchase cost (without NHG fee)</label>
+                            <div class="field" data-round="0" data-formula="total_purchase_cost">
+                                <label for="cost">Purchase cost</label>
                                 <div class="control"><input id="cost" class="input" type="text" value="">
                                 <span class="icon"><i>€</i></span><span class="tooltip" data-for="cost_tip" data-tooltip="One-off costs of aquiring the property (transfer taxe, fees etc..)">?</span></div>
                             </div>
 
-                            <div class="field" data-formula="downpayment - cost">
+                            <div class="field" data-round="0" data-formula="downpayment - cost">
                                 <label for="actual_downpayment">Loan downpayment</label>
                                 <div class="control"><input id="actual_downpayment" class="input" type="text" value="">
                                 <span class="icon"><i>€</i></span><span class="tooltip" data-for="actual_downpayment_tip" data-tooltip="Actual downpayment amount to be used for the loan (total downpayment decreased by purchase transactional costs)">?</span></div>
                             </div>
 
-                            <div class="field" data-formula="house_price - actual_downpayment">
+                            <div class="field" data-round="0" data-formula="house_price - actual_downpayment">
                                 <label for="loan">Required loan amount</label>
                                 <div class="control"><input id="loan" class="input" type="text" value="">
                                 <span class="icon"><i>€</i></span><span class="tooltip" data-for="loan_tip" data-tooltip="Loan amount AKA principal debt: amount you need to lend from a bank">?</span></div>
@@ -298,6 +298,7 @@
 
                 <div data-block="costs" class="block">
                     <div class="columns">
+
                         <div class="column">
                             <div class="field" data-default="2500">
                                 <label for="cost_advisor">Financial advisor</label>
@@ -358,7 +359,7 @@
                                 <div class="control"><input id="cost_nhg" class="input" type="text" value="">
                                 <span class="icon"><i>€</i></span><span class="tooltip" data-for="cost_nhg_tip" data-tooltip="NHG fee, if loan is NHG-eligible.">?</span></div>
                             </div>
-                            <div class="field" data-formula="purchase_cost + 1*cost_nhg">
+                            <div class="field" data-round="0" data-formula="purchase_cost + 1*cost_nhg">
                                 <label for="total_purchase_cost">Purchase costs + NHG fee:</label>
                                 <div class="control"><input id="total_purchase_cost" class="input" type="text" value="">
                                 <span class="icon"><i>€</i></span><span class="tooltip" data-for="total_purchase_cost_tip" data-tooltip="Purchase costs with NHG fees included.">?</span></div>
@@ -368,12 +369,8 @@
                                 <div class="control"><input id="purchase_deductible_cost" class="input" type="text" value="">
                                 <span class="icon"><i>€</i></span><span class="tooltip" data-for="purchase_deductible_cost_tip" data-tooltip="Portion of purchase costs which is tax deductible: advisor + notary + survey + valuation + nhg costs.">?</span></div>
                             </div>
-                            <div class="field" data-formula="Math.round(1000*(purchase_deductible_cost / total_purchase_cost))/10">
-                                <label for="purchase_deductible_cost_pct">Tax deductible purchase costs % from all costs:</label>
-                                <div class="control"><input id="purchase_deductible_cost_pct" class="input" type="text" value="">
-                                <span class="icon"><i>%</i></span><span class="tooltip" data-for="purchase_deductible_cost_pct_tip" data-tooltip="% of tax deductible purchase costs from all purchase costs.">?</span></div>
-                            </div>
                         </div>
+
                     </div>
                 </div>
 
@@ -539,6 +536,18 @@
                                 <label for="months_to_even">Months to even buy vs rent</label>
                                 <div class="control"><input id="months_to_even" class="input" type="text" value="">
                                 <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="months_to_even_tip" data-tooltip="How many months into the mortgage until equities accumulated for 'buy' and 'rent' scenarios become equal. After that month 'buy' scenario becomes profitable compared to 'rent'.">?</span></div>
+                            </div>
+
+                            <div class="field" data-formula="assets_result.warnings_housing[0]">
+                                <label for="months_with_negative_increment">Months with negative monthly cash increment</label>
+                                <div class="control"><input id="months_with_negative_increment" class="input" type="text" value="">
+                                <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="months_with_negative_increment_tip" data-tooltip="Expected number of months where total monthly costs will be higher than monthly income.">?</span></div>
+                            </div>
+
+                            <div class="field" data-formula="assets_result.warnings_housing[1]">
+                                <label for="months_with_negative_balance">Months with negative cash balance</label>
+                                <div class="control"><input id="months_with_negative_balance" class="input" type="text" value="">
+                                <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="months_with_negative_balance_tip" data-tooltip="Expected number of months where total cash balance will be negative (debt default condition).">?</span></div>
                             </div>
 
                         </div>
@@ -893,7 +902,7 @@
                 </div>
             </div>
 
-            <div class="field" data-type="raw" data-formula="monthly_payment_diagnose(monthly_payment_loan, monthly_payment_rent, monthly_savings)">
+            <div class="field" data-type="raw" data-formula="monthly_payment_diagnose(monthly_payment_loan, monthly_payment_rent, monthly_savings, months_with_negative_increment, months_with_negative_balance)">
                 <label for="monthly_payment_comparison">Outcome of comparison of monthly payments in 'buy' and 'rent' scenarios</label>
                 <div class="control"><input id="monthly_payment_comparison" class="input" type="text" value="">
                 <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="monthly_payment_comparison_tip" data-tooltip="">?</span></div>
