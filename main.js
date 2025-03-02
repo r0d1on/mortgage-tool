@@ -54,6 +54,15 @@ function refresh_canonical() {
 }
 
 function refresh_title(params) {
+    let description = document.querySelector("meta[name=description]").content.split(".").slice(0,2).join(".") + ".";
+    TAB_LIST.map((tab, ix)=>{
+        if ((ix==1)&&(TABS[0].activated!="advanced")) return;
+        let kw = document.querySelector(`meta[name=kw-${tab}-${TABS[ix].activated}]`)
+        if (kw)
+            description += " " + kw.content;
+    });
+    document.querySelector("meta[name=description]").content = description;
+
     let title = document.title.split(":")[0].replace("(for Netherlands)", "").replace(" payments ", " ");
     title += " : " + TABS[0].tabs[TABS[0].activated].textContent;
     if (TABS[0].activated=="advanced")
