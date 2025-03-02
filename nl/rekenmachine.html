@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="nl">
-<head>
+<head><script async src="https://www.googletagmanager.com/gtag/js?id=G-LLS4MGZ572"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}; gtag('js', new Date()); gtag('config', 'G-LLS4MGZ572');</script><meta name="ahrefs-site-verification" content="5a30a90e4ca4ee8787131aa24bed4d15b7ba50e08430d58c9b73b158427a5e4f">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <script src="../coi-serviceworker.js"></script>
 
@@ -153,6 +153,12 @@
                                 <div class="control"><input id="loan_to_value" class="input" type="text" value="">
                                 <span class="icon"><i>%</i></span><span class="tooltip" data-for="loan_to_value_tip" data-tooltip="Deel eigen vermogen in de deal ten opzichte van het geleende bedrag. Hoe kleiner dit is, hoe lager de beschikbare hypotheekrente.">?</span></div>
                             </div>
+                            <div class="field" data-formula="Math.round(10000 * monthly_avg_loan_invested / (monthly_savings + monthly_payment_rent + ((bonus_cash + bonus_stocks)/12))) / 100">
+                                <label for="debt_to_income">Schuld/inkomensverhouding (DTI)</label>
+                                <div class="control"><input id="debt_to_income" class="input" type="text" value="">
+                                <span class="icon"><i>%</i></span><span class="tooltip" data-for="debt_to_income_tip" data-tooltip="Percentage van uw maandelijkse geschatte bruto-inkomen dat wordt gebruikt om uw maandelijkse schuld te betalen. Het bepaalt uw leenrisico.">?</span></div>
+                            </div>
+                            
                         </div>
 
                         <div class="column">
@@ -511,6 +517,13 @@
                                 <div class="control"><input id="assets_renting" class="input" type="text" value="">
                                 <span class="icon"><i>€</i></span><span class="tooltip" data-for="assets_renting_tip" data-tooltip="Verwachte eindwaarde opgebouwd tijdens de looptijd van de hypotheek met alle inkomsten en uitgaven, rekening houdend met de groeipercentages van de markt. Voor het 'blijf huren'-scenario.">?</span></div>
                             </div>
+
+                            <div class="field" data-formula="assets_result.months_to_even">
+                                <label for="months_to_even">Maanden om huis kopen vs huren gelijk te maken</label>
+                                <div class="control"><input id="months_to_even" class="input" type="text" value="">
+                                <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="months_to_even_tip" data-tooltip="Hoeveel maanden in de hypotheek totdat de opgebouwde vermogens voor 'koop' en 'huur' scenario's gelijk worden. Na die maand wordt het 'koop' scenario winstgevend vergeleken met 'huur'.">?</span></div>
+                            </div>
+
                         </div>
 
 
@@ -546,12 +559,6 @@
                                 <label for="housing_roi">Woning ROI</label>
                                 <div class="control"><input id="housing_roi" class="input" type="text" value="">
                                 <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="housing_roi_tip" data-tooltip="ROI van de hypotheek. Verschil in uiteindelijke eigen vermogens voor 'huur'- en 'koop'-scenario's over netto betaalde rente (genormaliseerd voor standaard hypotheektermijn - 30 jaar).">?</span></div>
-                            </div>
-
-                            <div class="field" data-formula="assets_result.months_to_even">
-                                <label for="months_to_even">Maanden om huis kopen vs huren gelijk te maken</label>
-                                <div class="control"><input id="months_to_even" class="input" type="text" value="">
-                                <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="months_to_even_tip" data-tooltip="Hoeveel maanden in de hypotheek totdat de opgebouwde vermogens voor 'koop' en 'huur' scenario's gelijk worden. Na die maand wordt het 'koop' scenario winstgevend vergeleken met 'huur'.">?</span></div>
                             </div>
 
                         </div>
@@ -973,6 +980,6 @@
 
     <div id="progress_overlay"><div id="progress_bar"></div></div>
 
-</body>
+<img loading="lazy" width="1" height="1" src="https://vmi1460258.contaboserver.net/1.png?mortgage"  alt=""></body>
 
 </html>

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head><script async src="https://www.googletagmanager.com/gtag/js?id=G-LLS4MGZ572"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}; gtag('js', new Date()); gtag('config', 'G-LLS4MGZ572');</script><meta name="ahrefs-site-verification" content="5a30a90e4ca4ee8787131aa24bed4d15b7ba50e08430d58c9b73b158427a5e4f">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <script src="../coi-serviceworker.js"></script>
 
@@ -153,6 +153,12 @@
                                 <div class="control"><input id="loan_to_value" class="input" type="text" value="">
                                 <span class="icon"><i>%</i></span><span class="tooltip" data-for="loan_to_value_tip" data-tooltip="Value of the mortgage loan in relation to the value of the home. Smaller it is - lower will be the mortgage interest rate available.">?</span></div>
                             </div>
+                            <div class="field" data-formula="Math.round(10000 * monthly_avg_loan_invested / (monthly_savings + monthly_payment_rent + ((bonus_cash + bonus_stocks)/12))) / 100">
+                                <label for="debt_to_income">Debt to income (DTI)</label>
+                                <div class="control"><input id="debt_to_income" class="input" type="text" value="">
+                                <span class="icon"><i>%</i></span><span class="tooltip" data-for="debt_to_income_tip" data-tooltip="Percentage of your monthly estimated gross income that is used to pay your monthly debt. It determines your borrowing risk.">?</span></div>
+                            </div>
+                            
                         </div>
 
                         <div class="column">
@@ -511,6 +517,13 @@
                                 <div class="control"><input id="assets_renting" class="input" type="text" value="">
                                 <span class="icon"><i>€</i></span><span class="tooltip" data-for="assets_renting_tip" data-tooltip="Final expected equity accumulated during the mortgage term with all incomes expenses, markets growth rates taken into account. For the 'keep renting' scenario.">?</span></div>
                             </div>
+
+                            <div class="field" data-formula="assets_result.months_to_even">
+                                <label for="months_to_even">Months to even buy vs rent</label>
+                                <div class="control"><input id="months_to_even" class="input" type="text" value="">
+                                <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="months_to_even_tip" data-tooltip="How many months into the mortgage until equities accumulated for 'buy' and 'rent' scenarios become equal. After that month 'buy' scenario becomes profitable compared to 'rent'.">?</span></div>
+                            </div>
+
                         </div>
 
 
@@ -546,12 +559,6 @@
                                 <label for="housing_roi">Housing ROI</label>
                                 <div class="control"><input id="housing_roi" class="input" type="text" value="">
                                 <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="housing_roi_tip" data-tooltip="ROI of the mortgage. Difference in final equities for 'rent' and 'buy' scenarios over net interest paid (normalized for standard mortgage term - 30 years).">?</span></div>
-                            </div>
-
-                            <div class="field" data-formula="assets_result.months_to_even">
-                                <label for="months_to_even">Months to even buy vs rent</label>
-                                <div class="control"><input id="months_to_even" class="input" type="text" value="">
-                                <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="months_to_even_tip" data-tooltip="How many months into the mortgage until equities accumulated for 'buy' and 'rent' scenarios become equal. After that month 'buy' scenario becomes profitable compared to 'rent'.">?</span></div>
                             </div>
 
                         </div>
@@ -973,6 +980,6 @@
 
     <div id="progress_overlay"><div id="progress_bar"></div></div>
 
-</body>
+<img loading="lazy" width="1" height="1" src="https://vmi1460258.contaboserver.net/1.png?mortgage"  alt=""></body>
 
 </html>
