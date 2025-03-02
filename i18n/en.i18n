@@ -97,6 +97,12 @@ Required loan amount
 for="loan_to_value">
 Loan to Value (LTV)
 \
+for="debt_to_income">
+Debt to income (DTI)
+\
+for="debt_to_income_tip" data-tooltip="
+Percentage of your monthly estimated gross income that is used to pay your monthly debt. It determines your borrowing risk.
+\
 for="loan_term">
 Loan term (months)
 \

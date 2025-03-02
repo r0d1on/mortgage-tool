@@ -97,6 +97,12 @@ Vereiste leningbedrag
 for="loan_to_value">
 Leningbedrag / Woningwaarde (Loan-to-Value)
 \
+for="debt_to_income">
+Schuld/inkomensverhouding (DTI)
+\
+for="debt_to_income_tip" data-tooltip="
+Percentage van uw maandelijkse geschatte bruto-inkomen dat wordt gebruikt om uw maandelijkse schuld te betalen. Het bepaalt uw leenrisico.
+\
 for="loan_term">
 Leningtermijn (maanden)
 \

@@ -62,7 +62,7 @@ Ensure that ANSWER is logically consistent and does not contain factual mistakes
 let LOAN = {
     EXP_PARAMETERS : [
         "house_price", "total_savings", "downpayment",  
-        "loan",  "loan_to_value",  
+        "loan",  "loan_to_value",  "debt_to_income",
         
         "loan_term", "loan_term_actual",
 
