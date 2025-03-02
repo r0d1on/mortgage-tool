@@ -260,10 +260,16 @@ function init_fields(saved_state) {
                             let id = e.target.parentNode.parentNode.id || e.target.id;
                             let value = get_field_value(id, "");
                             if (e.deltaY>0) {
-                                e.target.value = value - 1.0*tune;
+                                new_value = value - 1.0*tune;
                             } else {
-                                e.target.value = value + 1.0*tune;
+                                new_value = value + 1.0*tune;
                             };
+
+                            const xp = 10**FIELDS[id].round;
+                            new_value = Math.round(xp * new_value)/xp;
+
+                            e.target.value = new_value;
+
                             e.preventDefault();
                             if (FIELDS[id].target!==undefined) { // hybrid field sets the target value
                                 FIELDS[FIELDS[id].target].input.value =  e.target.value;
