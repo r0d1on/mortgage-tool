@@ -16,6 +16,36 @@ data-id="language" href="https://hypotheek-bereken.com/">
 <link rel="canonical" href="
 https://hypotheek-bereken.com/nl/rekenmachine.html
 \
+name="kw-mode-basic" content="
+Basisparameters voor hypotheekberekening.
+\
+name="kw-mode-advanced" content="
+Geavanceerde hypotheekberekeningsparameters.
+\
+name="kw-mode-llm" content="
+LLM-gebaseerde AI-hypotheekassistent.
+\
+name="kw-mode-help" content="
+Details over de hypotheekberekeningstool. Links naar aanvullende documentatie.
+\
+name="kw-page-mortgage" content="
+Leenparameters.
+\
+name="kw-page-costs" content="
+Kosten voor het openen van een hypotheek.
+\
+name="kw-page-repayments" content="
+Extra instellingen voor extra terugbetaling.
+\
+name="kw-page-assets" content="
+Gemodelleerde financiële uitkomsten aan het einde van de looptijd voor hypotheek- versus huurscenario's.
+\
+name="kw-page-whatif" content="
+What-if-analysetool om verschillende hypothetische leenscenario's uit te voeren en te vergelijken.
+\
+name="kw-page-entry" content="
+Analysetool voor het hypotheektoegangspunt om de financiële resultaten van leningen die met verschillende vertragingen zijn verstrekt, te vergelijken.
+\
 <title>
 Hypotheekbetaling Calculator
 \

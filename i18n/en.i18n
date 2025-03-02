@@ -16,6 +16,36 @@ data-id="language" href="/nl/rekenmachine.html">
 <link rel="canonical" href="
 https://hypotheek-bereken.com/
 \
+name="kw-mode-basic" content="
+Basic mortgage calculation parameters.
+\
+name="kw-mode-advanced" content="
+Advanced mortgage calculation parameters.
+\
+name="kw-mode-llm" content="
+LLM-based AI mortgage assistant.
+\
+name="kw-mode-help" content="
+Details about the mortgage calculation tool. Links to additional documentation.
+\
+name="kw-page-mortgage" content="
+Loan parameters.
+\
+name="kw-page-costs" content="
+Mortgage opening costs.
+\
+name="kw-page-repayments" content="
+Additional extra repayment settings.
+\
+name="kw-page-assets" content="
+End of term modelled financial outcomes for mortgage vs renting scenarios.
+\
+name="kw-page-whatif" content="
+What-if analysis tool to run and compare several hypothetical loan scenarios.
+\
+name="kw-page-entry" content="
+Mortgage entrypoint analysis tool to compare financial outcomes of loans opened with different delays.
+\
 <title>
 Mortgage payments calculator (for Netherlands)
 \
