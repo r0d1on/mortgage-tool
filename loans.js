@@ -92,10 +92,10 @@ function calculate_loan_payments(loan_params, ICB) {
     if (actual_extra_payments > lp.max_extra_payment_per_year) {
       penalty = (actual_extra_payments - lp.max_extra_payment_per_year) * (lp.overpayment_penalty / 100);
       actual_extra_payments -= extra_payment + extra_payment2;
-      [extra_payment, extra_payment2] = [
+      [extra_payment, extra_payment2] = ((extra_payment + extra_payment2)>0)?[
         extra_payment - penalty * extra_payment / (extra_payment + extra_payment2),
         extra_payment2 - penalty * extra_payment2 / (extra_payment + extra_payment2)
-      ];
+      ]:[0, 0];
       if (lp.overpayment_penalty == 100) {
         penalty = 0;
       };
