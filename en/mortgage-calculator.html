@@ -158,6 +158,11 @@
                                 <div class="control"><input id="debt_to_income" class="input" type="text" value="">
                                 <span class="icon"><i>%</i></span><span class="tooltip" data-for="debt_to_income_tip" data-tooltip="Percentage of your monthly estimated gross income that is used to pay your monthly debt. It determines your borrowing risk.">?</span></div>
                             </div>
+                            <div class="field" data-formula="Math.round(10000 * (total_paid_interest - total_tax_returned + total_purchase_cost - purchase_deductible_cost * (tax_rate / 100)) * 12 / (loan * loan_term_actual) ) / 100">
+                                <label for="annual_percentage_rate">Annual Percentage Rate (APR)</label>
+                                <div class="control"><input id="annual_percentage_rate" class="input" type="text" value="">
+                                <span class="icon"><i>%</i></span><span class="tooltip" data-for="annual_percentage_rate_tip" data-tooltip="Total annual cost of borrowing money, represented as a percentage.">?</span></div>
+                            </div>
                             
                         </div>
 

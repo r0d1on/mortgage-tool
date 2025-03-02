@@ -103,6 +103,12 @@ Debt to income (DTI)
 for="debt_to_income_tip" data-tooltip="
 Percentage of your monthly estimated gross income that is used to pay your monthly debt. It determines your borrowing risk.
 \
+for="annual_percentage_rate">
+Annual Percentage Rate (APR)
+\
+for="annual_percentage_rate_tip" data-tooltip="
+Total annual cost of borrowing money, represented as a percentage.
+\
 for="loan_term">
 Loan term (months)
 \

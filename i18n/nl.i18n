@@ -103,6 +103,12 @@ Schuld/inkomensverhouding (DTI)
 for="debt_to_income_tip" data-tooltip="
 Percentage van uw maandelijkse geschatte bruto-inkomen dat wordt gebruikt om uw maandelijkse schuld te betalen. Het bepaalt uw leenrisico.
 \
+for="annual_percentage_rate">
+Jaarlijks percentage (APR)
+\
+for="annual_percentage_rate_tip" data-tooltip="
+Totale jaarlijkse kosten voor het lenen van geld, weergegeven als percentage.
+\
 for="loan_term">
 Leningtermijn (maanden)
 \
