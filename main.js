@@ -205,7 +205,7 @@ function get_parameters(formula) {
     };
 
     formula
-    .split(/[:> \?\d\*\.\+\-\/,\(\)\[\]']/g)
+    .split(/[:> &\?\d\*\.\+\-\/,\(\)\[\]']/g)
     .reduce((a, v)=>{if (v) a.push(v); return a}, [])
     .map((p)=>{
         params.push(p);
