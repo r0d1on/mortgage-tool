@@ -1,0 +1,7 @@
+Sitemap: https://hypotheek-bereken.com/sitemap.txt
+
+User-agent: *
+Disallow: /nl
+Disallow: /en
+Disallow: /index.html
+

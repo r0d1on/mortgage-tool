@@ -155,7 +155,7 @@
                                 <span class="icon"><i>€</i></span><span class="tooltip" data-for="actual_downpayment_tip" data-tooltip="Beschikbaar bedrag voor de lening na aftrek van transactiekosten.">?</span></div>
                             </div>
 
-                            <div class="field" data-round="0" data-formula="house_price - actual_downpayment">
+                            <div class="field" data-round="0" data-formula="Math.max(0, house_price - actual_downpayment)">
                                 <label for="loan">Vereiste leningbedrag</label>
                                 <div class="control"><input id="loan" class="input" type="text" value="">
                                 <span class="icon"><i>€</i></span><span class="tooltip" data-for="loan_tip" data-tooltip="Leningbedrag of hoofdsom: het bedrag dat u van de bank moet lenen.">?</span></div>
@@ -165,15 +165,10 @@
                                 <div class="control"><input id="loan_to_value" class="input" type="text" value="">
                                 <span class="icon"><i>%</i></span><span class="tooltip" data-for="loan_to_value_tip" data-tooltip="Deel eigen vermogen in de deal ten opzichte van het geleende bedrag. Hoe kleiner dit is, hoe lager de beschikbare hypotheekrente.">?</span></div>
                             </div>
-                            <div class="field" data-formula="Math.round(10000 * monthly_avg_loan_invested / (monthly_savings + monthly_payment_rent + ((bonus_cash + bonus_stocks)/12))) / 100">
-                                <label for="debt_to_income">Schuld/inkomensverhouding (DTI)</label>
-                                <div class="control"><input id="debt_to_income" class="input" type="text" value="">
-                                <span class="icon"><i>%</i></span><span class="tooltip" data-for="debt_to_income_tip" data-tooltip="Percentage van uw maandelijkse geschatte bruto-inkomen dat wordt gebruikt om uw maandelijkse schuld te betalen. Het bepaalt uw leenrisico.">?</span></div>
-                            </div>
-                            <div class="field" data-formula="Math.round(10000 * (total_paid_interest - total_tax_returned + total_purchase_cost - purchase_deductible_cost * (tax_rate / 100)) * 12 / (loan * loan_term_actual) ) / 100">
-                                <label for="annual_percentage_rate">Jaarlijks percentage (APR)</label>
-                                <div class="control"><input id="annual_percentage_rate" class="input" type="text" value="">
-                                <span class="icon"><i>%</i></span><span class="tooltip" data-for="annual_percentage_rate_tip" data-tooltip="Totale jaarlijkse kosten voor het lenen van geld, weergegeven als percentage.">?</span></div>
+                            <div class="field" data-type="raw" data-formula="loan > 0 ? ((cost_nhg > 0)? 'NHG' : (Math.ceil(loan_to_value/5)*5)):'no loan needed'">
+                                <label for="loan_bracket">Risicoklasse van de lening</label>
+                                <div class="control"><input id="loan_bracket" class="input" type="text" value="">
+                                <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="loan_bracket_tip" data-tooltip="De risicoklasse bepaalt de laagste hypotheekrente die banken aanbieden.">?</span></div>
                             </div>
                             
                         </div>
@@ -199,55 +194,47 @@
                                 <div class="control"><input id="interest_rate" class="input" type="text" value="3.8">
                                 <span class="icon"><i>%</i></span><span class="tooltip" data-for="interest_rate_tip" data-tooltip="Rentepercentage ten opzichte van de leningwaarde.">?</span></div>
                             </div>
+                            <div class="field" data-default="1" data-tune="1">
+                                <label for="loan_type">Leningtype: 1 - Annuïteiten, 2 - Lineaire lening, 3 - Interest-only</label>
+                                <div class="control"><input id="loan_type" class="input" type="text" value="">
+                                <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="loan_type_tip" data-tooltip="Definieert het type lening. De eerste twee zijn fiscaal aftrekbaar; aflossingsvrij niet (box-1).">?</span></div>
+                            </div>
+
+                        </div>
+
+                        <div class="column">
                             <div class="field" data-default="36.93" data-tune="0.01">
                                 <label for="tax_rate">Hypotheekrenteaftrek:</label>
                                 <div class="control"><input id="tax_rate" class="input" type="text" value="36.93">
                                 <span class="icon"><i>%</i></span><span class="tooltip" data-for="tax_rate_tip" data-tooltip="Fiscaal aftrekbaar percentage (box 1) van het terugbetaalde rentebedrag.">?</span></div>
                             </div>
                             <div class="field" data-default="1" data-tune="1">
-                                <label for="loan_type">Leningtype: 1 - Annuïteiten, 2 - Lineaire lening, 3 - Interest-only</label>
-                                <div class="control"><input id="loan_type" class="input" type="text" value="">
-                                <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="loan_type_tip" data-tooltip="Definieert het type lening. De eerste twee zijn fiscaal aftrekbaar; aflossingsvrij niet (box-1).">?</span></div>
-                            </div>                        
-                            <div class="field" data-default="1" data-tune="1">
                                 <label for="tax_scheme">Doel belastingteruggave: 0 - geen, 1 - voordeel, 2 - hoofdschuld</label>
                                 <div class="control"><input id="tax_scheme" class="input" type="text" value="">
                                 <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="tax_scheme_tip" data-tooltip="Wat er gebeurt met belastingteruggaven: 0 - uitgeschakeld, 1 - als inkomen opgenomen, 2 - (maandelijks) gebruikt voor extra aflossingen.">?</span></div>
                             </div>
-                            <div class="field" data-type="raw" data-formula="cost_nhg > 0 ? 'NHG' : (Math.ceil(loan_to_value/5)*5)">
-                                <label for="loan_bracket">Risicoklasse van de lening</label>
-                                <div class="control"><input id="loan_bracket" class="input" type="text" value="">
-                                <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="loan_bracket_tip" data-tooltip="De risicoklasse bepaalt de laagste hypotheekrente die banken aanbieden.">?</span></div>
-                            </div>
-                        </div>
-
-                        <div class="column">
                             <div class="field" data-formula="loan_stats_result.total_tax_returned">
                                 <label for="total_tax_returned">Totale belastingteruggave (hypotheekrenteaftrek)</label>
                                 <div class="control"><input id="total_tax_returned" class="input" type="text" value="">
                                 <span class="icon"><i>€</i></span><span class="tooltip" data-for="total_tax_returned_tip" data-tooltip="Totaalbedrag aan terugbetaalde belasting (dit is 0 als de lening niet terugbetaalbaar is, als terugbetalingen zijn uitgeschakeld of als terugbetalingen zijn gebruikt voor terugbetalingen).">?</span></div>
                             </div>
-                            <div class="field" data-formula="Math.round(10000 * total_paid_interest / loan) / 100">
+
+                            <div class="field" data-formula="Math.round(10000 * monthly_avg_loan_invested / (monthly_savings + monthly_payment_rent + ((bonus_cash + bonus_stocks)/12))) / 100">
+                                <label for="debt_to_income">Schuld/inkomensverhouding (DTI)</label>
+                                <div class="control"><input id="debt_to_income" class="input" type="text" value="">
+                                <span class="icon"><i>%</i></span><span class="tooltip" data-for="debt_to_income_tip" data-tooltip="Percentage van uw maandelijkse geschatte bruto-inkomen dat wordt gebruikt om uw maandelijkse schuld te betalen. Het bepaalt uw leenrisico.">?</span></div>
+                            </div>
+                            <div class="field" data-formula="(1/100) * ((loan > 0)?(Math.round(10000 * total_paid_interest / loan)):0)">
                                 <label for="total_interest_percentage">Totaal betaalde rente percentage (TIP)</label>
                                 <div class="control"><input id="total_interest_percentage" class="input" type="text" value="">
                                 <span class="icon"><i>%</i></span><span class="tooltip" data-for="total_interest_percentage_tip" data-tooltip="percentage van het totale bedrag aan betaalde rente van het werkelijk geleende bedrag">?</span></div>
                             </div>
+                            <div class="field" data-formula="(1/100) * (loan>0?(Math.round(10000 * (total_paid_interest - total_tax_returned + total_purchase_cost - purchase_deductible_cost * (tax_rate / 100)) * 12 / (loan * loan_term_actual))):0)">
+                                <label for="annual_percentage_rate">Jaarlijks percentage (APR)</label>
+                                <div class="control"><input id="annual_percentage_rate" class="input" type="text" value="">
+                                <span class="icon"><i>%</i></span><span class="tooltip" data-for="annual_percentage_rate_tip" data-tooltip="Totale jaarlijkse kosten voor het lenen van geld, weergegeven als percentage.">?</span></div>
+                            </div>
 
-                            <div class="field" data-default="0" data-tune="1">
-                                <label for="extra_payment_period">Extra periodieke betaling, periode</label>
-                                <div class="control"><input id="extra_payment_period" class="input" type="text" value="">
-                                <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="extra_payment_period_tip" data-tooltip="Periodieke extra aflossingstermijn (in maanden). Bijvoorbeeld 12 voor jaarlijkse betalingen.">?</span></div>
-                            </div>
-                            <div class="field" data-default="1" data-tune="1">
-                                <label for="extra_payment_start">Extra periodieke betaling, eerste maand</label>
-                                <div class="control"><input id="extra_payment_start" class="input" type="text" value="">
-                                <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="extra_payment_start_tip" data-tooltip="Maand waarin de eerste extra aflossing plaatsvindt.">?</span></div>
-                            </div>
-                            <div class="field" data-default="0" data-tune="100">
-                                <label for="extra_payment_value">Extra periodieke betaling</label>
-                                <div class="control"><input id="extra_payment_value" class="input" type="text" value="">
-                                <span class="icon"><i>€</i></span><span class="tooltip" data-for="extra_payment_value_tip" data-tooltip="Waarde van de extra aflossing.">?</span></div>
-                            </div>
 
                         </div>
 
@@ -264,12 +251,12 @@
                                 <span class="icon"><i>€</i></span><span class="tooltip" data-for="total_paid_extra_tip" data-tooltip="Totale extra aflossingen gedaan (indien van toepassing).">?</span></div>
                             </div>
 
-                            <div class="field" data-formula="loan_stats_result.total_paid_gross">
+                            <div class="field" data-formula="Math.max(0, loan_stats_result.total_paid_gross)">
                                 <label for="total_paid_gross">Totaal terugbetaald (bruto)</label>
                                 <div class="control"><input id="total_paid_gross" class="input" type="text" value="">
                                 <span class="icon"><i>€</i></span><span class="tooltip" data-for="total_paid_gross_tip" data-tooltip="Totaal betaalde bedrag richting de hypotheek.">?</span></div>
                             </div>
-                            <div class="field" data-formula="loan_stats_result.total_paid_net">
+                            <div class="field" data-formula="Math.max(0, loan_stats_result.total_paid_net)">
                                 <label for="total_paid_net">Totaal terugbetaald (netto)</label>
                                 <div class="control"><input id="total_paid_net" class="input" type="text" value="">
                                 <span class="icon"><i>€</i></span><span class="tooltip" data-for="total_paid_net_tip" data-tooltip="Totale betalingen richting de hypotheek minus belastingteruggaven.">?</span></div>
@@ -354,7 +341,7 @@
                                 <div class="control"><input id="purchase_cost" class="input" type="text" value="">
                                 <span class="icon"><i>€</i></span><span class="tooltip" data-for="purchase_cost_tip" data-tooltip="Totale aankoopkosten exclusief NHG-kosten.">?</span></div>
                             </div>
-                            <div class="field" data-formula="house_price > nhg_max_price ? 0 : (nhg_cost_pct / 100) * (house_price + purchase_cost - downpayment)">
+                            <div class="field" data-formula="(house_price + purchase_cost - downpayment) > 0 ? (house_price > nhg_max_price ? 0 : (nhg_cost_pct / 100) * (house_price + purchase_cost - downpayment)):0">
                                 <label for="cost_nhg">NHG-kosten</label>
                                 <div class="control"><input id="cost_nhg" class="input" type="text" value="">
                                 <span class="icon"><i>€</i></span><span class="tooltip" data-for="cost_nhg_tip" data-tooltip="NHG-kosten, indien de lening NHG-gerechtigd is.">?</span></div>
@@ -393,6 +380,29 @@
                                 <div class="control"><input id="max_extra_payment_per_year" class="input" type="text" value="">
                                 <span class="icon"><i>€</i></span><span class="tooltip" data-for="max_extra_payment_per_year_tip" data-tooltip="Maximaal toegestane jaarlijkse extra aflossing.">?</span></div>
                             </div>
+                            <div class="field" data-round="3" data-formula="(assets_housing - calc_assets_no_repayments(asset_params, loan_params).housing.outcome) / total_paid_extra">
+                                <label for="extra_payment_roi">Extra aflossing ROI</label>
+                                <div class="control"><input id="extra_payment_roi" class="input" type="text" value="">
+                                <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="extra_payment_roi_tip" data-tooltip="ROI van extra aflossingen. Verschil in eindvermogen tussen normale en extra aflossingsscenario's.">?</span></div>
+                            </div>
+                        </div>
+
+                        <div class="column">
+                            <div class="field" data-default="0" data-tune="1">
+                                <label for="extra_payment_period">Extra periodieke betaling, periode</label>
+                                <div class="control"><input id="extra_payment_period" class="input" type="text" value="">
+                                <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="extra_payment_period_tip" data-tooltip="Periodieke extra aflossingstermijn (in maanden). Bijvoorbeeld 12 voor jaarlijkse betalingen.">?</span></div>
+                            </div>
+                            <div class="field" data-default="1" data-tune="1">
+                                <label for="extra_payment_start">Extra periodieke betaling, eerste maand</label>
+                                <div class="control"><input id="extra_payment_start" class="input" type="text" value="">
+                                <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="extra_payment_start_tip" data-tooltip="Maand waarin de eerste extra aflossing plaatsvindt.">?</span></div>
+                            </div>
+                            <div class="field" data-default="0" data-tune="100">
+                                <label for="extra_payment_value">Extra periodieke betaling</label>
+                                <div class="control"><input id="extra_payment_value" class="input" type="text" value="">
+                                <span class="icon"><i>€</i></span><span class="tooltip" data-for="extra_payment_value_tip" data-tooltip="Waarde van de extra aflossing.">?</span></div>
+                            </div>
                         </div>
 
                         <div class="column">
@@ -430,14 +440,6 @@
                                 <span class="icon"><i>€</i></span><span class="tooltip" data-for="extra_payment_value2_tip" data-tooltip="Waarde van de tweede extra periodieke aflossing.">?</span></div>
                             </div>
                         </div>
-
-                        <div class="column">
-                            <div class="field" data-round="3" data-formula="(assets_housing - calc_assets_no_repayments(asset_params, loan_params).housing.outcome) / total_paid_extra">
-                                <label for="extra_payment_roi">Extra aflossing ROI</label>
-                                <div class="control"><input id="extra_payment_roi" class="input" type="text" value="">
-                                <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="extra_payment_roi_tip" data-tooltip="ROI van extra aflossingen. Verschil in eindvermogen tussen normale en extra aflossingsscenario's.">?</span></div>
-                            </div>
-                        </div>                    
 
                     </div>
                 </div>
@@ -803,7 +805,7 @@
                 </div>
             </div>
 
-            <div data-block="schedule" class="block">
+            <div data-block="schedule" class="block" style="height: 480px; overflow: auto;background-color:#FFF;">
                 <div class="columns">
                     <div class="column">
                     </div>  
