@@ -82,7 +82,17 @@ body {
 h1 {
     font-size: 2rem;
     font-weight: 600;
-    line-height: 1.125;    
+    line-height: 1.125;
+    display: inline-block;
+    padding-bottom: 20px;
+}
+
+#tag {
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.125;
+    color: gray;
+    padding-left: 9px;
 }
 
 h2 {
