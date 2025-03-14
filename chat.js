@@ -158,8 +158,7 @@ let CHAT = {
         `.split("<br><br>");
 
         if (!mt) {
-            introduction.push("<b style='color:red'>Warning: LLM is working in a single-threaded mode. Answer generation will be very slow.</b>");
-            introduction.push("Reloading the page might resolve the issue.");
+            introduction.push("<b style='color:red'>Warning: LLM is working in a single-threaded mode. Answer generation will be very slow. Reloading the page might resolve the issue.</b>");
         };
 
         CHAT.log("", "ai");
