@@ -51,6 +51,13 @@ function refresh_canonical() {
     let link = document.querySelectorAll("link[rel=canonical]")[0];
     let base = link.href.split("?")[0];
     link.href = base + get_tabs_state("details");
+
+    let robots = document.querySelectorAll("meta[name=robots]")[0];
+    if (get_tabs_state("").indexOf("details")>=0) {
+        robots.content = "noindex, nofollow";
+    } else {
+        robots.content = "all";
+    };
 }
 
 function refresh_title(params) {
@@ -69,11 +76,29 @@ function refresh_title(params) {
         title += " : " + TABS[1].tabs[TABS[1].activated].textContent;
 
     if (params && (get_mortgage_state() != "")) {
+        const type = ["", "annuity", "linear", "interest"][get_field_value("loan_type")];
         title += " ("
-        title += ["", "annuity", "linear", "interest"][get_field_value("loan_type")] + " - ";
+        title += type + " - ";
         title += get_field_value("house_price");
         title += "/" + get_field_value("downpayment");
         title += ")";
+
+        if (get_field_value("metrics")=="verbose") {
+            let tag = "";
+            tag = `${type} [${Math.round(get_field_value("loan_term")/1.2)/10} / ${Math.round(get_field_value("loan_term_actual")/1.2)/10}]`;
+            tag += ` =${Math.round(get_field_value("months_to_even")/1.2)/10}`;
+            tag += ` // ${get_field_value("house_price")/1000}-${get_field_value("downpayment")/1000}`;
+            tag += ` ~${Math.round(get_field_value("loan")/1000)}`;
+
+            if ((get_field_value("extra_payment_start")>0)&&(get_field_value("extra_payment_value")>0)) {
+                tag += ` *${Math.round(1000*get_field_value("extra_payment_roi"))/1000}`;
+            };
+
+            tag += ` // ${Math.round(1000*get_field_value("housing_roi"))/1000}`;
+            tag += ` // ${Math.round(get_field_value("monthly_avg_loan_invested"))}`;
+
+            document.getElementById("tag").innerHTML = `// ${tag}`;
+        }
     };
     document.title = title;
 }
