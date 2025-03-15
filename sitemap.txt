@@ -16,13 +16,4 @@ https://hypotheek-bereken.com/nl/rekenmachine.html?mode=advanced&page=repayments
 https://hypotheek-bereken.com/nl/rekenmachine.html?mode=advanced&page=assets
 https://hypotheek-bereken.com/nl/rekenmachine.html?mode=advanced&page=whatif
 https://hypotheek-bereken.com/nl/rekenmachine.html?mode=advanced&page=entry
-https://hypotheek-bereken.com/en/mortgage-calculator.html
-https://hypotheek-bereken.com/en/mortgage-calculator.html?mode=help
-https://hypotheek-bereken.com/en/mortgage-calculator.html?mode=llm
-https://hypotheek-bereken.com/en/mortgage-calculator.html?mode=advanced
-https://hypotheek-bereken.com/en/mortgage-calculator.html?mode=advanced&page=costs
-https://hypotheek-bereken.com/en/mortgage-calculator.html?mode=advanced&page=repayments
-https://hypotheek-bereken.com/en/mortgage-calculator.html?mode=advanced&page=assets
-https://hypotheek-bereken.com/en/mortgage-calculator.html?mode=advanced&page=whatif
-https://hypotheek-bereken.com/en/mortgage-calculator.html?mode=advanced&page=entry
 https://hypotheek-bereken.com/favicon.ico

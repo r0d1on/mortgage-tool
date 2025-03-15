@@ -53,7 +53,7 @@ function refresh_canonical() {
     link.href = base + get_tabs_state("details");
 
     let robots = document.querySelectorAll("meta[name=robots]")[0];
-    if (get_tabs_state("").indexOf("details")>=0) {
+    if ((get_tabs_state("").indexOf("details")>=0)||(window.location.href.includes("/en/"))) {
         robots.content = "noindex, nofollow";
     } else {
         robots.content = "all";
