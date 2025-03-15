@@ -25,7 +25,7 @@ Ensure the JSON is correctly formatted with all necessary punctuation, opening a
 Guarantee that output does not includes any extra text, explanations or formatting.`
         },
         format : (input)=>`TEXT to extract ENTITIES from: ${input}`,
-        description: "mortgage parameters recognition (cat take a couple of minutes)"
+        description: "mortgage parameters recognition (can take a couple of minutes on a powerful computer)"
     },
     "EXP" : {
         prompt : ()=>`
@@ -193,7 +193,7 @@ let CHAT = {
                 CHAT.llm_exec({type: "init"});
 
             } else if (m.value=="downloading") {
-                CHAT.log(m.value + `[${m.progress}%]`, "status");
+                CHAT.log(`Downloading LLM model [${m.progress}%]`, "status");
 
             } else if (m.value == "ready") {
                 if (CHAT.state === undefined) {
