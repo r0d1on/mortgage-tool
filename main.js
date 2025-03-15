@@ -55,13 +55,13 @@ function refresh_canonical() {
 
     let robots = document.querySelectorAll("meta[name=robots]")[0];
 
-    const state = get_tabs_state("");
-
+    const loc = window.location.href;
     const skip_index = (
-        (state.includes("details="))||
-        (window.location.href.includes("/en/"))||
-        ((state.includes("page="))&&(!state.includes("=advanced")))
+        (loc.includes("details="))||
+        (loc.includes("/en/"))||
+        ((loc.includes("page="))&&(!loc.includes("=advanced")))
     );
+    
     if (skip_index) {
         robots.content = "noindex, nofollow";
     } else {
