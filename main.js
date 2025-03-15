@@ -23,7 +23,8 @@ function get_tabs_state(skip_tab) {
     Object.keys(TABS).map((index)=>{
         let pagekey = TAB_LIST[index];
         if (pagekey == skip_tab) return;
-        if (TABS[index]['activated']!=TAB_SETTINGS[TAB_LIST[index]].default) {
+        if (TABS[index].activated!=TAB_SETTINGS[TAB_LIST[index]].default) {
+            if ((index==1)&&(TABS[0].activated!="advanced")) return;
             tab_state += (tab_state=="") ? "?" : "&";
             tab_state += `${pagekey}=${TABS[index]['activated']}`;
         };
@@ -53,7 +54,15 @@ function refresh_canonical() {
     link.href = base + get_tabs_state("details");
 
     let robots = document.querySelectorAll("meta[name=robots]")[0];
-    if ((get_tabs_state("").indexOf("details")>=0)||(window.location.href.includes("/en/"))) {
+
+    const state = get_tabs_state("");
+
+    const skip_index = (
+        (state.includes("details="))||
+        (window.location.href.includes("/en/"))||
+        ((state.includes("page="))&&(!state.includes("=advanced")))
+    );
+    if (skip_index) {
         robots.content = "noindex, nofollow";
     } else {
         robots.content = "all";
