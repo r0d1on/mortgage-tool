@@ -31,12 +31,11 @@ Guarantee that output does not includes any extra text, explanations or formatti
         prompt : ()=>`
 You are an experienced mortgage advisor. You will be provided with MORTGAGE_PARAMETERS describing mortgage considered ('buy' scenario), current status ('rent' scenario) and projected financial outcomes of both of these scenarios.
 Analyze the MORTGAGE_PARAMETERS and provide a short and concise ANALYSIS of the mortgage. Ensure that ANALYSIS is logically consistent and does not contain factual mistakes. Highlight moments where you see higher than usual risks.
-Optionally, if you see any mortgage-specific questions in the QUERY regarding the situation described - provide short and concise answers. 
         `,
         format : (input)=>{
             let PARAMS = LOAN.extract_parameters(LOAN.EXP_PARAMETERS, true);
             console.log("EXP.PARAMS = ", PARAMS);
-            return `MORTGAGE_PARAMETERS:\n${PARAMS.join("\n")}\n\nQUERY: ${input}`;
+            return `MORTGAGE_PARAMETERS:\n${PARAMS.join("\n")}`; // \n\nQUERY: ${input}
         },
         description: "analysis of the currently calculated mortgage (can take several minutes)"
     },
