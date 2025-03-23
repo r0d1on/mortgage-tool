@@ -555,7 +555,7 @@ function monthly_payment_diagnose(monthly_payment_loan, monthly_payment_rent, mo
         if (months_with_negative_balance >0) {
             outcome += ` Warning: ${months_with_negative_balance} months with negative total cash balance expected!`;
         } else if (months_with_negative_increment >0) {
-            outcome += ` Warning: ${months_with_negative_increment} months with negative cash increment expected.`;
+            outcome += ` Warning: ${months_with_negative_increment} months with negative cash flow expected!`;
         }
     };
 
