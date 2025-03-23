@@ -30,7 +30,7 @@ Guarantee that output does not includes any extra text, explanations or formatti
     "EXP" : {
         prompt : ()=>`
 You are an experienced mortgage advisor. You will be provided with MORTGAGE_PARAMETERS describing mortgage considered ('buy' scenario), current status ('rent' scenario) and projected financial outcomes of both of these scenarios.
-Analyze the MORTGAGE_PARAMETERS and provide a short and concise ANALYSIS of the mortgage. Ensure that ANALYSIS is logically consistent and does not contain factual mistakes.
+Analyze the MORTGAGE_PARAMETERS and provide a short and concise ANALYSIS of the mortgage. Ensure that ANALYSIS is logically consistent and does not contain factual mistakes. Highlight moments where you see higher than usual risks.
 Optionally, if you see any mortgage-specific questions in the QUERY regarding the situation described - provide short and concise answers. 
         `,
         format : (input)=>{
@@ -61,15 +61,26 @@ Ensure that ANSWER is logically consistent and does not contain factual mistakes
 
 let LOAN = {
     EXP_PARAMETERS : [
-        "house_price", "total_savings", "downpayment",  
-        "loan",  "loan_to_value",  "debt_to_income",
-        
+        "house_price", "total_savings", "downpayment", "downpayment_to_savings",
+        ["savings_usage", "savings usage analysis", ()=>{
+            let dts = get_field_value("downpayment_to_savings");
+            if (dts > 100) {
+                return "Warning: downpayment amount exeeds available savings!"
+            } else if (dts >= 90) {
+                return "Warning: significant fraction of total savings is being used for downpayment!"
+            } else {
+                return ""
+            }
+        }],
+        "loan",  "loan_to_value",  
+
         "loan_term", "loan_term_actual",
 
-        "monthly_avg_loan_invested",
-        "monthly_payment_loan", "monthly_payment_rent", "monthly_payment_difference", 
+        // "monthly_avg_loan_invested",
+        "monthly_payment_loan", "monthly_payment_rent", // "monthly_payment_difference", 
+        "debt_to_income",
         "monthly_payment_comparison",
-        
+
         "assets_renting", "assets_housing",
         "months_to_even",
         "assets_delta", "housing_roi",
@@ -90,6 +101,9 @@ let LOAN = {
 
     extract_parameters : (list, with_values) => {
         return list.map((key, ix)=>{
+            if (Array.isArray(key)) {
+                return `${ix+1}. ${key[0]} [${key[1]}] = ${key[2]()}`
+            };
             if (!(key in FIELDS))
                 console.warn(key, " is unknown");
             if (FIELDS[key].label === undefined)
@@ -145,7 +159,6 @@ let CHAT = {
         Hi,
         <br><br>
         To begin the process - start with explaining your current situation, more details you can provide - the better.
-        <br><br>
         i.e. describe:<br>
         &bull; what are your current total savings<br>
         &bull; how much you save on a monthly basis<br>
@@ -153,7 +166,15 @@ let CHAT = {
         &bull; what is the price of the property you look to buy<br>
         &bull; how much of that price you are ready to pay from your savings (mortgage downpayment)<br>
         &bull; what is mortgage interest rate available to you <br>
-        etc..        
+        etc..<br>
+        This assistant will: <br>
+        &bull; parse and extract the figures <br>
+        &bull; set them into the calculator <br>
+        &bull; provide an analysis of the calculation outcome <br>
+        <br><br>
+        Alternatively you can: <br>
+        &bull; ask for the analysis of the current mortgage calculation. <br>
+        &bull; ask any mortgage related question, terminology exlpanation etc.. <br>
         `.split("<br><br>");
 
         if (!mt) {
