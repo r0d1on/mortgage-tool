@@ -536,30 +536,30 @@ function monthly_payment_diagnose(monthly_payment_loan, monthly_payment_rent, mo
     let budget = monthly_savings + monthly_payment_rent;
 
     if (monthly_payment_loan > monthly_payment_rent) {
-        outcome = "monthly loan payment is HIGHER than monthly rent payment";
+        outcome = "Monthly loan payment is HIGHER than monthly rent payment.";
     } else if (monthly_payment_loan < monthly_payment_rent) {
-        outcome = "monthly loan payment is LOWER than monthly rent payment";
+        outcome = "Monthly loan payment is LOWER than monthly rent payment.";
     } else {
-        outcome = "monthly loan payment is the SAME as monthly rent payment";
+        outcome = "Monthly loan payment is the SAME as monthly rent payment.";
     };
 
     if (monthly_payment_loan > budget) {
-        outcome += ` and HIGHER than available monthly budget (${budget})`;
+        outcome += ` Monthly loan payment is HIGHER than available monthly budget (${budget}).`;
     } else if (monthly_payment_loan < budget) {
-        outcome += ` and LOWER than available monthly budget (${budget})`;
+        outcome += ` Monthly loan payment is LOWER than available monthly budget (${budget}).`;
     } else {
-        outcome += ` and the SAME as available monthly budget (${budget})`;
+        outcome += ` Monthly loan payment is the SAME as available monthly budget (${budget}).`;
     };
 
-    if ((months_with_negative_increment > 0)||(months_with_negative_balance >0)) {
+    if ((months_with_negative_increment > 0)||(months_with_negative_balance > 0)) {
         if (months_with_negative_balance >0) {
-            outcome += `. ${months_with_negative_balance} months with negative total cash balance expected!`;
+            outcome += ` Warning: ${months_with_negative_balance} months with negative total cash balance expected!`;
         } else if (months_with_negative_increment >0) {
-            outcome += `. ${months_with_negative_increment} months with negative cash increment expected.`;
+            outcome += ` Warning: ${months_with_negative_increment} months with negative cash increment expected.`;
         }
     };
 
-    return outcome;
+    return outcome.trim();
 }
 
 
