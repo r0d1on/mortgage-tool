@@ -66,10 +66,9 @@ let LOAN = {
         
         "loan_term", "loan_term_actual",
 
-        "monthly_payment_comparison",
-        "monthly_payment_loan", "monthly_payment_rent", "monthly_payment_difference", 
-
         "monthly_avg_loan_invested",
+        "monthly_payment_loan", "monthly_payment_rent", "monthly_payment_difference", 
+        "monthly_payment_comparison",
         
         "assets_renting", "assets_housing",
         "months_to_even",
@@ -99,9 +98,9 @@ let LOAN = {
                 let value = get_field_value(key);
                 if (FIELDS[key].type != "raw")
                     value = Math.round(value);
-                return  `${ix+1}. ${key} (${FIELDS[key].label}: ${FIELDS[key].tip}) = ${value}`;
+                return  `${ix+1}. ${key} [${FIELDS[key].label}: ${FIELDS[key].tip}] = ${value}`;
             } else {
-                return  `${ix+1}. ${key} (${FIELDS[key].label}: ${FIELDS[key].tip})`;
+                return  `${ix+1}. ${key} [${FIELDS[key].label}: ${FIELDS[key].tip}]`;
             }
         });        
     },
