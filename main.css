@@ -19,7 +19,7 @@ body, h1, h2, h3, p {
     display: inline-flex;
     height: 2.5em;
     justify-content: flex-start;
-    line-height: 1.5;
+    line-height: 2.0em;
     position: relative;
     vertical-align: top; 
     /* color: #4b4f58; */
@@ -28,6 +28,13 @@ body, h1, h2, h3, p {
     font-family: monospace;       
     color: #000;
     min-width:175px;
+}
+
+.input textarea {
+    resize: none;
+    overflow: hidden;
+    min-height: 2.0em;
+    max-height: 4.0em;
 }
 
 .input:disabled {
