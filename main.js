@@ -267,10 +267,12 @@ function loadState() {
     return values;
 }
 
+RESIZEABLES = [];
+
 function init_fields(saved_state) {
     FIELDS = {};
     Array.from(document.getElementsByClassName("field")).map((field)=>{
-        const input = field.getElementsByTagName("input")[0];
+        const input = field.getElementsByTagName("input")[0] || field.getElementsByTagName("textarea")[0];
         const label = field.getElementsByTagName("label")[0];
         const tooltip = field.querySelectorAll("span.tooltip")[0];
         const id = field.id||input.id;
@@ -287,6 +289,14 @@ function init_fields(saved_state) {
             if (field.dataset["formula"]!==undefined) { // calculated field
                 type = "formula";
                 input.disabled = true;
+                if (input.tagName=="TEXTAREA") {
+                    input.addEventListener("resize", (e)=>{
+                        e.target.style.height = "5px";
+                        e.target.style.height = (e.target.scrollHeight + 2) + "px";
+                    });
+                    input.resizeable = true;
+                    RESIZEABLES.push(input);
+                };
             //} else if (field.dataset["target"]!==undefined) { // hybrid field
                 // input.disabled = true;
             } else {
@@ -373,6 +383,12 @@ function init_fields(saved_state) {
             e.target.setAttribute("visible", "");
         });
     });
+
+    window.addEventListener("resize", ()=>{
+        RESIZEABLES.map((element)=>{
+            element.dispatchEvent(new Event("resize"));
+        });
+    });
 }
 
 function evalInScope(js, contextAsScope) {
@@ -448,11 +464,16 @@ function get_field_value(id, path, force_refresh) {
             value = evalInScope(fdesc.formula, calculation_context);
             fdesc.value = value;
             if (fdesc.input===undefined) {
-            } else if (fdesc.type=='raw') {
-                fdesc.input.value = value;
             } else {
-                const xp = 10**fdesc.round;
-                fdesc.input.value = Math.round(xp * value)/xp;
+                if (fdesc.type=='raw') {
+                    fdesc.input.value = value;
+                } else {
+                    const xp = 10**fdesc.round;
+                    fdesc.input.value = Math.round(xp * value)/xp;
+                };
+                if (fdesc.input.resizeable) {
+                    fdesc.input.dispatchEvent(new Event("resize"));
+                }
             };
         } catch (ex) {
             if (fdesc.input!==undefined)
