@@ -56,7 +56,7 @@
 
         <button id="btn_copy" title="Share this calculation">Share</button>
 
-        <div class="tabs is-primary">
+        <div class="tabs is-primary" data-tabgroup="mode">
             <ul>
                 <li class="tab_selector tab_big is-active" data-block="basic"><a role=button data-id="b_simple">🔨 Basic parameters</a></li>
                 <li class="tab_selector tab_big" data-block="advanced"><a role=button data-id="b_advanced">⚙️ Advanced parameters</a></li>
@@ -118,7 +118,7 @@
 
         <div data-block="advanced" class="block">
             <section class="section"><h2 data-id="h_13">Mortgage parameters (advanced):</h2>
-                <div class="tabs is-primary">
+                <div class="tabs is-primary" data-tabgroup="page">
                     <ul>
                         <li class="tab_selector is-active" data-block="mortgage"><a role=button data-id="b_mortgage">🏠 Mortgage</a></li>
                         <li class="tab_selector" data-block="costs"><a role=button data-id="b_costs">💵 Purchase Costs</a></li>
@@ -646,7 +646,7 @@
                         </div>
                     </div>
                 </div>
-           
+
             </section>
         </div>
 
@@ -750,7 +750,7 @@
         </div>
 
         <section class="section"><h2 class="subtitle" data-id="h_4">Modelling results:</h2>
-            <div class="tabs is-primary">
+            <div class="tabs is-primary" data-tabgroup="details">
                 <ul>
                     <li class="tab_selector is-active" data-block="graph_payments"><a role=button data-id="b_g_payments">📈 Payments Graph</a></li>
                     <li class="tab_selector" data-block="schedule"><a role=button data-id="b_schedule">𝄜 Payments Schedule</a></li>

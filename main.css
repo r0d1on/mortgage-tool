@@ -30,7 +30,7 @@ body, h1, h2, h3, p {
     min-width:175px;
 }
 
-.input textarea {
+textarea.input {
     resize: none;
     overflow: hidden;
     min-height: 2.0em;
