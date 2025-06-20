@@ -89,7 +89,7 @@ function refresh_title(params) {
         title += "/" + get_field_value("downpayment");
         title += ")";
 
-        if (get_field_value("metrics")=="verbose") {
+        if (get_field_value("metrics").includes("verbose")) {
             let tag = "";
             tag = `${type} [${Math.round(get_field_value("loan_term")/1.2)/10} / ${Math.round(get_field_value("loan_term_actual")/1.2)/10}]`;
             tag += ` =${Math.round(get_field_value("months_to_even")/1.2)/10}`;
@@ -823,19 +823,21 @@ function save() {
     X = {};
     X.all_parameters = Array.from(Object.keys(FIELDS));
     X.original_parameters = {};
+    X.original_values = {};
     
     let tmp = gather_param_values(X.all_parameters, "").calculation_context;
     Array.from(Object.keys(tmp)).map((key)=>{
         X.original_parameters[key + "_0"] = structuredClone(tmp[key]);
         X.original_parameters[key] = structuredClone(tmp[key]);
+        X.original_values[key] = (FIELDS[key].input)&&(FIELDS[key].input.value);
     });
     document.getElementById("progress_overlay").style['display'] = "block";
 }
 
 function restore(params) {
     params.map((key)=>{
-        if (key!==undefined)
-            FIELDS[key].input.value = X.original_parameters[key];
+        if ((key!==undefined)&&(X.original_values[key]!==undefined))
+            FIELDS[key].input.value = X.original_values[key];
     });
     recalculate_fields(true);
     document.getElementById("progress_overlay").style['display'] = "none";
@@ -883,7 +885,7 @@ function graph_whatif() {
             recalculate_fields(true);
             get_field_value("metrics").split(",").map((metric)=>{
                 const metric0 = metric.trim();
-                result[metric0] = get_metric_value(metric0);
+                (metric!="verbose")&&(result[metric0] = get_metric_value(metric0));
             });
             S.results.push(result);
         
@@ -1002,7 +1004,7 @@ function graph_whatif() {
     _defer_cycle((final)=>{
         if (final==-1) {
             alert("Some error encountered, check console for details.");
-            restore([S.variable1,S.variable2]);
+            restore([S.variable1, S.variable2]);
         } else if (final==1) {
             plot_results();
             restore([S.variable1, S.variable2]);
@@ -1134,6 +1136,7 @@ function graph_entry() {
         probe_month : get_metric_value("entry_probe_month")
     };
     S.total_count = X.original_parameters.loan_term;
+
 
     _defer_cycle((final)=>{
         if (final==-1) {
