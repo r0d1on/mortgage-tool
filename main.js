@@ -15,18 +15,15 @@ let TAB_SETTINGS = {
         }
     }
 };
-TAB_LIST = Array.from(Object.keys(TAB_SETTINGS));
 
-
-function get_tabs_state(skip_tab) {
+function get_tabs_state(skip_group) {
     let tab_state = "";
-    Object.keys(TABS).map((index)=>{
-        let pagekey = TAB_LIST[index];
-        if (pagekey == skip_tab) return;
-        if (TABS[index].activated!=TAB_SETTINGS[TAB_LIST[index]].default) {
-            if ((index==1)&&(TABS[0].activated!="advanced")) return;
+    Object.keys(TABS).map((tabgroup)=>{
+        if (tabgroup == skip_group) return;
+        if (TABS[tabgroup]._activated!=TAB_SETTINGS[tabgroup].default) {
+            if ((tabgroup=="page")&&(TABS["mode"]._activated!="advanced")) return;
             tab_state += (tab_state=="") ? "?" : "&";
-            tab_state += `${pagekey}=${TABS[index]['activated']}`;
+            tab_state += `${tabgroup}=${TABS[tabgroup]._activated}`;
         };
     });
     return tab_state;
@@ -71,18 +68,18 @@ function refresh_canonical() {
 
 function refresh_title(params) {
     let description = document.querySelector("meta[name=description]").content.split(".").slice(0,2).join(".") + ".";
-    TAB_LIST.map((tab, ix)=>{
-        if ((ix==1)&&(TABS[0].activated!="advanced")) return;
-        let kw = document.querySelector(`meta[name=kw-${tab}-${TABS[ix].activated}]`)
+    Object.keys(TABS).map((tabgroup)=>{
+        if ((tabgroup=="page")&&(TABS["mode"]._activated!="advanced")) return;
+        let kw = document.querySelector(`meta[name=kw-${tabgroup}-${TABS[tabgroup]._activated}]`)
         if (kw)
             description += " " + kw.content;
     });
     document.querySelector("meta[name=description]").content = description;
 
     let title = document.title.split(":")[0].replace("(for Netherlands)", "").replace(" payments ", " ");
-    title += " : " + TABS[0].tabs[TABS[0].activated].textContent;
-    if (TABS[0].activated=="advanced")
-        title += " : " + TABS[1].tabs[TABS[1].activated].textContent;
+    title += " : " + TABS["mode"][TABS["mode"]._activated].button.textContent;
+    if (TABS["mode"]._activated=="advanced")
+        title += " : " + TABS["page"][TABS["page"]._activated].button.textContent;
 
     if (params && (get_mortgage_state() != "")) {
         const type = ["", "annuity", "linear", "interest"][get_field_value("loan_type")];
@@ -112,19 +109,18 @@ function refresh_title(params) {
     document.title = title;
 }
 
-function activate_tab(tab, index) {
-    Object.keys(TABS[index].blocks).map((block)=>{
-        TABS[index].blocks[block].classList.remove("is-visible");
+function activate_tab(tab, tabgroup) {
+    Object.keys(TABS[tabgroup]).map((block)=>{
+        if (block.startsWith("_")) return;
+        TABS[tabgroup][block].content.classList.remove("is-visible");
+        (TABS[tabgroup][block].button)&&TABS[tabgroup][block].button.classList.remove("is-active");
     });
-    TABS[index].blocks[tab].classList.add("is-visible");
 
-    Object.keys(TABS[index].tabs).map((tab)=>{
-        TABS[index].tabs[tab].classList.remove("is-active");
-    });
-    if (tab in TABS[index].tabs) {
-        TABS[index].tabs[tab].classList.add("is-active");
-        TABS[index]['activated'] = tab;
-        let events = TAB_SETTINGS[TAB_LIST[index]].events;
+    if (tab in TABS[tabgroup]) {
+        TABS[tabgroup][tab].content.classList.add("is-visible");
+        (TABS[tabgroup][tab].button) && TABS[tabgroup][tab].button.classList.add("is-active");
+        TABS[tabgroup]._activated = tab;
+        let events = TAB_SETTINGS[tabgroup].events;
         (events)&&(events[tab])&&(FIELDS[events[tab]])&&(get_field_value(events[tab], "", true));
     };
 }
@@ -132,53 +128,58 @@ function activate_tab(tab, index) {
 function init_tabs(saved_state) {
     let base = window.location.pathname;
 
+    all_blocks = [];
     TABS = {};
-    Array.from(document.getElementsByClassName("tabs")).map((div, ix)=>{
-        let pagekey = TAB_LIST[ix];
+    Array.from(document.getElementsByClassName("tabs")).map((div)=>{
+        let tabgroup = div.dataset.tabgroup;
 
         var blocks = (
             Array.from(div.parentElement.getElementsByClassName("block"))
-            .filter((element)=>{ return div.parentElement==element.parentElement})
+            .filter((element)=>{return div.parentElement==element.parentElement})
             .reduce((a, v)=>{
-                a[v.dataset["block"]]=v;
+                a[v.dataset["block"]]={
+                    "content" : v
+                };
+                all_blocks.push([v, tabgroup, v.dataset["block"]]);
                 return a
             }, {})
         );
 
-        var tabs = (
-            Array.from(div.getElementsByTagName("li"))
-            .reduce((a, v)=>{
-                a[v.dataset["block"]]=v;
-                if (TAB_SETTINGS[pagekey].default==v.dataset["block"]) {
-                } else {
-                    v.getElementsByTagName("a")[0].href = `${base}?${pagekey}=${v.dataset["block"]}`;
-                    v.getElementsByTagName("a")[0].onclick=()=>{return false;};
-                }
-                return a;
-            }, {})
-        );
-        TABS[ix] = {blocks, tabs};
+        Array.from(div.getElementsByTagName("li")).map((li)=>{
+            blocks[li.dataset["block"]].button = li;
+            if (TAB_SETTINGS[tabgroup].default==li.dataset["block"]) {
+            } else {
+                // TODO: init_tab_links() separate function, call on local navigation.
+                // TODO: fix link w.r.t. hierarchy (no "page" if "mode"!="advanced")
+                li.getElementsByTagName("a")[0].href = `${base}?${tabgroup}=${li.dataset["block"]}`;
+                li.getElementsByTagName("a")[0].onclick = ()=>{return false;};
+            }
+        });
 
-        Object.keys(tabs).map((name)=>{
-            tabs[name].addEventListener("click", ((theblock, index)=>{
+        TABS[tabgroup] = blocks;
+
+        Object.keys(blocks).map((tab)=>{
+            if (!blocks[tab].button) return;
+
+            blocks[tab].button.addEventListener("click", ((tab, tabgroup)=>{
                 return (e)=>{
                     e.preventDefault();
-                    activate_tab(theblock, index);
+                    activate_tab(tab, tabgroup);
                     saveState();
                     refresh_canonical();
                     refresh_title(true);
                 };
             })(
-                name, ix
+                tab, tabgroup
             ));
 
-            if (tabs[name].classList.contains("is-active")) {
-                activate_tab(name, ix);
+            if (blocks[tab].button.classList.contains("is-active")) {
+                activate_tab(tab, tabgroup);
             }
         });
 
-        if (`${pagekey}` in saved_state) {
-            activate_tab(saved_state[`${pagekey}`], ix);
+        if (tabgroup in saved_state) {
+            activate_tab(saved_state[tabgroup], tabgroup);
         };
     });
 
@@ -205,6 +206,27 @@ function init_tabs(saved_state) {
             });
         }
     });
+
+    Object.keys(TABS).map((group)=>{
+        let el = TABS[group][Object.keys(TABS[group])[0]].content.parentElement;
+        while(el!==null) {
+            let parent = null;
+            for(let i=0; i<all_blocks.length; i++) {
+                if (all_blocks[i][0]==el) {
+                    parent = all_blocks[i];
+                    break;
+                };
+            };
+            if (parent!==null) {
+                TABS[group]._parent = [parent[1], parent[2]];
+                TABS[parent[1]][parent[2]]._children = TABS[parent[1]][parent[2]]._children||[];
+                TABS[parent[1]][parent[2]]._children.push(group);
+                break;
+            };
+            el = el.parentElement;
+        };
+    });
+
 }
 
 
@@ -517,14 +539,14 @@ function recalculate_fields(direct, keep_overrides) {
         };
     });
 
-    if ((TABS[0].activated == "advanced") && (TABS[1].activated == "whatif") && (!direct)) {
+    if ((TABS["mode"]._activated == "advanced") && (TABS["page"]._activated == "whatif") && (!direct)) {
         graph_whatif();
-        activate_tab("graph_whatif", 2);        
+        activate_tab("graph_whatif", "details");
     };
 
-    if ((TABS[0].activated == "advanced") && (TABS[1].activated == "entry") && (!direct)) {
+    if ((TABS["mode"]._activated == "advanced") && (TABS["page"]._activated == "entry") && (!direct)) {
         graph_entry();
-        activate_tab("graph_entry", 2);
+        activate_tab("graph_entry", "details");
     };
 
     if (!direct)
