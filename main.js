@@ -586,7 +586,7 @@ function monthly_payment_diagnose(monthly_payment_loan, monthly_payment_rent, mo
 
 
 OVERRIDES = {};
-function loan_schedule(loan_result) {
+function loan_schedule(loan_result, assets_result) {
     function extra_payment_adjuster(event) {
         let old_value = event.target.innerHTML;
         let new_value = prompt("Enter adjusted extra payment value", old_value);
@@ -604,11 +604,17 @@ function loan_schedule(loan_result) {
 
     let thead = document.createElement("thead");
     let tr = document.createElement("tr");
+    // Add headers for all keys
     Object.keys(loan_result.monthly[0]).map((key)=>{
         let th = document.createElement("th");
         th.textContent={"extra_payment":"✏️extra_payment"}[key]||key;
         tr.appendChild(th);
     });
+    // Add warning column header (⚠️)
+    let th_warn = document.createElement("th");
+    th_warn.textContent = "⚠️";
+    tr.appendChild(th_warn);
+
     thead.appendChild(tr);
     table.appendChild(thead);
 
@@ -637,6 +643,9 @@ function loan_schedule(loan_result) {
                 tr.appendChild(td);
                 annual[key] = 0;
             });
+            // Add empty warning cell for annual row
+            let td_warn = document.createElement("td");
+            tr.appendChild(td_warn);
             tbody.appendChild(tr);
         };
 
@@ -664,9 +673,21 @@ function loan_schedule(loan_result) {
             }
             tr.appendChild(td);
         });
+
+        // Add warning cell for this month
+        let td_warn = document.createElement("td");
+        let warnings = assets_result.metrics.monthly[month-1].warnings || [];
+        if (warnings.length > 0) {
+            td_warn.textContent = "⚠️";
+            td_warn.title = warnings.join("\n");
+            td_warn.style.cursor = "pointer";
+        }
+        tr.appendChild(td_warn);
+
         tbody.appendChild(tr);
     });
 
+    // Totals row
     tr = document.createElement("tr");
     Object.keys(loan_result.monthly[0]).map((key)=>{
         let td = document.createElement("td");
@@ -679,6 +700,10 @@ function loan_schedule(loan_result) {
         td.innerHTML = `<b style="color:#00F">${content}</b>`;
         tr.appendChild(td);
     });
+    // Add empty warning cell for totals row
+    let td_warn = document.createElement("td");
+    tr.appendChild(td_warn);
+
     tbody.appendChild(tr);
 
     table.appendChild(tbody);
@@ -1199,8 +1224,8 @@ function calc_assets({total_cash_savings, total_stocks_savings, deposit_rate, st
     let total_tax_returned = 0;
     let assets_delta = 0;
 
-    let months_to_even = loan_term;
-
+    let months_to_even = NaN;
+    
     let warnings_renting = [0,0];
     let warnings_housing = [0,0];
 
@@ -1221,14 +1246,21 @@ function calc_assets({total_cash_savings, total_stocks_savings, deposit_rate, st
         assets_renting[0] += increment_renting + m_bonus_cash;
         assets_renting[1] += m_bonus_stocks;
         increment_renting += m_bonus_cash + m_bonus_stocks;
+
+        // --- Collect warnings for renting ---
+        let month_warnings = [];
         if (increment_renting < 0) {
-            console.warn(`Renting: negative monthly increment, month:${i+1} : ${increment_renting}`);
+            let msg = `Renting: negative monthly increment, month:${i+1} : ${increment_renting}`;
+            console.warn(msg);
             warnings_renting[0] += 1;
-        };
+            month_warnings.push(msg);
+        }
         if (sum(assets_renting) < 0) {
-            console.warn(`Renting: negative balance, month:${i+1} : ${sum(assets_renting)}`);
+            let msg = `Renting: negative balance, month:${i+1} : ${sum(assets_renting)}`;
+            console.warn(msg);
             warnings_renting[1] += 1;
-        };
+            month_warnings.push(msg);
+        }
         monthly_renting.push({
             month : i+1,
             increment: increment_renting,
@@ -1241,14 +1273,20 @@ function calc_assets({total_cash_savings, total_stocks_savings, deposit_rate, st
         assets_housing[0] += increment_housing + m_bonus_cash;
         assets_housing[1] += m_bonus_stocks;
         increment_housing += m_bonus_cash + m_bonus_stocks;
+
+        // --- Collect warnings for housing ---
         if (increment_housing < 0) {
-            console.warn(`Housing: negative monthly increment, month:${i+1} : ${increment_housing}`);
+            let msg = `Housing: negative monthly increment, month:${i+1} : ${increment_housing}`;
+            console.warn(msg);
             warnings_housing[0] += 1;
-        };
+            month_warnings.push(msg);
+        }
         if (sum(assets_housing) < 0) {
-            console.warn(`Housing: negative balance, month:${i+1} : ${sum(assets_housing)}`);
+            let msg = `Housing: negative balance, month:${i+1} : ${sum(assets_housing)}`;
+            console.warn(msg);
             warnings_housing[1] += 1;
-        };
+            month_warnings.push(msg);
+        }
         estate_owned += payment.capital_payment;
         estate_owned_rated = estate_owned * Math.pow(1.0+house_rate, i+1);
 
@@ -1258,7 +1296,6 @@ function calc_assets({total_cash_savings, total_stocks_savings, deposit_rate, st
             total_assets : sum(assets_housing) + estate_owned_rated,
             negative_increments: warnings_housing[0],
             negative_balances: warnings_housing[1],
-
             liquid_assets : sum(assets_housing),
             estate_owned : estate_owned_rated,
         });
@@ -1271,11 +1308,12 @@ function calc_assets({total_cash_savings, total_stocks_savings, deposit_rate, st
             _assets: structuredClone(assets_renting),
             assets_delta : assets_delta,
             assets_k : assets_k,
-            housing_roi : (assets_delta < 0) ? null : (30 * 12 * assets_delta / (loan_term * (total_paid_interest - total_tax_returned)))
+            housing_roi : (assets_delta < 0) ? null : (30 * 12 * assets_delta / (loan_term * (total_paid_interest - total_tax_returned))),
+            warnings: month_warnings
         });
 
         if (estate_owned * Math.pow(1.0+house_rate, i+1) + sum(assets_housing) >= sum(assets_renting))
-            months_to_even = Math.min(months_to_even, i);
+            months_to_even = (isNaN(months_to_even))?i:months_to_even;
     };
 
     // console.log(total_paid_interest, total_tax_returned)
