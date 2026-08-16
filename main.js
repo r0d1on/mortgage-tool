@@ -234,6 +234,9 @@ function get_parameters(formula) {
     let params = [];
     if (formula===undefined) return params;
 
+    formula = formula.replaceAll("\n"," ");
+    formula = formula.replaceAll("\r"," ");
+
     // function().field call
     const rg_fn=/([a-zA-Z_\.]+)\(([^\)]*)\)(\.[a-zA-Z_]+)*/g; 
     for (const match of formula.matchAll(rg_fn)) {
@@ -289,6 +292,50 @@ function loadState() {
     return values;
 }
 
+const TUNERS = {
+    undefined: (e)=>{
+        let tune = e.target.parentNode.parentNode.dataset['tune'];
+        if ((tune)&&(e.shiftKey)) {
+            let id = e.target.parentNode.parentNode.id || e.target.id;
+            let value = get_field_value(id, "");
+            if (e.deltaY>0) {
+                new_value = value - 1.0*tune;
+            } else {
+                new_value = value + 1.0*tune;
+            };
+            const xp = 10**FIELDS[id].round;
+            e.target.value = Math.round(xp * new_value)/xp;
+            e.preventDefault();
+            if (FIELDS[id].target!==undefined) { // hybrid field sets the target value
+                FIELDS[FIELDS[id].target].input.value =  e.target.value;
+            };
+            saveState();
+            recalculate_fields();
+            return true;
+        };
+    },
+    "date": (e)=>{
+        if (e.shiftKey) {
+            let id = e.target.parentNode.parentNode.id || e.target.id;
+            let value = get_field_value(id, "");
+            let date_value = new Date(value);
+            if (e.deltaY>0) {
+                date_value = date_add_days(date_value, 1);
+            } else {
+                date_value = date_add_days(date_value, -1);
+            };
+            e.target.value = date_value.toISOString().substr(0,10);
+            e.preventDefault();
+            if (FIELDS[id].target!==undefined) { // hybrid field sets the target value
+                FIELDS[FIELDS[id].target].input.value =  e.target.value;
+            };
+            saveState();
+            recalculate_fields();
+            return true;
+        };
+    }
+}
+
 RESIZEABLES = [];
 
 function init_fields(saved_state) {
@@ -299,7 +346,7 @@ function init_fields(saved_state) {
         const tooltip = field.querySelectorAll("span.tooltip")[0];
         const id = field.id||input.id;
 
-        let type = "input";
+        let kind = "input";
 
         if (id === undefined) 
             throw_error(`undefined id for field: ${field}`)
@@ -309,7 +356,7 @@ function init_fields(saved_state) {
 
         if (input!==undefined) {
             if (field.dataset["formula"]!==undefined) { // calculated field
-                type = "formula";
+                kind = "formula";
                 input.disabled = true;
                 if (input.tagName=="TEXTAREA") {
                     input.addEventListener("resize", (e)=>{
@@ -329,31 +376,7 @@ function init_fields(saved_state) {
                 };
 
                 if (field.dataset["type"]!='raw') {
-                    input.addEventListener("wheel", (e)=>{
-                        let tune = e.target.parentNode.parentNode.dataset['tune'];
-                        if ((tune)&&(e.shiftKey)) {
-                            let id = e.target.parentNode.parentNode.id || e.target.id;
-                            let value = get_field_value(id, "");
-                            if (e.deltaY>0) {
-                                new_value = value - 1.0*tune;
-                            } else {
-                                new_value = value + 1.0*tune;
-                            };
-
-                            const xp = 10**FIELDS[id].round;
-                            new_value = Math.round(xp * new_value)/xp;
-
-                            e.target.value = new_value;
-
-                            e.preventDefault();
-                            if (FIELDS[id].target!==undefined) { // hybrid field sets the target value
-                                FIELDS[FIELDS[id].target].input.value =  e.target.value;
-                            };
-                            saveState();
-                            recalculate_fields();
-                            return true;
-                        };
-                    });
+                    input.addEventListener("wheel", TUNERS[field.dataset["type"]]);
                     input.addEventListener("change", (e)=>{
                         let id = e.target.parentNode.parentNode.id || e.target.id;
                         if (FIELDS[id].target!==undefined) { // hybrid field sets the target value
@@ -363,7 +386,7 @@ function init_fields(saved_state) {
                         recalculate_fields();
                     });
                 } else {
-                    type = "raw";
+                    kind = "raw";
                     input.addEventListener("change", ()=>{
                         saveState();
                     });
@@ -376,15 +399,16 @@ function init_fields(saved_state) {
             "id" : id,
             "field" : field,
             "input" : input,
+            "kind" : kind,
+            "type" : field.dataset["type"],
             "formula" : field.dataset["formula"],
             "target" : field.dataset["target"],
-            "type" : field.dataset["type"],
             "round" : field.dataset["round"]||2,
             "params" : get_parameters(field.dataset["formula"]),
             "label" : label.innerHTML,
             "tip" : (tooltip===undefined)?"":tooltip.dataset['tooltip'],
-            "kind" : type
         }
+        // console.log(id, kind, field.dataset["type"], "=>", field.dataset["target"]);
     });
 
     Array.from(document.getElementsByClassName("tooltip")).map((e)=>{
@@ -462,6 +486,8 @@ function get_field_value(id, path, force_refresh) {
 
     if ((fdesc.input!==undefined)&&(!fdesc.input.disabled)) { // user input field
         if (fdesc.type=='raw') {
+            return value;
+        } else if (fdesc.type=='date') {
             return value;
         } else if (value=="") {
             console.log(`field ${id} value must be specified`);
@@ -608,7 +634,8 @@ function loan_schedule(loan_result, assets_result) {
     Object.keys(loan_result.monthly[0]).map((key)=>{
         let th = document.createElement("th");
         th.textContent={"extra_payment":"✏️extra_payment"}[key]||key;
-        tr.appendChild(th);
+        if (key!="date")
+            tr.appendChild(th);
     });
     // Add warning column header (⚠️)
     let th_warn = document.createElement("th");
@@ -640,7 +667,8 @@ function loan_schedule(loan_result, assets_result) {
                     content = ("year_" + (month-1)/12);
                 };
                 td.innerHTML = `<b style="color:#00F">${content}</b>`;
-                tr.appendChild(td);
+                if (key!="date")
+                    tr.appendChild(td);
                 annual[key] = 0;
             });
             // Add empty warning cell for annual row
@@ -663,15 +691,23 @@ function loan_schedule(loan_result, assets_result) {
                 annual[key] = (annual[key]||0) + record[key];
             };
 
-            td.innerHTML = Math.round(100*record[key])/100;
+            if (key=="month") {
+                td.innerHTML = record['date'].toISOString().substr(0, 7);
+            } else if (key=="date") {
+            } else {
+                td.innerHTML = Math.round(100*record[key])/100;
+            };
+
             if (key=="extra_payment") {
                 td.id = "xp_" + record["month"];
                 td.addEventListener("click", extra_payment_adjuster);
                 if ("xp_" + record["month"] in OVERRIDES) {
                     td.classList.add("overrided");
                 };
-            }
-            tr.appendChild(td);
+            };
+
+             if (key!="date")
+                tr.appendChild(td);
         });
 
         // Add warning cell for this month
@@ -698,7 +734,8 @@ function loan_schedule(loan_result, assets_result) {
             content = "total: ";
         };
         td.innerHTML = `<b style="color:#00F">${content}</b>`;
-        tr.appendChild(td);
+        if (key!="date")
+            tr.appendChild(td);
     });
     // Add empty warning cell for totals row
     let td_warn = document.createElement("td");
@@ -728,12 +765,12 @@ function graph_payments(loan_result) {
         visibility['debt']='legendonly';
 
     let months = loan_result.monthly.map((record)=>{
-        return Math.round(100*record["month"])/100
+        return record["date"];
     });
 
     let data =  Object
     .keys(loan_result.monthly[0])
-    .filter((v)=>{return v!='month'})    
+    .filter((v)=>{return ((v!='month')&&(v!="date"))})
     .map((key)=>{
         return {
             x : months,
@@ -764,7 +801,7 @@ function graph_assets(assets_result) {
         let d = (data===undefined)?[]:data;
         Object
         .keys(rows[0])
-        .filter((v)=>{return (v!='month')&&(!v.startsWith("_"))})
+        .filter((v)=>{return (v!='date')&&(v!='month')&&(!v.startsWith("_"))})
         .map((key)=>{
             d.push({
                 x : xs,
@@ -786,7 +823,7 @@ function graph_assets(assets_result) {
     let result_metrics = assets_result.metrics;
 
     let months = result_renting.monthly.map((record)=>{
-        return Math.round(100*record["month"])/100
+        return record["date"]
     });
 
     let data = plot(undefined, result_metrics.monthly, months, "", visibility);
@@ -1231,6 +1268,7 @@ function calc_assets({total_cash_savings, total_stocks_savings, deposit_rate, st
 
     for(let i=0; i<loan_term; i++) {
         let payment = (i < loan_term_actual) ? loan_result.monthly[i] : {net_payment:0, tax_return:0, capital_payment:0, interest_amt:0};
+        let date = date_add_months(loan_result.monthly[0].date, i);
         total_tax_returned += payment.tax_return;
         total_paid_interest += payment.interest_amt;
 
@@ -1263,6 +1301,7 @@ function calc_assets({total_cash_savings, total_stocks_savings, deposit_rate, st
         }
         monthly_renting.push({
             month : i+1,
+            date: date,
             increment: increment_renting,
             total_assets: sum(assets_renting),
             negative_increments: warnings_renting[0],
@@ -1292,6 +1331,7 @@ function calc_assets({total_cash_savings, total_stocks_savings, deposit_rate, st
 
         monthly_housing.push({
             month : i+1,
+            date: date,
             increment: increment_housing,
             total_assets : sum(assets_housing) + estate_owned_rated,
             negative_increments: warnings_housing[0],
@@ -1305,6 +1345,7 @@ function calc_assets({total_cash_savings, total_stocks_savings, deposit_rate, st
 
         monthly_metrics.push({
             month : i+1,
+            date: date,
             _assets: structuredClone(assets_renting),
             assets_delta : assets_delta,
             assets_k : assets_k,

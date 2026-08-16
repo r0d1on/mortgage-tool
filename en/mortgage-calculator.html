@@ -201,6 +201,11 @@
                                 <div class="control"><input id="loan_type" class="input" type="text" value="">
                                 <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="loan_type_tip" data-tooltip="Defines the loan type. Interest-only mortgages are not tax (box-1) deductible.">?</span></div>
                             </div>
+                            <div class="field" data-type="date" data-default="2021-01-01">
+                                <label for="loan_start">Loan start year-month-day</label>
+                                <div class="control"><input id="loan_start" class="input" type="text" value="">
+                                <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="loan_start_tip" data-tooltip="yyyy-mm-dd date of the loan start, if first month is partial - only the accrued rent will be in the payment.">?</span></div>
+                            </div>
 
                         </div>
 
@@ -211,9 +216,9 @@
                                 <span class="icon"><i>%</i></span><span class="tooltip" data-for="tax_rate_tip" data-tooltip="Tax (box-1) deductible percentage of interest amount repaid.">?</span></div>
                             </div>
                             <div class="field" data-default="1" data-tune="1">
-                                <label for="tax_scheme">Tax refund target: 0 - none, 1 - benefit, 2 - principal</label>
+                                <label for="tax_scheme">Tax refund: 0 - disabled, 1 - enabled</label>
                                 <div class="control"><input id="tax_scheme" class="input" type="text" value="">
-                                <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="tax_scheme_tip" data-tooltip="what happens with tax refunds: 0 - turned off, 1 - accrued as an income, 2 - used (monthly) for extra repayments.">?</span></div>
+                                <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="tax_scheme_tip" data-tooltip="what happens with tax refunds: 0 - turned off, 1 - accrued as an income.">?</span></div>
                             </div>
                             <div class="field" data-formula="loan_stats_result.total_tax_returned">
                                 <label for="total_tax_returned">Total tax returned (hypotheekrenteaftrek):</label>
@@ -377,16 +382,16 @@
                                 <div class="control"><input id="overpayment_penalty" class="input" type="text" value="">
                                 <span class="icon"><i>%</i></span><span class="tooltip" data-for="overpayment_penalty_tip" data-tooltip="Penalty percentage of extra repayment in case max. allowed extra repayment threshold is breached. If set to 100 - system will reduce extra-repayments automatically to avoid overpaying and penalties.">?</span></div>
                             </div>
-                            <div class="field" data-formula="(max_extra_payments_per_year_pct / 100) * loan">
-                                <label for="max_extra_payment_per_year">Max extra repayment per year</label>
-                                <div class="control"><input id="max_extra_payment_per_year" class="input" type="text" value="">
-                                <span class="icon"><i>€</i></span><span class="tooltip" data-for="max_extra_payment_per_year_tip" data-tooltip="Max. annual allowed extra repayment value.">?</span></div>
-                            </div>
                             <div class="field" data-round="3" data-formula="(assets_housing - calc_assets_no_repayments(asset_params, loan_params).housing.outcome) / total_paid_extra">
                                 <label for="extra_payment_roi">Extra repayment ROI</label>
                                 <div class="control"><input id="extra_payment_roi" class="input" type="text" value="">
                                 <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="extra_payment_roi_tip" data-tooltip="ROI of extra repayments. Calculated as a difference in the final assets you would have in the end of 'normal' and 'extra repayed' mortagegs over actual total value of extra payments made. 0.2 would mean that every extra euro spent will get you additional 0.2 euro of equity in the end.">?</span></div>
                             </div>
+                            <div class="field" data-default="0" data-tune="1">
+                                <label for="extra_payment_mech">Repayment outcome: 0 - reduced monthly payment, 1 - reduced mortgage term</label>
+                                <div class="control"><input id="extra_payment_mech" class="input" type="text" value="">
+                                <span class="icon"><i>&gt;</i></span><span class="tooltip" data-for="extra_payment_mech_tip" data-tooltip="Extra repayments treatment by bank: 0 - they will reduce the monthly payment, 1 - the term of your mortgage.">?</span></div>
+                            </div>                            
                         </div>
 
                         <div class="column">
@@ -763,7 +768,17 @@
             <div data-block="schedule-hidden" class="block">
                 <div class="columns">
                     <div class="column">
-                        <div class="field" id="loan_params" data-formula="gather_param_values(['loan_type', 'loan_term', 'interest_rate', 'tax_rate', 'loan','monthly_ownership_tax', 'purchase_deductible_cost', 'tax_scheme','extra_payment_monthly', 'extra_payment_period', 'extra_payment_start','extra_payment_value', 'extra_payment_period1', 'extra_payment_start1','extra_payment_value1', 'extra_payment_period2', 'extra_payment_start2', 'extra_payment_value2', 'max_extra_payment_per_year', 'overpayment_penalty', 'extra_payment_topup'],'').calculation_context">
+                        <div class="field" id="loan_params" data-formula="gather_param_values([
+                                'loan_type', 'loan_term', 'loan_start', 
+                                'interest_rate', 'tax_rate', 'loan',
+                                'monthly_ownership_tax', 'purchase_deductible_cost', 'tax_scheme', 
+                                'extra_payment_monthly', 
+                                'extra_payment_period', 'extra_payment_start', 'extra_payment_value', 
+                                'extra_payment_period1', 'extra_payment_start1', 'extra_payment_value1', 
+                                'extra_payment_period2', 'extra_payment_start2', 'extra_payment_value2', 
+                                'max_extra_payments_per_year_pct', 'overpayment_penalty', 
+                                'extra_payment_topup', 'extra_payment_mech'
+                                ],'').calculation_context">
                             <label>Hidden cell to collect loan parameters structure</label>
                             <div class="control"></div>
                         </div>
