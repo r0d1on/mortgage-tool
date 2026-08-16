@@ -161,7 +161,7 @@ for="loan_type">
 Loan type: 1 - Annuity, 2 - Linear, 3 - Interest only
 \
 for="tax_scheme">
-Tax refund target: 0 - none, 1 - benefit, 2 - principal
+Tax refund: 0 - disabled, 1 - enabled
 \
 for="total_tax_returned">
 Total tax returned (hypotheekrenteaftrek):
@@ -252,9 +252,6 @@ Max extra repayment per year, %
 \
 for="overpayment_penalty">
 Penalty for repaying more than allowed
-\
-for="max_extra_payment_per_year">
-Max extra repayment per year
 \
 for="extra_payment_period1">
 Extra periodic payment#1, period
@@ -440,7 +437,7 @@ for="loan_type_tip" data-tooltip="
 Defines the loan type. Interest-only mortgages are not tax (box-1) deductible.
 \
 for="tax_scheme_tip" data-tooltip="
-what happens with tax refunds: 0 - turned off, 1 - accrued as an income, 2 - used (monthly) for extra repayments.
+what happens with tax refunds: 0 - turned off, 1 - accrued as an income.
 \
 for="total_tax_returned_tip" data-tooltip="
 Total amount of tax refunded (it will be 0 if loan is not refundable or refunds turned off or refunds used for repayments).
@@ -525,9 +522,6 @@ Max. total annual extra repayment allowed by bank (usually 10%) % from initial p
 \
 for="overpayment_penalty_tip" data-tooltip="
 Penalty percentage of extra repayment in case max. allowed extra repayment threshold is breached. If set to 100 - system will reduce extra-repayments automatically to avoid overpaying and penalties.
-\
-for="max_extra_payment_per_year_tip" data-tooltip="
-Max. annual allowed extra repayment value.
 \
 for="extra_payment_period1_tip" data-tooltip="
 Additional periodic repayment periodicity (months). i.e. 12 for annual repayment.

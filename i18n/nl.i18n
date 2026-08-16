@@ -161,7 +161,7 @@ for="loan_type">
 Leningtype: 1 - Annuïteiten, 2 - Lineaire lening, 3 - Interest-only
 \
 for="tax_scheme">
-Doel belastingteruggave: 0 - geen, 1 - voordeel, 2 - hoofdschuld
+Belastingteruggave: 0 - geen, 1 - aan
 \
 for="total_tax_returned">
 Totale belastingteruggave (hypotheekrenteaftrek)
@@ -252,9 +252,6 @@ Maximale extra aflossing per jaar, %
 \
 for="overpayment_penalty">
 Boete voor te veel aflossen dan toegestaan
-\
-for="max_extra_payment_per_year">
-Maximale extra aflossing per jaar
 \
 for="extra_payment_period1">
 Extra periodieke betaling #1, termijn
@@ -440,7 +437,7 @@ for="loan_type_tip" data-tooltip="
 Definieert het type lening. De eerste twee zijn fiscaal aftrekbaar; aflossingsvrij niet (box-1).
 \
 for="tax_scheme_tip" data-tooltip="
-Wat er gebeurt met belastingteruggaven: 0 - uitgeschakeld, 1 - als inkomen opgenomen, 2 - (maandelijks) gebruikt voor extra aflossingen.
+Wat er gebeurt met belastingteruggaven: 0 - uitgeschakeld, 1 - als inkomen opgenomen.
 \
 for="total_tax_returned_tip" data-tooltip="
 Totaalbedrag aan terugbetaalde belasting (dit is 0 als de lening niet terugbetaalbaar is, als terugbetalingen zijn uitgeschakeld of als terugbetalingen zijn gebruikt voor terugbetalingen).
@@ -525,9 +522,6 @@ Maximale jaarlijkse extra aflossing toegestaan door de bank (% van de oorspronke
 \
 for="overpayment_penalty_tip" data-tooltip="
 Boetepercentage bij overschrijding van de maximale extra aflossing. Bij 100 zal het systeem extra aflossingen automatisch aanpassen.
-\
-for="max_extra_payment_per_year_tip" data-tooltip="
-Maximaal toegestane jaarlijkse extra aflossing.
 \
 for="extra_payment_period1_tip" data-tooltip="
 Eerste extra aflossingstermijn (in maanden). Bijvoorbeeld 12 voor jaarlijks.
