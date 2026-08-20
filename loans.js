@@ -256,7 +256,6 @@ function calculate_loan_payments(loan_params, ICB) {
     if (restart) {
       lp.loan = debt;
       lp.loan_term = loan_params.loan_term - i - 1;
-      lp.max_extra_payment_per_year = lp.loan * (lp.max_extra_payments_per_year_pct / 100);
     };
 
     month_date = date_add_months(month_date, 1);
