@@ -485,6 +485,11 @@
                                 <div class="control"><input id="bonus_stocks" class="input" type="text" value="">
                                 <span class="icon"><i>€</i></span><span class="tooltip" data-for="bonus_stocks_tip" data-tooltip="Aandelen deel van de jaarlijkse bonus. Gebruikt in rendementsberekeningen.">?</span></div>
                             </div>
+                            <div class="field" data-default="0.0" data-tune="0.1">
+                                <label for="inflation_rate">Inflation rate</label>
+                                <div class="control"><input id="inflation_rate" class="input" type="text" value="">
+                                <span class="icon"><i>%</i></span><span class="tooltip" data-for="inflation_rate_tip" data-tooltip="Inflation rate (annual). Affects projected asset values.">?</span></div>
+                            </div>                            
                         </div>
 
                         <div class="column">
@@ -783,7 +788,7 @@
                             <div class="control"></div>
                         </div>
 
-                        <div class="field" id="asset_params" data-formula="gather_param_values(['total_cash_savings', 'total_stocks_savings', 'deposit_rate', 'stocks_rate', 'monthly_savings', 'loan_result', 'loan_term', 'downpayment', 'bonus_month', 'bonus_cash', 'bonus_stocks', 'monthly_payment_rent', 'monthly_ownership_tax', 'loan', 'house_value', 'house_market_rate'],'').calculation_context">
+                        <div class="field" id="asset_params" data-formula="gather_param_values(['total_cash_savings', 'total_stocks_savings', 'deposit_rate', 'stocks_rate', 'inflation_rate', 'monthly_savings', 'loan_result', 'loan_term', 'downpayment', 'bonus_month', 'bonus_cash', 'bonus_stocks', 'monthly_payment_rent', 'monthly_ownership_tax', 'loan', 'house_value', 'house_market_rate'],'').calculation_context">
                             <label>Hidden cell to collect asset calculation parameters</label>
                             <div class="control"></div>
                         </div>

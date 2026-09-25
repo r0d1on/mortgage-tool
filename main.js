@@ -778,6 +778,7 @@ function graph_payments(loan_result) {
                 return record[key];
             }),
             type: 'scatter',
+            mode: 'lines+markers',
             name: key,
             visible: visibility[key]
         }
@@ -809,6 +810,7 @@ function graph_assets(assets_result) {
                     return record[key]
                 }),
                 type: 'scatter',
+                mode: 'lines+markers',
                 name: key + postfix,
                 visible: visibility[key + postfix]
             });
@@ -1235,9 +1237,9 @@ function sum(a) {
     return a.reduce((a,s)=>{return a+s}, 0);
 }
 
-function calc_assets({total_cash_savings, total_stocks_savings, deposit_rate, stocks_rate, monthly_savings, loan_result, loan_term, downpayment, bonus_month, bonus_cash, bonus_stocks, monthly_payment_rent, monthly_ownership_tax, loan, house_value, house_market_rate}) {
-    let deposit_rate_m = deposit_rate/(100*12);
-    let stocks_rate_m = stocks_rate/(100*12);
+function calc_assets({total_cash_savings, total_stocks_savings, deposit_rate, inflation_rate, stocks_rate, monthly_savings, loan_result, loan_term, downpayment, bonus_month, bonus_cash, bonus_stocks, monthly_payment_rent, monthly_ownership_tax, loan, house_value, house_market_rate}) {
+    let deposit_rate_m = (deposit_rate - inflation_rate)/(100*12);
+    let stocks_rate_m = (stocks_rate - inflation_rate)/(100*12);
     let loan_term_actual = loan_result.monthly.length;
 
     let increment_renting = 0;
@@ -1254,7 +1256,7 @@ function calc_assets({total_cash_savings, total_stocks_savings, deposit_rate, st
         total_stocks_savings - stocks_taken
     ];
 
-    let house_rate = house_market_rate / (100*12);
+    let house_rate = (house_market_rate - inflation_rate) / (100*12);
     let estate_owned = house_value - loan;
 
     let total_paid_interest = 0;
